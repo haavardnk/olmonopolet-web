@@ -16,7 +16,6 @@ function formatDate(dateString) {
 
 export async function load({ params, fetch }) {
   try {
-    // Fetch release info (name, date, etc)
     const releaseInfoUrl = `https://api.beermonopoly.com/release/${params.id}/?fields=name,release_date,beer_count,product_selections,product_stats`;
     const releaseInfoRes = await fetch(releaseInfoUrl);
     if (!releaseInfoRes.ok) {
@@ -30,7 +29,6 @@ export async function load({ params, fetch }) {
     }
     const releaseInfo = await releaseInfoRes.json();
 
-    // Fetch products
     const fields =
       "vmp_id,vmp_name,price,rating,checkins,label_sm_url,main_category,sub_category,style,stock,abv,user_checked_in,user_wishlisted,volume,price_per_volume,vmp_url,untpd_url,untpd_id,country,product_selection";
     const productsUrl = `https://api.beermonopoly.com/beers/?fields=${fields}&release=${params.id}&ordering=-rating&page_size=1000`;

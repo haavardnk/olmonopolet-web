@@ -13,7 +13,6 @@
 </svelte:head>
 
 <div class="flex flex-col min-h-screen">
-  <!-- Header -->
   <header
     class="sticky top-0 z-10 bg-base-300/80 backdrop-blur-md border-b border-base-content/10 shadow-md"
   >
@@ -35,7 +34,6 @@
     </div>
   </header>
 
-  <!-- Error Content -->
   <main class="bg-base-100 text-base-content flex-1">
     <div class="container mx-auto px-4 py-16">
       <div class="max-w-md mx-auto text-center">
@@ -65,8 +63,6 @@
       </div>
     </div>
   </main>
-
-  <!-- Footer -->
   <footer class="footer footer-center p-10 bg-base-200 text-base-content">
     <div>
       <Beer size={36} class="text-primary" />
