@@ -141,35 +141,37 @@
                   class="flex flex-col items-center bg-base-300 rounded-lg px-4 py-2 min-w-[80px]"
                 >
                   <div class="text-xs font-semibold opacity-70">Totalt</div>
-                  <div class="text-2xl font-bold">{release.beer_count}</div>
+                  <div class="text-2xl font-bold">
+                    {release.product_stats.product_count}
+                  </div>
                 </div>
-                {#if release.productStats.Øl}
+                {#if release.product_stats.beer_count}
                   <div
                     class="flex flex-col items-center bg-base-300 rounded-lg px-4 py-2 min-w-[80px]"
                   >
                     <div class="text-xs font-semibold opacity-70">Øl</div>
                     <div class="text-2xl font-bold">
-                      {release.productStats.Øl}
+                      {release.product_stats.beer_count}
                     </div>
                   </div>
                 {/if}
-                {#if release.productStats.Sider}
+                {#if release.product_stats.cider_count}
                   <div
                     class="flex flex-col items-center bg-base-300 rounded-lg px-4 py-2 min-w-[80px]"
                   >
                     <div class="text-xs font-semibold opacity-70">Sider</div>
                     <div class="text-2xl font-bold">
-                      {release.productStats.Sider}
+                      {release.product_stats.cider_count}
                     </div>
                   </div>
                 {/if}
-                {#if release.productStats.Mjød}
+                {#if release.product_stats.mead_count}
                   <div
                     class="flex flex-col items-center bg-base-300 rounded-lg px-4 py-2 min-w-[80px]"
                   >
                     <div class="text-xs font-semibold opacity-70">Mjød</div>
                     <div class="text-2xl font-bold">
-                      {release.productStats.Mjød}
+                      {release.product_stats.mead_count}
                     </div>
                   </div>
                 {/if}

@@ -7,9 +7,7 @@
     Play,
     Apple,
     Chrome,
-    ExternalLink,
-    Twitter,
-    Youtube,
+    HeartHandshake,
     Facebook,
     Plus,
     AlertCircle,
@@ -53,16 +51,16 @@
         </div>
 
         <div class="navbar-center hidden lg:flex">
-          <ul class="menu menu-horizontal px-1 gap-2">
+          <ul class="flex gap-4 items-center">
             <li>
               <a
                 href="https://patreon.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="flex items-center gap-1"
+                class="flex items-center gap-1 px-3 py-1 rounded-lg hover:bg-primary/10 transition-colors text-base font-medium"
               >
-                Patreon
-                <ExternalLink size={14} class="opacity-70" />
+                <HeartHandshake size={18} class="text-primary" />
+                Støtt oss
               </a>
             </li>
             <li>
@@ -70,10 +68,10 @@
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="flex items-center gap-1"
+                class="flex items-center gap-1 px-3 py-1 rounded-lg hover:bg-primary/10 transition-colors text-base font-medium"
               >
+                <Facebook size={18} class="text-blue-600" />
                 Facebook
-                <ExternalLink size={14} class="opacity-70" />
               </a>
             </li>
           </ul>
@@ -259,20 +257,26 @@
                     >
                       <div class="flex items-center gap-1 text-sm">
                         <div class="badge badge-neutral">
-                          {release.beer_count}
+                          {release.product_stats.product_count}
                         </div>
                         <span>Totalt</span>
                       </div>
                       <div class="flex items-center gap-1 text-sm">
-                        <div class="badge badge-primary"></div>
+                        <div class="badge badge-primary">
+                          {release.product_stats.beer_count}
+                        </div>
                         <span>Øl</span>
                       </div>
                       <div class="flex items-center gap-1 text-sm">
-                        <div class="badge badge-secondary"></div>
+                        <div class="badge badge-secondary">
+                          {release.product_stats.cider_count}
+                        </div>
                         <span>Sider</span>
                       </div>
                       <div class="flex items-center gap-1 text-sm">
-                        <div class="badge badge-accent"></div>
+                        <div class="badge badge-accent">
+                          {release.product_stats.mead_count}
+                        </div>
                         <span>Mjød</span>
                       </div>
                     </div>

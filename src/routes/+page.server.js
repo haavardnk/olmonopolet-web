@@ -7,7 +7,6 @@ function formatDate(dateString) {
   try {
     const date = parseISO(dateString);
     let formatted = format(date, "d. MMMM yyyy", { locale: nb });
-    // Capitalize first letter of month
     return formatted.replace(/\d+ ([^ ]+)/, (match, month) => {
       return match.replace(
         month,
@@ -22,7 +21,7 @@ function formatDate(dateString) {
 
 export async function load({ fetch }) {
   try {
-    const apiUrl = `https://api.beermonopoly.com/release/?fields=name,release_date,beer_count,product_selections`;
+    const apiUrl = `https://api.beermonopoly.com/release/?fields=name,release_date,beer_count,product_selections,product_stats`;
     const response = await fetch(apiUrl);
 
     if (!response.ok) {

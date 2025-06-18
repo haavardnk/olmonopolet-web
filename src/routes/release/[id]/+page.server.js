@@ -17,7 +17,7 @@ function formatDate(dateString) {
 export async function load({ params, fetch }) {
   try {
     // Fetch release info (name, date, etc)
-    const releaseInfoUrl = `https://api.beermonopoly.com/release/${params.id}/?fields=name,release_date,beer_count,product_selections`;
+    const releaseInfoUrl = `https://api.beermonopoly.com/release/${params.id}/?fields=name,release_date,beer_count,product_selections,product_stats`;
     const releaseInfoRes = await fetch(releaseInfoUrl);
     if (!releaseInfoRes.ok) {
       if (releaseInfoRes.status === 404) {
@@ -43,17 +43,11 @@ export async function load({ params, fetch }) {
     }
     const productsData = await productsRes.json();
 
-    const productStats = (productsData.results || []).reduce((acc, product) => {
-      acc[product.main_category] = (acc[product.main_category] || 0) + 1;
-      return acc;
-    }, {});
-
     return {
       release: {
         ...releaseInfo,
         formatted_date: formatDate(releaseInfo.release_date),
         products: productsData.results || [],
-        productStats,
       },
     };
   } catch (err) {
