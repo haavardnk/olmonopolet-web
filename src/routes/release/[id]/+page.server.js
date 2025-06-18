@@ -1,18 +1,5 @@
-import { format, parseISO } from "date-fns";
-import { nb } from "date-fns/locale";
+import { formatDate } from "$lib/utils.js";
 import { error } from "@sveltejs/kit";
-
-function formatDate(dateString) {
-  if (!dateString) return "";
-
-  try {
-    const date = parseISO(dateString);
-    return format(date, "dd.MM.yyyy", { locale: nb });
-  } catch (error) {
-    console.error("Date parsing error:", error);
-    return dateString;
-  }
-}
 
 export async function load({ params, fetch }) {
   try {

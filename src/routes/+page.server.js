@@ -1,23 +1,4 @@
-import { format, parseISO } from "date-fns";
-import { nb } from "date-fns/locale";
-
-function formatDate(dateString) {
-  if (!dateString) return "";
-
-  try {
-    const date = parseISO(dateString);
-    let formatted = format(date, "d. MMMM yyyy", { locale: nb });
-    return formatted.replace(/\d+ ([^ ]+)/, (match, month) => {
-      return match.replace(
-        month,
-        month.charAt(0).toUpperCase() + month.slice(1),
-      );
-    });
-  } catch (error) {
-    console.error("Date parsing error:", error);
-    return dateString;
-  }
-}
+import { formatDate } from "$lib/utils.js";
 
 export async function load({ fetch }) {
   try {
