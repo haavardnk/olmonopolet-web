@@ -1,6 +1,7 @@
 <script>
-  let { children } = $props();
   import "../app.css";
 </script>
 
-{@render children()}
+<div id="svelte" class="flex flex-col min-h-screen">
+  <slot />
+</div>
