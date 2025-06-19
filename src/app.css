@@ -1,10 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap");
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap');
+@import 'tailwindcss';
 @plugin "daisyui" {
-  themes: caramellatte --default;
+	themes: caramellatte --default;
 }
 
 body,
 html {
-  font-family: "JetBrains Mono", "Quicksand", Arial, Helvetica, sans-serif;
+	font-family: 'JetBrains Mono', 'Quicksand', Arial, Helvetica, sans-serif;
 }

@@ -1,31 +1,41 @@
 {
-  "private": true,
-  "license": "MIT",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "format": "prettier --write .",
-    "lint": "prettier --check .",
-    "deploy": "gh-pages -d build -t"
-  },
-  "devDependencies": {
-    "@sveltejs/kit": "^2.21.5",
-    "@sveltejs/vite-plugin-svelte": "^5.0.3",
-    "@tailwindcss/vite": "^4.1.5",
-    "@types/lodash": "^4.17.18",
-    "daisyui": "^5.0.35",
-    "gh-pages": "^6.3.0",
-    "prettier": "^3.5.3",
-    "prettier-plugin-svelte": "^3.3.3",
-    "svelte": "^5.34.5",
-    "tailwindcss": "^4.1.5",
-    "vite": "^6.3.4"
-  },
-  "dependencies": {
-    "@lucide/svelte": "^0.517.0",
-    "date-fns": "^4.1.0",
-    "lodash": "^4.17.21"
-  }
+	"private": true,
+	"license": "MIT",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"lint": "prettier --check . && eslint .",
+		"format": "prettier --write .",
+		"deploy": "gh-pages -d build -t"
+	},
+	"devDependencies": {
+		"@sveltejs/kit": "^2.21.5",
+		"@sveltejs/vite-plugin-svelte": "^5.0.3",
+		"@tailwindcss/vite": "^4.1.5",
+		"@types/lodash": "^4.17.18",
+		"@typescript-eslint/eslint-plugin": "^8.34.1",
+		"@typescript-eslint/parser": "^8.34.1",
+		"daisyui": "^5.0.35",
+		"eslint": "^9.29.0",
+		"eslint-config-prettier": "^10.1.5",
+		"eslint-plugin-svelte": "^3.9.2",
+		"gh-pages": "^6.3.0",
+		"prettier": "^3.5.3",
+		"prettier-plugin-svelte": "^3.3.3",
+		"svelte": "^5.34.5",
+		"svelte-check": "^4.2.1",
+		"tailwindcss": "^4.1.5",
+		"tsx": "^4.20.3",
+		"typescript": "^5.8.3",
+		"vite": "^6.3.4"
+	},
+	"dependencies": {
+		"@lucide/svelte": "^0.517.0",
+		"date-fns": "^4.1.0",
+		"lodash": "^4.17.21"
+	}
 }
