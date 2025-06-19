@@ -1,9 +1,11 @@
 import { formatDate } from '$lib/utils';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ fetch }) => {
+export const load: PageServerLoad = async ({ fetch, url }) => {
 	try {
-		const apiUrl = `https://api.beermonopoly.com/release/?fields=name,release_date,beer_count,product_selections,product_stats`;
+		const page = Number(url.searchParams.get('page')) || 1;
+		const page_size = 5;
+		const apiUrl = `https://api.beermonopoly.com/release/?fields=name,release_date,beer_count,product_selections,product_stats&page_size=${page_size}&page=${page}`;
 		const response = await fetch(apiUrl);
 
 		if (!response.ok) {
@@ -20,7 +22,10 @@ export const load: PageServerLoad = async ({ fetch }) => {
 		});
 
 		return {
-			releases
+			releases,
+			page,
+			total: data.count || 0,
+			page_size
 		};
 	} catch (error: any) {
 		console.error('Error fetching releases:', error);

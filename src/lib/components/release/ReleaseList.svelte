@@ -1,21 +1,18 @@
 <script lang="ts">
-	import { Calendar, AlertCircle, RefreshCw, Beer, Plus } from '@lucide/svelte';
+	import { Calendar, AlertCircle, RefreshCw, Beer } from '@lucide/svelte';
 	import ReleaseCard from '$lib/components/release/ReleaseCard.svelte';
+	import { goto } from '$app/navigation';
 
-	export let releases: Array<any> = [];
-	export let error: { message: string; status: number } | null = null;
+	let { releases, error, page, total, page_size } = $props();
 
-	let visibleCount = 5;
-	let visibleReleases = releases.slice(0, visibleCount);
-
-	$: visibleReleases = releases.slice(0, visibleCount);
-
-	function loadMore() {
-		visibleCount += 5;
-	}
+	let totalPages = Math.ceil(total / page_size);
 
 	function retryFetch() {
 		location.reload();
+	}
+
+	function goToPage(p: number) {
+		goto(`/?page=${p}`);
 	}
 </script>
 
@@ -28,14 +25,13 @@
 	</div>
 
 	{#if error}
-		<!-- Error State -->
 		<div class="alert alert-error shadow-lg mb-8">
 			<AlertCircle size={24} />
 			<div>
 				<h3 class="font-bold">Kunne ikke laste data</h3>
 				<div class="text-xs">{error.message} (Status: {error.status})</div>
 			</div>
-			<button class="btn btn-sm" on:click={retryFetch}>
+			<button class="btn btn-sm" onclick={retryFetch}>
 				<RefreshCw size={16} />
 				Prøv igjen
 			</button>
@@ -43,33 +39,35 @@
 	{/if}
 
 	{#if releases.length === 0 && !error}
-		<!-- Empty State -->
 		<div class="card bg-base-200 p-8 text-center">
 			<div class="flex flex-col items-center gap-4">
 				<Beer size={48} class="text-primary opacity-50" />
 				<h3 class="font-bold text-lg">Ingen lanseringer funnet</h3>
 				<p class="text-sm opacity-70">Det er ingen kommende lanseringer for øyeblikket.</p>
-				<button class="btn btn-sm btn-outline mt-2" on:click={retryFetch}>
+				<button class="btn btn-sm btn-outline mt-2" onclick={retryFetch}>
 					<RefreshCw size={16} />
 					Last inn på nytt
 				</button>
 			</div>
 		</div>
 	{:else}
-		<!-- Releases Cards -->
 		<div class="grid gap-4">
-			{#each visibleReleases as release, i}
-				<ReleaseCard {release} {i} />
+			{#each releases as release, index}
+				<ReleaseCard {release} {index} />
 			{/each}
 		</div>
 
-		<!-- Pagination -->
-		{#if releases.length > visibleCount}
-			<div class="flex justify-center mt-8">
-				<button on:click={loadMore} class="btn btn-outline btn-wide">
-					<Plus size={16} class="mr-1" />
-					LAST INN MER
-				</button>
+		{#if totalPages > 1}
+			<div class="join flex justify-center mt-8">
+				<button class="btn join-item" onclick={() => goToPage(page - 1)} disabled={page <= 1}
+					>&laquo; Forrige</button
+				>
+				<span class="join-item px-4 py-2">Side {page} av {totalPages}</span>
+				<button
+					class="btn join-item"
+					onclick={() => goToPage(page + 1)}
+					disabled={page >= totalPages}>Neste &raquo;</button
+				>
 			</div>
 		{/if}
 	{/if}

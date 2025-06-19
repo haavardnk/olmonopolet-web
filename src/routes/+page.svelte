@@ -6,8 +6,11 @@
 
 	let { data } = $props();
 
-	let releases = $state(data?.releases ? data.releases : []);
-	let error = $state(data?.error || null);
+	let releases = $derived(data?.releases ? data.releases : []);
+	let error = $derived(data?.error || null);
+	let page = $derived(data?.page || 1);
+	let total = $derived(data?.total || 0);
+	let page_size = $derived(data?.page_size || 5);
 </script>
 
 <svelte:head>
@@ -19,7 +22,7 @@
 	<main class="bg-base-100 text-base-content">
 		<HeroSection />
 		<div class="container mx-auto px-4 py-8">
-			<ReleaseList {releases} {error} />
+			<ReleaseList {releases} {error} {page} {total} {page_size} />
 		</div>
 	</main>
 	<Footer />
