@@ -22,25 +22,25 @@
 			<!-- Product Stats (top right) -->
 			<div class="flex flex-wrap gap-3 md:gap-4 items-center md:mt-0 mt-2 self-start">
 				<div class="flex items-center gap-1 text-sm">
-					<div class="badge badge-neutral">
+					<div class="badge badge-primary">
 						{release.product_stats.product_count}
 					</div>
 					<span>Totalt</span>
 				</div>
 				<div class="flex items-center gap-1 text-sm">
-					<div class="badge badge-primary">
+					<div class="badge badge-neutral">
 						{release.product_stats.beer_count}
 					</div>
 					<span>Øl</span>
 				</div>
 				<div class="flex items-center gap-1 text-sm">
-					<div class="badge badge-secondary">
+					<div class="badge badge-success">
 						{release.product_stats.cider_count}
 					</div>
 					<span>Sider</span>
 				</div>
 				<div class="flex items-center gap-1 text-sm">
-					<div class="badge badge-accent">
+					<div class="badge badge-warning">
 						{release.product_stats.mead_count}
 					</div>
 					<span>Mjød</span>
@@ -59,7 +59,7 @@
 				</div>
 			{/if}
 			<div class="card-actions">
-				<a href={`/release/${release.name}`} class="btn btn-sm btn-primary"> Se detaljer </a>
+				<a href={`/release/${release.name}`} class="btn btn-sm btn-neutral"> Se detaljer </a>
 			</div>
 		</div>
 	</div>
