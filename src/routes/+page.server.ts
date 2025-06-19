@@ -17,6 +17,9 @@ export const load: PageServerLoad = async ({ fetch, url }) => {
 		const releases = (data.results || []).map((release: any) => {
 			return {
 				...release,
+				product_selections: (release.product_selections || []).map((ps: any) =>
+					ps === 'Spesialutvalg' ? 'Spesialutvalget' : ps
+				),
 				formatted_date: formatDate(release.release_date)
 			};
 		});

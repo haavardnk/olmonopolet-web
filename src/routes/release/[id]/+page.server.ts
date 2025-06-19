@@ -31,7 +31,13 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 			release: {
 				...releaseInfo,
 				formatted_date: formatDate(releaseInfo.release_date),
-				products: productsData.results || []
+				product_selections: (releaseInfo.product_selections || []).map((ps: any) =>
+					ps === 'Spesialutvalg' ? 'Spesialutvalget' : ps
+				),
+				products: (productsData.results || []).map((product: any) => ({
+					...product,
+					product_selection: product.product_selection === 'Spesialutvalg' ? 'Spesialutvalget' : product.product_selection
+				}))
 			}
 		};
 	} catch (err: any) {
