@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
 	import { Star, DollarSign, Droplets, Percent, MapPin, Tag } from '@lucide/svelte';
+	import defaultLabel from '$lib/assets/default-label.png';
 
 	let { product, index } = $props();
 </script>
@@ -13,13 +14,11 @@
 		<div class="flex flex-row gap-4 items-stretch">
 			<!-- First column: Image -->
 			<div class="flex items-start sm:items-center flex-shrink-0">
-				{#if product.label_sm_url}
-					<img
-						src={product.label_sm_url || '/placeholder.svg'}
-						alt={product.vmp_name + ' etikett'}
-						class="w-20 h-20 sm:w-32 sm:h-32 object-contain rounded shadow"
-					/>
-				{/if}
+				<img
+					src={product.label_sm_url || defaultLabel}
+					alt={product.vmp_name + ' etikett'}
+					class="w-20 h-20 sm:w-32 sm:h-32 object-contain rounded shadow"
+				/>
 			</div>
 			<!-- Second column: Info rows -->
 			<div class="flex flex-col gap-2 justify-between h-full flex-1 min-w-0">
