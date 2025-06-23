@@ -40,7 +40,7 @@
 	}
 </script>
 
-<div class="mb-6">
+<section class="mb-6" aria-label="Produkter i lansering">
 	<h2 class="text-2xl font-bold mb-6">Produkter i lansering</h2>
 
 	<div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
@@ -81,4 +81,4 @@
 			{/each}
 		</div>
 	{/if}
-</div>
+</section>
