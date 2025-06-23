@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { HeartHandshake, Facebook, Menu } from '@lucide/svelte';
-	export let right = null; // slot or component for right side
-	export let left = null; // slot or component for left side (optional)
-	export let title = 'Ølmonopolet';
+	import { PUBLIC_PATREON_URL, PUBLIC_FACEBOOK_URL, PUBLIC_SITE_TITLE } from '$env/static/public';
+
+	export let right = null;
+	export let left = null;
 	export let showSocialLinks = false;
 	export let showMenu = false;
+
 	let menuOpen = false;
 	function toggleMenu() {
 		menuOpen = !menuOpen;
@@ -24,7 +26,7 @@
 					<slot name="left">{left}</slot>
 				{:else}
 					<a href="/" class="flex items-center gap-2 text-xl font-medium">
-						<span>{title}</span>
+						<span>{PUBLIC_SITE_TITLE}</span>
 					</a>
 				{/if}
 			</div>
@@ -33,7 +35,7 @@
 					<ul class="flex gap-4 items-center">
 						<li>
 							<a
-								href="https://patreon.com"
+								href={PUBLIC_PATREON_URL}
 								target="_blank"
 								rel="noopener noreferrer"
 								class="flex items-center gap-1 px-3 py-1 rounded-lg hover:bg-primary/10 transition-colors text-base font-medium"
@@ -44,7 +46,7 @@
 						</li>
 						<li>
 							<a
-								href="https://facebook.com"
+								href={PUBLIC_FACEBOOK_URL}
 								target="_blank"
 								rel="noopener noreferrer"
 								class="flex items-center gap-1 px-3 py-1 rounded-lg hover:bg-primary/10 transition-colors text-base font-medium"
