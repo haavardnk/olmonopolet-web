@@ -24,12 +24,10 @@
 					{product.vmp_name}
 				</h3>
 				<div class="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1">
-					{#if product.style}
-						<span
-							class="badge badge-outline badge-sm sm:badge-md overflow-hidden whitespace-nowrap text-ellipsis"
-							>{product.style}</span
-						>
-					{/if}
+					<span
+						class="badge badge-outline badge-sm sm:badge-md overflow-hidden whitespace-nowrap text-ellipsis"
+						>{product.style || product.sub_category || product.main_category}</span
+					>
 				</div>
 				<div class="flex flex-col gap-2">
 					<div class="flex flex-wrap gap-3">
@@ -77,6 +75,13 @@
 							<span class="text-xs sm:text-sm ml-1 opacity-80">
 								{product.rating.toFixed(1)} ({product.checkins})
 							</span>
+						</div>
+					{:else}
+						<div class="flex items-center gap-1 mt-1">
+							{#each [1, 2, 3, 4, 5] as star}
+								<Star size={14} class="text-gray-300" />
+							{/each}
+							<span class="text-xs sm:text-sm ml-1 opacity-60">Ingen vurderinger</span>
 						</div>
 					{/if}
 				</div>
