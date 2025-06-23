@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
 	import { Calendar } from '@lucide/svelte';
+	import { slugify } from '$lib/utils';
 
 	let { release, index } = $props();
+	const slug = slugify(release.name);
 </script>
 
 <div
@@ -55,7 +57,7 @@
 				</div>
 			{/if}
 			<div class="card-actions">
-				<a href={`/release/${release.name}`} class="btn btn-sm btn-neutral"> Se detaljer </a>
+				<a href={`/release/${slug}`} class="btn btn-sm btn-neutral"> Se detaljer </a>
 			</div>
 		</div>
 	</div>

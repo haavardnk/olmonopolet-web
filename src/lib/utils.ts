@@ -12,3 +12,11 @@ export function formatDate(dateString: string): string {
 		return dateString;
 	}
 }
+
+export function slugify(str: string): string {
+	return str.replace(/\s+/g, '-');
+}
+
+export function unslugify(slug: string): string {
+	return slug.replace(/-/g, ' ');
+}
