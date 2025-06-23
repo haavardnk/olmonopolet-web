@@ -4,6 +4,8 @@
 	import HeroSection from '$lib/components/common/HeroSection.svelte';
 	import ReleaseList from '$lib/components/release/ReleaseList.svelte';
 
+	import { PUBLIC_SITE_URL, PUBLIC_SITE_TITLE, PUBLIC_SITE_DESCRIPTION } from '$env/static/public';
+
 	let { data } = $props();
 
 	let releases = $derived(data?.releases ? data.releases : []);
@@ -14,7 +16,25 @@
 </script>
 
 <svelte:head>
-	<title>Ølmonopolet</title>
+	<title>{PUBLIC_SITE_TITLE}</title>
+	<meta name="description" content={PUBLIC_SITE_DESCRIPTION} />
+	<link rel="canonical" href={PUBLIC_SITE_URL} />
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content={PUBLIC_SITE_TITLE} />
+	<meta property="og:description" content={PUBLIC_SITE_DESCRIPTION} />
+	<meta property="og:url" content={PUBLIC_SITE_URL} />
+	<meta property="og:image" content={`${PUBLIC_SITE_URL}/icon.png`} />
+	<meta property="og:site_name" content={PUBLIC_SITE_TITLE} />
+	<script type="application/ld+json">
+		{JSON.stringify({
+			'@context': 'https://schema.org',
+			'@type': 'Organization',
+			'name': PUBLIC_SITE_TITLE,
+			'url': PUBLIC_SITE_URL,
+			'logo': `${PUBLIC_SITE_URL}/icon.png`,
+			'description': PUBLIC_SITE_DESCRIPTION
+		})}
+	</script>
 </svelte:head>
 
 <div class="min-h-screen">

@@ -4,13 +4,16 @@
 	import Footer from '$lib/components/common/Footer.svelte';
 	import Header from '$lib/components/common/Header.svelte';
 	import ReleaseInfo from '$lib/components/release/ReleaseInfo.svelte';
-	import releaseImage from '$lib/assets/release-image.jpg';
-
-	import { PUBLIC_SITE_TITLE, PUBLIC_SITE_URL } from '$env/static/public';
+	import { PUBLIC_SITE_TITLE, PUBLIC_SITE_URL, PUBLIC_FACEBOOK_URL } from '$env/static/public';
 
 	let { data } = $props();
-
 	let release = $derived(data.release);
+	let slug = $derived(data.slug);
+
+	let title = $derived(`Nyhetslansering ${release.formatted_date} - ${PUBLIC_SITE_TITLE}`);
+	let description = $derived(
+		`Detaljer for lansering ${release.formatted_date} på ${PUBLIC_SITE_TITLE}`
+	);
 
 	function retryFetch() {
 		location.reload();
@@ -18,31 +21,23 @@
 </script>
 
 <svelte:head>
-	<title>Nyhetslansering {release.formatted_date} - {PUBLIC_SITE_TITLE}</title>
-	<meta
-		name="description"
-		content={`Detaljer for lansering ${release.formatted_date} på ${PUBLIC_SITE_TITLE}`}
-	/>
-	<link rel="canonical" href={`${PUBLIC_SITE_URL}/release/${release.name}`} />
+	<title>{title}</title>
+	<meta name="description" content={description} />
+	<link rel="canonical" href={`${PUBLIC_SITE_URL}/release/${slug}`} />
 	<meta property="og:type" content="article" />
-	<meta
-		property="og:title"
-		content={`Nyhetslansering ${release.formatted_date} - ${PUBLIC_SITE_TITLE}`}
-	/>
-	<meta
-		property="og:description"
-		content={`Detaljer for lansering ${release.formatted_date} på ${PUBLIC_SITE_TITLE}`}
-	/>
-	<meta property="og:url" content={`${PUBLIC_SITE_URL}/release/${release.name}`} />
-	<meta property="og:image" content={releaseImage} />
-
+	<meta property="og:title" content={title} />
+	<meta property="og:description" content={description} />
+	<meta property="og:url" content={`${PUBLIC_SITE_URL}/release/${slug}`} />
+	<meta property="og:image" content={`${PUBLIC_SITE_URL}/release-image.jpg`} />
+	<meta property="article:publisher" content={PUBLIC_FACEBOOK_URL} />
+	<meta property="fb:pages" content="BeermonopolyNO" />
 	<script type="application/ld+json">
 		{JSON.stringify({
 			'@context': 'https://schema.org',
 			'@type': 'Article',
-			'headline': `Nyhetslansering ${release.formatted_date} - ${PUBLIC_SITE_TITLE}`,
-			'description': `Detaljer for lansering ${release.formatted_date} på ${PUBLIC_SITE_TITLE}`,
-			'url': `${PUBLIC_SITE_URL}/release/${release.name}`,
+			'headline': title,
+			'description': description,
+			'url': `${PUBLIC_SITE_URL}/release/${slug}`,
 			'datePublished': release.release_date,
 			'author': {
 				'@type': 'Organization',
@@ -67,7 +62,6 @@
 		<div class="container mx-auto px-4 py-8">
 			<div class="max-w-6xl mx-auto">
 				<ReleaseInfo {release} />
-
 				<ProductList products={release.products} {retryFetch} />
 			</div>
 		</div>
