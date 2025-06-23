@@ -2,7 +2,7 @@
 	import { Calendar } from '@lucide/svelte';
 	import { fly } from 'svelte/transition';
 
-	export let release;
+	let { release } = $props();
 </script>
 
 <div class="card bg-base-200 mb-8" in:fly={{ y: 20, duration: 300 }}>

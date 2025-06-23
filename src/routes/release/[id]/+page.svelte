@@ -4,10 +4,13 @@
 	import Footer from '$lib/components/common/Footer.svelte';
 	import Header from '$lib/components/common/Header.svelte';
 	import ReleaseInfo from '$lib/components/release/ReleaseInfo.svelte';
+	import releaseImage from '$lib/assets/release-image.jpg';
+
+	import { PUBLIC_SITE_TITLE, PUBLIC_SITE_URL } from '$env/static/public';
 
 	let { data } = $props();
 
-	let release = $state(data.release);
+	let release = $derived(data.release);
 
 	function retryFetch() {
 		location.reload();
@@ -15,8 +18,39 @@
 </script>
 
 <svelte:head>
-	<title>{release.name} - Ølmonopolet</title>
-	<meta name="description" content="Detaljer for {release.name} lansering på Ølmonopolet" />
+	<title>Nyhetslansering {release.formatted_date} - {PUBLIC_SITE_TITLE}</title>
+	<meta
+		name="description"
+		content={`Detaljer for lansering ${release.formatted_date} på ${PUBLIC_SITE_TITLE}`}
+	/>
+	<link rel="canonical" href={`${PUBLIC_SITE_URL}/release/${release.name}`} />
+	<meta property="og:type" content="article" />
+	<meta
+		property="og:title"
+		content={`Nyhetslansering ${release.formatted_date} - ${PUBLIC_SITE_TITLE}`}
+	/>
+	<meta
+		property="og:description"
+		content={`Detaljer for lansering ${release.formatted_date} på ${PUBLIC_SITE_TITLE}`}
+	/>
+	<meta property="og:url" content={`${PUBLIC_SITE_URL}/release/${release.name}`} />
+	<meta property="og:image" content={releaseImage} />
+
+	<script type="application/ld+json">
+		{JSON.stringify({
+			'@context': 'https://schema.org',
+			'@type': 'Article',
+			'headline': `Nyhetslansering ${release.formatted_date} - ${PUBLIC_SITE_TITLE}`,
+			'description': `Detaljer for lansering ${release.formatted_date} på ${PUBLIC_SITE_TITLE}`,
+			'url': `${PUBLIC_SITE_URL}/release/${release.name}`,
+			'datePublished': release.release_date,
+			'author': {
+				'@type': 'Organization',
+				'name': `${PUBLIC_SITE_TITLE}`,
+				'url': `${PUBLIC_SITE_URL}`
+			}
+		})}
+	</script>
 </svelte:head>
 
 <div class="flex-1 flex flex-col min-h-screen">

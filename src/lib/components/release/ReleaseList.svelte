@@ -16,7 +16,7 @@
 	}
 </script>
 
-<div class="max-w-4xl mx-auto">
+<section class="max-w-4xl mx-auto" aria-label="Nyhetslanseringer">
 	<div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
 		<h2 class="text-2xl font-bold flex items-center gap-2">
 			<Calendar size={24} class="text-primary" />
@@ -53,7 +53,9 @@
 	{:else}
 		<div class="grid gap-4">
 			{#each releases as release, index}
-				<ReleaseCard {release} {index} />
+				<article>
+					<ReleaseCard {release} {index} />
+				</article>
 			{/each}
 		</div>
 
@@ -71,4 +73,21 @@
 			</div>
 		{/if}
 	{/if}
-</div>
+</section>
+
+<svelte:head>
+	{#if releases.length > 0}
+		<script type="application/ld+json">
+			{JSON.stringify({
+				'@context': 'https://schema.org',
+				'@type': 'ItemList',
+				itemListElement: releases.map((r, i) => ({
+					'@type': 'ListItem',
+					position: i + 1,
+					name: r.name,
+					url: `/release/${r.name}`
+				}))
+			})}
+		</script>
+	{/if}
+</svelte:head>
