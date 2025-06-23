@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
-	import { Star, DollarSign, Droplets, Percent, MapPin, Tag } from '@lucide/svelte';
+	import { Star, StarHalf, DollarSign, Droplets, Percent, MapPin, Tag } from '@lucide/svelte';
 	import defaultLabel from '$lib/assets/default-label.png';
 
 	let { product, index } = $props();
@@ -12,21 +12,17 @@
 >
 	<div class="card-body p-4 sm:p-6">
 		<div class="flex flex-row gap-4 items-stretch">
-			<!-- First column: Image -->
 			<div class="flex items-start sm:items-center flex-shrink-0">
 				<img
 					src={product.label_sm_url || defaultLabel}
 					alt={product.vmp_name + ' etikett'}
-					class="w-20 h-20 sm:w-32 sm:h-32 object-contain rounded shadow"
+					class="w-20 h-20 sm:w-32 sm:h-32 object-contain rounded-lg shadow"
 				/>
 			</div>
-			<!-- Second column: Info rows -->
 			<div class="flex flex-col gap-2 justify-between h-full flex-1 min-w-0">
-				<!-- Row 1: Name -->
 				<h3 class="font-bold text-base sm:text-lg mb-1 line-clamp-2">
 					{product.vmp_name}
 				</h3>
-				<!-- Row 2: Badges -->
 				<div class="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1">
 					{#if product.style}
 						<span
@@ -35,7 +31,6 @@
 						>
 					{/if}
 				</div>
-				<!-- Row 3: Product info and rating -->
 				<div class="flex flex-col gap-2">
 					<div class="flex flex-wrap gap-3">
 						{#if product.price}
@@ -71,20 +66,20 @@
 					{#if product.rating}
 						<div class="flex items-center gap-1 mt-1">
 							{#each [1, 2, 3, 4, 5] as star}
-								<Star
-									size={14}
-									class={star <= product.rating
-										? 'text-yellow-400 fill-yellow-400'
-										: 'text-gray-300'}
-								/>
+								{#if product.rating >= star}
+									<Star size={14} class="text-yellow-400 fill-yellow-400" />
+								{:else if product.rating >= star - 0.5}
+									<StarHalf size={14} class="text-yellow-400 fill-yellow-400" />
+								{:else}
+									<Star size={14} class="text-gray-300" />
+								{/if}
 							{/each}
-							<span class="text-xs sm:text-sm ml-1 opacity-80"
-								>{product.rating.toFixed(1)} ({product.checkins})</span
-							>
+							<span class="text-xs sm:text-sm ml-1 opacity-80">
+								{product.rating.toFixed(1)} ({product.checkins})
+							</span>
 						</div>
 					{/if}
 				</div>
-				<!-- Add actions or dropdown here if needed -->
 			</div>
 		</div>
 	</div>
