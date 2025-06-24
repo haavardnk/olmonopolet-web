@@ -11,7 +11,26 @@
 	let slug = $derived(data.slug);
 
 	let title = $derived(`Nyhetslansering ${release.formatted_date} - ${PUBLIC_SITE_TITLE}`);
-	let description = $derived(`Detaljer for Vinmonopolet's lansering ${release.formatted_date}`);
+	let description = $derived.by(() => {
+		const stats = release.product_stats;
+		return `Produkter i lansering: ${stats.product_count} (${stats.beer_count} øl, ${stats.cider_count} sider, ${stats.mead_count} mjød)`;
+	});
+
+	const articleJson = $derived.by(() => {
+		return {
+			'@context': 'https://schema.org',
+			'@type': 'Article',
+			headline: title,
+			description: description,
+			url: `${PUBLIC_SITE_URL}/release/${slug}`,
+			datePublished: release.release_date,
+			author: {
+				'@type': 'Organization',
+				name: PUBLIC_SITE_TITLE,
+				url: PUBLIC_SITE_URL
+			}
+		};
+	});
 
 	function retryFetch() {
 		location.reload();
@@ -29,21 +48,7 @@
 	<meta property="og:image" content={`${PUBLIC_SITE_URL}/release-image.jpg`} />
 	<meta property="article:publisher" content={PUBLIC_FACEBOOK_URL} />
 	<meta property="fb:pages" content="BeermonopolyNO" />
-	<script type="application/ld+json">
-		{JSON.stringify({
-			'@context': 'https://schema.org',
-			'@type': 'Article',
-			'headline': title,
-			'description': description,
-			'url': `${PUBLIC_SITE_URL}/release/${slug}`,
-			'datePublished': release.release_date,
-			'author': {
-				'@type': 'Organization',
-				'name': `${PUBLIC_SITE_TITLE}`,
-				'url': `${PUBLIC_SITE_URL}`
-			}
-		})}
-	</script>
+	{@html `<script type="application/ld+json">${JSON.stringify(articleJson)}</script>`}
 </svelte:head>
 
 <div class="flex-1 flex flex-col min-h-screen">

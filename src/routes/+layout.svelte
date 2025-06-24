@@ -1,5 +1,15 @@
 <script lang="ts">
 	import '../app.css';
+	import { PUBLIC_SITE_URL, PUBLIC_SITE_TITLE, PUBLIC_SITE_DESCRIPTION } from '$env/static/public';
+
+	const organizationJson = {
+		'@context': 'https://schema.org',
+		'@type': 'Organization',
+		name: PUBLIC_SITE_TITLE,
+		url: PUBLIC_SITE_URL,
+		logo: `${PUBLIC_SITE_URL}/icon.png`,
+		description: PUBLIC_SITE_DESCRIPTION
+	};
 </script>
 
 <svelte:head>
@@ -8,6 +18,7 @@
 	<meta charset="utf-8" />
 	<meta name="theme-color" content="#fbbf24" />
 	<meta property="og:locale" content="nb_NO" />
+	{@html `<script type="application/ld+json">${JSON.stringify(organizationJson)}</script>`}
 </svelte:head>
 
 <div id="svelte" class="flex flex-col min-h-screen">

@@ -5,6 +5,7 @@
 	import ReleaseList from '$lib/components/release/ReleaseList.svelte';
 
 	import { PUBLIC_SITE_URL, PUBLIC_SITE_TITLE, PUBLIC_SITE_DESCRIPTION } from '$env/static/public';
+	import { slugify } from '$lib/utils.js';
 
 	let { data } = $props();
 
@@ -13,6 +14,29 @@
 	let page = $derived(data?.page || 1);
 	let total = $derived(data?.total || 0);
 	let page_size = $derived(data?.page_size || 5);
+
+	const itemListJson = $derived.by(() => {
+		if (releases.length === 0) return null;
+		return {
+			'@context': 'https://schema.org',
+			'@type': 'ItemList',
+			itemListElement: releases.map((r: any, i: number) => {
+				const stats = r.product_stats;
+				const description = `Produkter i lansering: ${stats.product_count} (${stats.beer_count} øl, ${stats.cider_count} sider, ${stats.mead_count} mjød)`;
+
+				return {
+					'@type': 'ListItem',
+					position: i + 1,
+					item: {
+						'@type': 'Thing',
+						name: `Nyhetslansering ${r.formatted_date}`,
+						url: `${PUBLIC_SITE_URL}/release/${slugify(r.name)}`,
+						description
+					}
+				};
+			})
+		};
+	});
 </script>
 
 <svelte:head>
@@ -25,16 +49,9 @@
 	<meta property="og:url" content={PUBLIC_SITE_URL} />
 	<meta property="og:image" content={`${PUBLIC_SITE_URL}/icon.png`} />
 	<meta property="og:site_name" content={PUBLIC_SITE_TITLE} />
-	<script type="application/ld+json">
-		{JSON.stringify({
-			'@context': 'https://schema.org',
-			'@type': 'Organization',
-			'name': PUBLIC_SITE_TITLE,
-			'url': PUBLIC_SITE_URL,
-			'logo': `${PUBLIC_SITE_URL}/icon.png`,
-			'description': PUBLIC_SITE_DESCRIPTION
-		})}
-	</script>
+	{#if itemListJson}
+		{@html `<script type="application/ld+json">${JSON.stringify(itemListJson)}</script>`}
+	{/if}
 </svelte:head>
 
 <div class="min-h-screen">

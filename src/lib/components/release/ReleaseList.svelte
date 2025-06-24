@@ -74,20 +74,3 @@
 		{/if}
 	{/if}
 </section>
-
-<svelte:head>
-	{#if releases.length > 0}
-		<script type="application/ld+json">
-			{JSON.stringify({
-				'@context': 'https://schema.org',
-				'@type': 'ItemList',
-				itemListElement: releases.map((r, i) => ({
-					'@type': 'ListItem',
-					position: i + 1,
-					name: r.name,
-					url: `/release/${r.name}`
-				}))
-			})}
-		</script>
-	{/if}
-</svelte:head>
