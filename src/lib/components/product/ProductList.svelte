@@ -75,7 +75,7 @@
 			</div>
 		</div>
 	{:else}
-		<div class="grid gap-4">
+		<div class="grid grid-cols-1 gap-4 max-w-full">
 			{#each sortedProducts as product, index}
 				<ProductCard {product} {index} />
 			{/each}
