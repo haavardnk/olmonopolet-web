@@ -13,6 +13,23 @@
 	let page = $derived(data?.page || 1);
 	let total = $derived(data?.total || 0);
 	let page_size = $derived(data?.page_size || 5);
+
+	const itemListJson = $derived.by(() => {
+		if (releases.length === 0) return null;
+		return {
+			'@context': 'https://schema.org',
+			'@type': 'ItemList',
+			itemListElement: releases.map((r: any, i: number) => ({
+				'@type': 'ListItem',
+				position: i + 1,
+				item: {
+					'@type': 'Product',
+					name: r.name,
+					url: `${PUBLIC_SITE_URL}/release/${r.name.replace(/\s+/g, '-')}`
+				}
+			}))
+		};
+	});
 </script>
 
 <svelte:head>
@@ -25,16 +42,9 @@
 	<meta property="og:url" content={PUBLIC_SITE_URL} />
 	<meta property="og:image" content={`${PUBLIC_SITE_URL}/icon.png`} />
 	<meta property="og:site_name" content={PUBLIC_SITE_TITLE} />
-	<script type="application/ld+json">
-		{JSON.stringify({
-			'@context': 'https://schema.org',
-			'@type': 'Organization',
-			'name': PUBLIC_SITE_TITLE,
-			'url': PUBLIC_SITE_URL,
-			'logo': `${PUBLIC_SITE_URL}/icon.png`,
-			'description': PUBLIC_SITE_DESCRIPTION
-		})}
-	</script>
+	{#if itemListJson}
+		{@html `<script type="application/ld+json">${JSON.stringify(itemListJson)}</script>`}
+	{/if}
 </svelte:head>
 
 <div class="min-h-screen">
