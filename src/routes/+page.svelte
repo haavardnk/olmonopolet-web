@@ -26,14 +26,25 @@
 	<meta property="og:image" content={`${PUBLIC_SITE_URL}/icon.png`} />
 	<meta property="og:site_name" content={PUBLIC_SITE_TITLE} />
 	<script type="application/ld+json">
-		{JSON.stringify({
-			'@context': 'https://schema.org',
-			'@type': 'Organization',
-			'name': PUBLIC_SITE_TITLE,
-			'url': PUBLIC_SITE_URL,
-			'logo': `${PUBLIC_SITE_URL}/icon.png`,
-			'description': PUBLIC_SITE_DESCRIPTION
-		})}
+		{`{
+			"@context": "https://schema.org",
+			"@type": "Organization",
+			"name": ${JSON.stringify(PUBLIC_SITE_TITLE)},
+			"url": ${JSON.stringify(PUBLIC_SITE_URL)},
+			"logo": ${JSON.stringify(PUBLIC_SITE_URL + '/icon.png')},
+			"description": ${JSON.stringify(PUBLIC_SITE_DESCRIPTION)},
+			"mainEntity": {
+				"@type": "ItemList",
+				"itemListElement": [
+					${releases.map((r, i) => `{
+						"@type": "ListItem",
+						"position": ${i + 1},
+						"name": ${JSON.stringify(r.name)},
+						"url": "/release/${r.name.replace(/\s+/g, '-')}"
+					}`).join(',\n')}
+				]
+			}
+		}`}
 	</script>
 </svelte:head>
 
