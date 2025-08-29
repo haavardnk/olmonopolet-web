@@ -17,7 +17,7 @@
 </script>
 
 <header
-	class="sticky top-0 z-10 bg-base-300/80 backdrop-blur-md border-b border-base-content/10 shadow-md"
+	class="top-0 z-10 bg-base-300/80 backdrop-blur-md border-b border-base-content/10 shadow-md"
 >
 	<div class="container mx-auto">
 		<div class="navbar">
