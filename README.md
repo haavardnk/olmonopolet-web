@@ -1,4 +1,4 @@
-# Beermonopoly App
+# Beermonopoly Web
 
 ## Introduction
 
