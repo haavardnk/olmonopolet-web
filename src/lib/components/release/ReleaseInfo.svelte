@@ -9,8 +9,8 @@
 	<div class="card-body">
 		<div class="flex flex-col lg:flex-row justify-between items-start gap-6">
 			<div class="flex-1">
-				<h1 class="text-3xl font-bold flex items-center gap-3 mb-4">
-					<Calendar size={32} class="text-primary" />
+				<h1 class="text-xl sm:text-3xl font-bold flex items-center gap-3 mb-4">
+					<Calendar size={24} class="text-primary sm:w-8 sm:h-8" />
 					{release.formatted_date}
 				</h1>
 				{#if release.product_selections && release.product_selections.length > 0}
@@ -18,7 +18,7 @@
 						<h3 class="font-semibold mb-2">Produktutvalg:</h3>
 						<div class="flex flex-wrap gap-2">
 							{#each release.product_selections as selection}
-								<span class="badge badge-outline">{selection}</span>
+								<span class="badge badge-sm sm:badge-md badge-outline">{selection}</span>
 							{/each}
 						</div>
 					</div>

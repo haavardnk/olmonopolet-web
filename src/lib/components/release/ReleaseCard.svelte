@@ -54,7 +54,7 @@
 			{#if Array.isArray(release.product_selections) && release.product_selections.length}
 				<div class="flex flex-wrap gap-2 md:w-auto justify-start">
 					{#each release.product_selections as selection}
-						<span class="badge badge-outline text-xs font-medium">
+						<span class="badge badge-sm sm:badge-md badge-outline">
 							{selection}
 						</span>
 					{/each}
