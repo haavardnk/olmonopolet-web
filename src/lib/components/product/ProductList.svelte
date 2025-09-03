@@ -85,7 +85,7 @@
 				<select
 					id="sortKey"
 					bind:value={sortKey}
-					class="select select-sm select-bordered join-item pl-10 sm:w-48"
+					class="select select-sm select-bordered join-item pl-10 w-36 sm:w-48"
 					on:change={(e) => setSortKey((e.target as HTMLSelectElement).value)}
 				>
 					{#each sortOptions as opt}
