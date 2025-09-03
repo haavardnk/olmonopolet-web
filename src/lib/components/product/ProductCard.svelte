@@ -1,16 +1,33 @@
 <script lang="ts">
-	import { fly } from 'svelte/transition';
-	import { Star, StarHalf, DollarSign, Droplets, Percent, MapPin, Tag } from '@lucide/svelte';
+	import { fly, fade } from 'svelte/transition';
+	import {
+		Star,
+		StarHalf,
+		DollarSign,
+		Droplets,
+		Percent,
+		MapPin,
+		Tag,
+		ExternalLink
+	} from '@lucide/svelte';
 	import defaultLabel from '$lib/assets/default-label.png';
 
 	let { product, index } = $props();
+	let isHovered = $state(false);
 </script>
 
 <div
 	in:fly={{ y: 20, duration: 300, delay: index * 50 }}
-	class="card bg-base-200 hover:shadow-lg transition-all duration-300 hover:translate-y-[-2px]"
+	class="card bg-base-200 hover:shadow-lg transition-all duration-200 hover:translate-y-[-2px] relative group"
+	role="button"
+	tabindex="0"
+	onmouseenter={() => (isHovered = true)}
+	onmouseleave={() => (isHovered = false)}
 >
-	<div class="card-body p-4 sm:p-6">
+	<div
+		class="card-body p-4 sm:p-6 transition-opacity duration-200 ease-out"
+		class:opacity-50={isHovered}
+	>
 		<div class="flex flex-row gap-4 items-stretch">
 			<div class="flex items-start sm:items-center flex-shrink-0">
 				<img
@@ -88,4 +105,35 @@
 			</div>
 		</div>
 	</div>
+
+	{#if isHovered && (product.vmp_url || product.untpd_url)}
+		<div
+			class="absolute inset-0 flex items-center justify-center gap-3"
+			in:fade={{ duration: 150 }}
+			out:fade={{ duration: 100 }}
+		>
+			{#if product.vmp_url}
+				<a
+					href={product.vmp_url}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="btn btn-primary btn-md flex items-center gap-2 shadow-lg transition-all duration-150 hover:scale-105 hover:shadow-xl"
+				>
+					<ExternalLink size={16} />
+					Vinmonopolet
+				</a>
+			{/if}
+			{#if product.untpd_url}
+				<a
+					href={product.untpd_url}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="btn btn-secondary btn-md flex items-center gap-2 shadow-lg transition-all duration-150 hover:scale-105 hover:shadow-xl"
+				>
+					<ExternalLink size={16} />
+					Untappd
+				</a>
+			{/if}
+		</div>
+	{/if}
 </div>
