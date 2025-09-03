@@ -59,7 +59,9 @@
 	<main class="bg-base-100 text-base-content">
 		<HeroSection />
 		<div class="container mx-auto px-4 py-8">
-			<ReleaseList {releases} {error} {page} {total} {page_size} />
+			<div class="max-w-6xl mx-auto">
+				<ReleaseList {releases} {error} {page} {total} {page_size} />
+			</div>
 		</div>
 	</main>
 	<Footer />
