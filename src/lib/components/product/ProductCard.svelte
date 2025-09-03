@@ -40,12 +40,12 @@
 						{#if product.volume}
 							<span class="flex items-center gap-1 text-sm"
 								><Droplets size={14} class="text-primary" />
-								{product.volume} ml</span
+								{product.volume * 1000} ml</span
 							>
 						{/if}
 						{#if product.abv}
 							<span class="flex items-center gap-1 text-sm"
-								><Percent size={14} class="text-primary" /> {product.abv}%</span
+								><Percent size={14} class="text-primary" /> {product.abv}</span
 							>
 						{/if}
 						{#if product.country}
