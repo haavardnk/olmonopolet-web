@@ -1,6 +1,11 @@
 <script lang="ts">
-	import { HeartHandshake, Facebook, Menu } from '@lucide/svelte';
-	import { PUBLIC_PATREON_URL, PUBLIC_FACEBOOK_URL, PUBLIC_SITE_TITLE } from '$env/static/public';
+	import { HeartHandshake, Facebook, Menu, Github } from '@lucide/svelte';
+	import {
+		PUBLIC_PATREON_URL,
+		PUBLIC_FACEBOOK_URL,
+		PUBLIC_SITE_TITLE,
+		PUBLIC_GITHUB_LINK
+	} from '$env/static/public';
 
 	export let right = null;
 	export let left = null;
@@ -55,6 +60,17 @@
 								Facebook
 							</a>
 						</li>
+						<li>
+							<a
+								href={PUBLIC_GITHUB_LINK}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="flex items-center gap-1 px-3 py-1 rounded-lg hover:bg-primary/10 transition-colors text-base font-medium"
+							>
+								<Github size={18} class="text-primary" />
+								GitHub
+							</a>
+						</li>
 					</ul>
 				{:else}
 					<slot name="center" />
@@ -89,6 +105,16 @@
 										on:click={closeMenu}
 									>
 										Facebook
+									</a>
+								</li>
+								<li>
+									<a
+										href={PUBLIC_GITHUB_LINK}
+										target="_blank"
+										rel="noopener noreferrer"
+										on:click={closeMenu}
+									>
+										GitHub
 									</a>
 								</li>
 							</ul>
