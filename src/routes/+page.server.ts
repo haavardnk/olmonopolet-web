@@ -22,8 +22,8 @@ export const load: PageServerLoad = async ({ fetch, url }) => {
 				releaseDate: release.release_date,
 				formattedDate: formatDate(release.release_date),
 				beerCount: release.beer_count,
-				assortments: (release.product_selections || []).map((ps: string) =>
-					normalizeAssortmentName(ps) || ps
+				assortments: (release.product_selections || []).map(
+					(ps: string) => normalizeAssortmentName(ps) || ps
 				),
 				stats: {
 					productCount: release.product_stats.product_count,
