@@ -53,12 +53,12 @@
 
 <div class="flex-1 flex flex-col min-h-screen">
 	<Header>
-		<div slot="right">
-			<a href="/" class="btn btn-ghost btn-sm">
+		{#snippet right()}
+			<a href="/" class="btn btn-ghost btn-sm" aria-label="Gå tilbake til forsiden">
 				<ArrowLeft size={16} />
 				Tilbake
 			</a>
-		</div>
+		{/snippet}
 	</Header>
 
 	<main class="bg-base-100 text-base-content flex-1">

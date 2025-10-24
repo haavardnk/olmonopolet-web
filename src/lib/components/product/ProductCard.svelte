@@ -1,33 +1,18 @@
 <script lang="ts">
-	import { fly, fade } from 'svelte/transition';
-	import {
-		Star,
-		StarHalf,
-		DollarSign,
-		Droplets,
-		Percent,
-		MapPin,
-		Tag,
-		ExternalLink
-	} from '@lucide/svelte';
+	import { fly } from 'svelte/transition';
+	import { DollarSign, Droplets, Percent, MapPin, Tag } from '@lucide/svelte';
+	import StarRating from '$lib/components/common/StarRating.svelte';
 	import defaultLabel from '$lib/assets/default-label.png';
 
 	let { product, index } = $props();
-	let isHovered = $state(false);
 </script>
 
-<div
+<a
+	href="/beers/{product.vmp_id}"
 	in:fly={{ y: 20, duration: 300, delay: index * 50 }}
-	class="card bg-base-200 hover:shadow-lg transition-all duration-200 hover:translate-y-[-2px] relative group"
-	role="button"
-	tabindex="0"
-	onmouseenter={() => (isHovered = true)}
-	onmouseleave={() => (isHovered = false)}
+	class="card bg-base-200 hover:shadow-lg transition-all duration-200 hover:translate-y-[-2px] block"
 >
-	<div
-		class="card-body p-4 sm:p-6 transition-opacity duration-200 ease-out"
-		class:opacity-50={isHovered}
-	>
+	<div class="card-body p-4 sm:p-6">
 		<div class="flex flex-row gap-4 items-stretch">
 			<div class="flex items-start sm:items-center flex-shrink-0">
 				<img
@@ -78,62 +63,14 @@
 							</span>
 						{/if}
 					</div>
-					{#if product.rating}
-						<div class="flex items-center gap-1 mt-1">
-							{#each [1, 2, 3, 4, 5] as star}
-								{#if product.rating >= star}
-									<Star size={14} class="text-yellow-400 fill-yellow-400" />
-								{:else if product.rating >= star - 0.5}
-									<StarHalf size={14} class="text-yellow-400 fill-yellow-400" />
-								{:else}
-									<Star size={14} class="text-gray-300" />
-								{/if}
-							{/each}
-							<span class="text-xs sm:text-sm ml-1 opacity-80">
-								{product.rating.toFixed(1)} ({product.checkins})
-							</span>
-						</div>
-					{:else}
-						<div class="flex items-center gap-1 mt-1">
-							{#each [1, 2, 3, 4, 5] as star}
-								<Star size={14} class="text-gray-300" />
-							{/each}
-							<span class="text-xs sm:text-sm ml-1 opacity-60">Ingen vurderinger</span>
-						</div>
-					{/if}
+					<StarRating
+						rating={product.rating}
+						size={14}
+						showValue={true}
+						checkins={product.checkins}
+					/>
 				</div>
 			</div>
 		</div>
 	</div>
-
-	{#if isHovered && (product.vmp_url || product.untpd_url)}
-		<div
-			class="absolute inset-0 flex items-center justify-center gap-3"
-			in:fade={{ duration: 150 }}
-			out:fade={{ duration: 100 }}
-		>
-			{#if product.vmp_url}
-				<a
-					href={product.vmp_url}
-					target="_blank"
-					rel="noopener noreferrer"
-					class="btn btn-primary btn-md flex items-center gap-2 shadow-lg transition-all duration-150 hover:scale-105 hover:shadow-xl"
-				>
-					<ExternalLink size={16} />
-					Vinmonopolet
-				</a>
-			{/if}
-			{#if product.untpd_url}
-				<a
-					href={product.untpd_url}
-					target="_blank"
-					rel="noopener noreferrer"
-					class="btn btn-secondary btn-md flex items-center gap-2 shadow-lg transition-all duration-150 hover:scale-105 hover:shadow-xl"
-				>
-					<ExternalLink size={16} />
-					Untappd
-				</a>
-			{/if}
-		</div>
-	{/if}
-</div>
+</a>

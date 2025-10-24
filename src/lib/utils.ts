@@ -20,3 +20,10 @@ export function slugify(str: string): string {
 export function unslugify(slug: string): string {
 	return slug.replace(/-/g, ' ');
 }
+
+export function getStarRating(rating: number) {
+	const fullStars = Math.floor(rating);
+	const hasHalfStar = rating % 1 >= 0.5;
+	const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+	return { fullStars, hasHalfStar, emptyStars };
+}
