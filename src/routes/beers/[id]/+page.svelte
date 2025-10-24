@@ -1,11 +1,11 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { browser } from '$app/environment';
+	import { fly } from 'svelte/transition';
+	import { ArrowLeft, ExternalLink, TriangleAlert, Search, Info } from '@lucide/svelte';
 	import Header from '$lib/components/common/Header.svelte';
 	import Footer from '$lib/components/common/Footer.svelte';
 	import StarRating from '$lib/components/common/StarRating.svelte';
-	import { ArrowLeft, ExternalLink, TriangleAlert, Search, Info } from '@lucide/svelte';
-	import { browser } from '$app/environment';
-	import { fly } from 'svelte/transition';
 
 	let { data }: { data: PageData } = $props();
 	const product = $derived(data.product);

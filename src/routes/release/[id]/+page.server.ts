@@ -1,9 +1,8 @@
-import { formatDate, slugify, unslugify, normalizeAssortmentName } from '$lib/utils';
-import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import type { Product, Release, ProductStats } from '$lib/types';
-
+import { error } from '@sveltejs/kit';
 import { API_URL } from '$env/static/private';
+import type { Product, Release, ProductStats } from '$lib/types';
+import { formatDate, slugify, unslugify, normalizeAssortmentName } from '$lib/utils';
 
 export const load: PageServerLoad = async ({ params, fetch }) => {
 	const name = unslugify(params.id);

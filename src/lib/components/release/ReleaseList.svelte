@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { Calendar, CircleAlert, RefreshCw, Beer } from '@lucide/svelte';
-	import ReleaseCard from '$lib/components/release/ReleaseCard.svelte';
-	import { goto } from '$app/navigation';
 	import type { Release } from '$lib/types';
 	import { fly } from 'svelte/transition';
+	import { goto } from '$app/navigation';
+	import { Calendar, CircleAlert, RefreshCw, Beer } from '@lucide/svelte';
+	import ReleaseCard from '$lib/components/release/ReleaseCard.svelte';
 
 	let {
 		releases,

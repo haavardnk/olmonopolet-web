@@ -1,8 +1,7 @@
-import { formatDate, normalizeAssortmentName } from '$lib/utils';
 import type { PageServerLoad } from './$types';
-import type { Release } from '$lib/types';
-
 import { API_URL } from '$env/static/private';
+import type { Release } from '$lib/types';
+import { formatDate, normalizeAssortmentName } from '$lib/utils';
 
 export const load: PageServerLoad = async ({ fetch, url }) => {
 	try {
