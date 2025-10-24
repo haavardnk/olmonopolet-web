@@ -182,89 +182,54 @@
 
 	<main class="flex-1 flex flex-col overflow-hidden">
 		<div class="lg:hidden sticky top-0 z-40 bg-base-100 border-b border-base-content/10 shadow-sm">
-			<div class="p-3">
-				<div class="flex flex-col sm:flex-row gap-2">
+			<div class="p-2">
+				<div class="flex gap-2">
 					<button
 						onclick={() => (showMobileFilters = true)}
-						class="btn btn-sm"
+						class="btn btn-sm btn-square sm:btn-sm sm:w-24 relative"
 						class:btn-primary={activeFiltersCount > 0}
+						aria-label="Åpne filtre"
 					>
 						<Funnel size={18} />
-						Filtre
+						<span class="hidden sm:inline ml-1">Filtre</span>
 						{#if activeFiltersCount > 0}
-							<span class="badge badge-xs">{activeFiltersCount}</span>
+							<span
+								class="badge badge-xs badge-accent absolute top-0 right-0 translate-x-1/2 -translate-y-1/2"
+								>{activeFiltersCount}</span
+							>
 						{/if}
 					</button>
 
-					<div class="flex-1">
-						<label class="input input-sm flex items-center gap-2">
-							<Search size={18} class="text-base-content/50" />
-							<input
-								type="text"
-								placeholder="Søk etter produkt..."
-								class="flex-1"
-								bind:value={searchQuery}
-								onkeydown={(e) => e.key === 'Enter' && handleSearch()}
-							/>
-							{#if searchQuery}
-								<button
-									onclick={clearSearch}
-									class="btn btn-ghost btn-xs btn-circle"
-									aria-label="Tøm søk"
-								>
-									<X size={14} />
-								</button>
-							{/if}
-						</label>
-					</div>
+					<label class="input input-sm flex items-center gap-2 flex-1">
+						<Search size={16} class="text-base-content/50" />
+						<input
+							type="text"
+							placeholder="Søk..."
+							class="flex-1 text-sm"
+							bind:value={searchQuery}
+							onkeydown={(e) => e.key === 'Enter' && handleSearch()}
+						/>
+						{#if searchQuery}
+							<button
+								onclick={clearSearch}
+								class="btn btn-ghost btn-xs btn-circle"
+								aria-label="Tøm søk"
+							>
+								<X size={14} />
+							</button>
+						{/if}
+					</label>
 
-					<div class="w-full sm:w-56">
-						<label class="select select-sm w-full flex items-center gap-2">
-							<select bind:value={sortBy} onchange={handleSortChange} class="flex-1">
-								{#each SORT_LABELS as label}
-									<option value={SORT_OPTIONS[label]}>{label}</option>
-								{/each}
-							</select>
-						</label>
-					</div>
+					<select
+						bind:value={sortBy}
+						onchange={handleSortChange}
+						class="select select-sm w-32 md:w-64 ml-auto"
+					>
+						{#each SORT_LABELS as label}
+							<option value={SORT_OPTIONS[label]}>{label}</option>
+						{/each}
+					</select>
 				</div>
-
-				{#if activeFiltersCount > 0}
-					<div class="flex items-center gap-2 flex-wrap mt-2" transition:slide>
-						<span class="text-xs text-base-content/70">Aktive:</span>
-						{#if filters.style}
-							<span class="badge badge-primary badge-xs">{filters.style}</span>
-						{/if}
-						{#if filters.country}
-							<span class="badge badge-primary badge-xs">{filters.country}</span>
-						{/if}
-						{#if filters.priceFrom || filters.priceTo}
-							<span class="badge badge-primary badge-xs"
-								>Pris: {filters.priceFrom || '0'}-{filters.priceTo || '∞'} kr</span
-							>
-						{/if}
-						{#if filters.abvFrom || filters.abvTo}
-							<span class="badge badge-primary badge-xs"
-								>ABV: {filters.abvFrom || '0'}-{filters.abvTo || '∞'}%</span
-							>
-						{/if}
-						{#if filters.productSelection}
-							<span class="badge badge-primary badge-xs">{filters.productSelection}</span>
-						{/if}
-						{#if filters.allergens}
-							<span class="badge badge-primary badge-xs">{filters.allergens}</span>
-						{/if}
-						{#if filters.deliveryOptions}
-							<span class="badge badge-primary badge-xs">{filters.deliveryOptions}</span>
-						{/if}
-						{#if filters.store}
-							<span class="badge badge-primary badge-xs">{filters.store}</span>
-						{/if}
-						{#if filters.release}
-							<span class="badge badge-primary badge-xs">{filters.release}</span>
-						{/if}
-					</div>
-				{/if}
 			</div>
 		</div>
 
