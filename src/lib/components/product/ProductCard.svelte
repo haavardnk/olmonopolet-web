@@ -3,12 +3,13 @@
 	import { DollarSign, Droplets, Percent, MapPin, Tag } from '@lucide/svelte';
 	import StarRating from '$lib/components/common/StarRating.svelte';
 	import defaultLabel from '$lib/assets/default-label.png';
+	import type { Product } from '$lib/types';
 
-	let { product, index } = $props();
+	let { product, index }: { product: Product; index: number } = $props();
 </script>
 
 <a
-	href="/beers/{product.vmp_id}"
+	href="/beers/{product.id}"
 	in:fly={{ y: 20, duration: 300, delay: index * 50 }}
 	class="card bg-base-200 hover:shadow-lg transition-all duration-200 hover:translate-y-[-2px] block"
 >
@@ -16,19 +17,19 @@
 		<div class="flex flex-row gap-4 items-stretch">
 			<div class="flex items-start sm:items-center flex-shrink-0">
 				<img
-					src={product.label_sm_url || defaultLabel}
-					alt={product.vmp_name + ' etikett'}
+					src={product.image || defaultLabel}
+					alt={product.name + ' etikett'}
 					class="w-20 h-20 sm:w-32 sm:h-32 object-contain rounded-lg shadow"
 				/>
 			</div>
 			<div class="flex flex-col gap-2 justify-between h-full flex-1 min-w-0">
 				<h3 class="font-bold text-base sm:text-lg mb-1 line-clamp-2">
-					{product.vmp_name}
+					{product.name}
 				</h3>
 				<div class="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1">
 					<span
 						class="badge badge-outline badge-sm sm:badge-md overflow-hidden whitespace-nowrap text-ellipsis"
-						>{product.style || product.sub_category || product.main_category}</span
+						>{product.style || 'Ukjent stil'}</span
 					>
 				</div>
 				<div class="flex flex-col gap-2">
@@ -42,12 +43,12 @@
 						{#if product.volume}
 							<span class="flex items-center gap-1 text-sm"
 								><Droplets size={14} class="text-primary" />
-								{product.volume * 1000} ml</span
+								{(product.volume * 1000).toFixed(0)} ml</span
 							>
 						{/if}
-						{#if product.abv}
+						{#if product.strength}
 							<span class="flex items-center gap-1 text-sm"
-								><Percent size={14} class="text-primary" /> {product.abv}</span
+								><Percent size={14} class="text-primary" /> {product.strength.toFixed(1)}%</span
 							>
 						{/if}
 						{#if product.country}
@@ -56,10 +57,10 @@
 								{product.country}</span
 							>
 						{/if}
-						{#if product.product_selection}
+						{#if product.assortment}
 							<span class="flex items-center gap-1 text-sm"
 								><Tag size={14} class="text-primary" />
-								{product.product_selection}
+								{product.assortment}
 							</span>
 						{/if}
 					</div>

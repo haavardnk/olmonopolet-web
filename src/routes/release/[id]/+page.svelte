@@ -10,10 +10,10 @@
 	let release = $derived(data.release);
 	let slug = $derived(data.slug);
 
-	let title = $derived(`Nyhetslansering ${release.formatted_date} - ${PUBLIC_SITE_TITLE}`);
+	let title = $derived(`Nyhetslansering ${release.formattedDate} - ${PUBLIC_SITE_TITLE}`);
 	let description = $derived.by(() => {
-		const stats = release.product_stats;
-		return `Produkter i lansering: ${stats.product_count} (${stats.beer_count} øl, ${stats.cider_count} sider, ${stats.mead_count} mjød)`;
+		const stats = release.stats;
+		return `Produkter i lansering: ${stats.productCount} (${stats.beerCount} øl, ${stats.ciderCount} sider, ${stats.meadCount} mjød)`;
 	});
 
 	const articleJson = $derived.by(() => {
@@ -23,7 +23,7 @@
 			headline: title,
 			description: description,
 			url: `${PUBLIC_SITE_URL}/release/${slug}`,
-			datePublished: release.release_date,
+			datePublished: release.releaseDate,
 			author: {
 				'@type': 'Organization',
 				name: PUBLIC_SITE_TITLE,
