@@ -4,7 +4,7 @@
 	import Header from '$lib/components/common/Header.svelte';
 	import Footer from '$lib/components/common/Footer.svelte';
 	import ReleaseInfo from '$lib/components/release/ReleaseInfo.svelte';
-	import ProductList from '$lib/components/product/ProductList.svelte';
+	import ProductList from '$lib/components/release/ProductList.svelte';
 
 	let { data } = $props();
 	let release = $derived(data.release);
