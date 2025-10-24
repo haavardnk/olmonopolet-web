@@ -1,0 +1,83 @@
+<script lang="ts">
+	import Header from '$lib/components/common/Header.svelte';
+	import ProductList from '$lib/components/product-list/ProductList.svelte';
+	import { PUBLIC_SITE_URL } from '$env/static/public';
+	import { fly } from 'svelte/transition';
+
+	let { data } = $props();
+
+	let currentPage = $state(data.page || 1);
+	let hasMore = $state(data.hasMore || false);
+	let loading = $state(false);
+	let products = $state(data.products || []);
+
+	const total = $derived(data.total || 0);
+
+	async function loadMore(searchParams: URLSearchParams) {
+		if (loading || !hasMore) return;
+
+		loading = true;
+		const nextPage = currentPage + 1;
+
+		try {
+			const params = new URLSearchParams(searchParams);
+			params.set('page', nextPage.toString());
+
+			const response = await fetch(`/api/products?${params.toString()}`);
+
+			if (!response.ok) {
+				throw new Error('Failed to fetch products');
+			}
+
+			const result = await response.json();
+
+			const existingIds = new Set(products.map((p) => p.id));
+			const newProducts = result.products.filter((p: any) => !existingIds.has(p.id));
+
+			products = [...products, ...newProducts];
+			currentPage = nextPage;
+			hasMore = result.hasMore;
+		} catch (error) {
+			console.error('Error loading more products:', error);
+			throw error;
+		} finally {
+			loading = false;
+		}
+	}
+
+	$effect(() => {
+		const newProducts = data.products || [];
+		const newPage = data.page || 1;
+		const newHasMore = data.hasMore || false;
+
+		if (newPage === 1) {
+			products = newProducts;
+			currentPage = newPage;
+			hasMore = newHasMore;
+		}
+	});
+</script>
+
+<svelte:head>
+	<title>Produktoversikt - Ølmonopolet</title>
+	<meta
+		name="description"
+		content="Utforsk alle produkter fra Vinmonopolet. Søk, filtrer og sorter etter pris, stil, land, alkoholprosent og mer."
+	/>
+	<link rel="canonical" href="{PUBLIC_SITE_URL}/products" />
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="Produktoversikt - Ølmonopolet" />
+	<meta
+		property="og:description"
+		content="Utforsk alle produkter fra Vinmonopolet. Søk, filtrer og sorter etter pris, stil, land, alkoholprosent og mer."
+	/>
+	<meta property="og:url" content="{PUBLIC_SITE_URL}/products" />
+</svelte:head>
+
+<div class="h-screen flex flex-col">
+	<Header showSocialLinks={true} showMenu={true} />
+
+	<div class="flex-1 overflow-hidden" in:fly={{ y: 20, duration: 300 }}>
+		<ProductList {hasMore} {loadMore} {products} {total} searchParams={data.searchParams} />
+	</div>
+</div>

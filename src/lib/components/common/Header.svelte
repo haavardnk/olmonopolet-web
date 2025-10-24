@@ -56,7 +56,7 @@
 								class="flex items-center gap-1 px-3 py-1 rounded-lg hover:bg-primary/10 transition-colors text-base font-medium"
 							>
 								<HeartHandshake size={18} class="text-primary" />
-								Støtt oss
+								Patreon
 							</a>
 						</li>
 						<li>
@@ -102,8 +102,11 @@
 								onmouseleave={closeMenu}
 							>
 								<li>
+									<a href="/products" onclick={closeMenu}>Produkter</a>
+								</li>
+								<li>
 									<a
-										href="https://patreon.com"
+										href={PUBLIC_PATREON_URL}
 										target="_blank"
 										rel="noopener noreferrer"
 										onclick={closeMenu}
@@ -113,7 +116,7 @@
 								</li>
 								<li>
 									<a
-										href="https://facebook.com"
+										href={PUBLIC_FACEBOOK_URL}
 										target="_blank"
 										rel="noopener noreferrer"
 										onclick={closeMenu}
