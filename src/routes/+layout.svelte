@@ -1,6 +1,11 @@
 <script lang="ts">
 	import '../app.css';
+	import { browser } from '$app/environment';
 	import { PUBLIC_SITE_URL, PUBLIC_SITE_TITLE, PUBLIC_SITE_DESCRIPTION } from '$env/static/public';
+
+	if (browser) {
+		sessionStorage.setItem('hasNavigated', 'true');
+	}
 
 	const organizationJson = {
 		'@context': 'https://schema.org',
