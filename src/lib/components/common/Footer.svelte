@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { Beer } from '@lucide/svelte';
-
 	import { PUBLIC_SITE_TITLE } from '$env/static/public';
+	import { Beer } from '@lucide/svelte';
 </script>
 
 <footer class="footer footer-center p-10 bg-base-200 text-base-content mt-auto">

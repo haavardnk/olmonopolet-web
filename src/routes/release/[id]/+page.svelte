@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { ArrowLeft } from '@lucide/svelte';
-	import ProductList from '$lib/components/product/ProductList.svelte';
-	import Footer from '$lib/components/common/Footer.svelte';
-	import Header from '$lib/components/common/Header.svelte';
-	import ReleaseInfo from '$lib/components/release/ReleaseInfo.svelte';
 	import { PUBLIC_SITE_TITLE, PUBLIC_SITE_URL, PUBLIC_FACEBOOK_URL } from '$env/static/public';
+	import { ArrowLeft } from '@lucide/svelte';
+	import Header from '$lib/components/common/Header.svelte';
+	import Footer from '$lib/components/common/Footer.svelte';
+	import ReleaseInfo from '$lib/components/release/ReleaseInfo.svelte';
+	import ProductList from '$lib/components/product/ProductList.svelte';
 
 	let { data } = $props();
 	let release = $derived(data.release);

@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { HeartHandshake, Facebook, Menu, Github } from '@lucide/svelte';
+	import type { Snippet } from 'svelte';
 	import {
 		PUBLIC_PATREON_URL,
 		PUBLIC_FACEBOOK_URL,
 		PUBLIC_SITE_TITLE,
 		PUBLIC_GITHUB_LINK
 	} from '$env/static/public';
-	import type { Snippet } from 'svelte';
+	import { HeartHandshake, Facebook, Menu, Github } from '@lucide/svelte';
 
 	let {
 		right,

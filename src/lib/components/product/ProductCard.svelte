@@ -1,9 +1,9 @@
 <script lang="ts">
+	import type { Product } from '$lib/types';
 	import { fly } from 'svelte/transition';
 	import { DollarSign, Droplets, Percent, MapPin, Tag } from '@lucide/svelte';
 	import StarRating from '$lib/components/common/StarRating.svelte';
 	import defaultLabel from '$lib/assets/default-label.png';
-	import type { Product } from '$lib/types';
 
 	let { product, index }: { product: Product; index: number } = $props();
 </script>

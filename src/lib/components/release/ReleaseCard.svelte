@@ -1,8 +1,8 @@
 <script lang="ts">
+	import type { Release } from '$lib/types';
 	import { fly } from 'svelte/transition';
 	import { Calendar } from '@lucide/svelte';
 	import { slugify } from '$lib/utils';
-	import type { Release } from '$lib/types';
 
 	let { release, index }: { release: Release; index: number } = $props();
 	const slug = slugify(release.name);

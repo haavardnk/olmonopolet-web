@@ -1,5 +1,5 @@
-import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
+import { error } from '@sveltejs/kit';
 import { API_URL } from '$env/static/private';
 import type { Product, Store } from '$lib/types';
 import { normalizeAssortmentName, normalizeCharacteristic } from '$lib/utils';

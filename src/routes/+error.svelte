@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Beer, ArrowLeft, RefreshCw } from '@lucide/svelte';
 	import { page } from '$app/state';
+	import { Beer, ArrowLeft, RefreshCw } from '@lucide/svelte';
 
 	function retryFetch() {
 		location.reload();

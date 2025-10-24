@@ -1,8 +1,4 @@
 <script lang="ts">
-	import { Play, Apple, Chrome } from '@lucide/svelte';
-	import hero from '$lib/assets/hero.svg';
-	import { fly } from 'svelte/transition';
-
 	import {
 		PUBLIC_APP_STORE_URL,
 		PUBLIC_GOOGLE_PLAY_URL,
@@ -10,6 +6,9 @@
 		PUBLIC_SITE_TITLE,
 		PUBLIC_SITE_DESCRIPTION
 	} from '$env/static/public';
+	import { fly } from 'svelte/transition';
+	import { Play, Apple, Chrome } from '@lucide/svelte';
+	import hero from '$lib/assets/hero.svg';
 </script>
 
 <div class="hero py-12 bg-base-200">

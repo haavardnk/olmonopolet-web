@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { Calendar } from '@lucide/svelte';
-	import { fly } from 'svelte/transition';
 	import type { Release } from '$lib/types';
+	import { fly } from 'svelte/transition';
+	import { Calendar } from '@lucide/svelte';
 
 	let { release }: { release: Release } = $props();
 </script>
