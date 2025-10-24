@@ -13,7 +13,7 @@
 
 <div class="hero py-12 bg-base-200">
 	<div class="text-center">
-		<div class="max-w-md">
+		<div class="max-w-xl">
 			<div class="relative flex items-center justify-center" in:fly={{ y: 20, duration: 300 }}>
 				<img src={hero} alt="Ølmonopolet hero" class="w-56 h-56 object-contain" />
 			</div>
@@ -26,12 +26,12 @@
 			</div>
 
 			<div
-				class="flex flex-col sm:flex-row justify-center gap-4 max-w-md mx-auto"
+				class="flex flex-col sm:flex-row sm:flex-wrap gap-4 max-w-md sm:max-w-2xl mx-auto px-4"
 				in:fly={{ y: 20, duration: 300, delay: 200 }}
 			>
 				<a
 					href={PUBLIC_GOOGLE_PLAY_URL}
-					class="btn btn-outline border-2 hover:bg-primary hover:text-primary-content hover:border-primary transition-all duration-300 group"
+					class="btn btn-outline border-2 hover:bg-primary hover:text-primary-content hover:border-primary transition-all duration-300 group sm:flex-1"
 				>
 					<div class="flex items-center gap-2">
 						<Play size={24} class="text-primary group-hover:text-primary-content" />
@@ -44,7 +44,7 @@
 
 				<a
 					href={PUBLIC_APP_STORE_URL}
-					class="btn btn-outline border-2 hover:bg-primary hover:text-primary-content hover:border-primary transition-all duration-300 group"
+					class="btn btn-outline border-2 hover:bg-primary hover:text-primary-content hover:border-primary transition-all duration-300 group sm:flex-1"
 				>
 					<div class="flex items-center gap-2">
 						<Apple size={24} class="text-primary group-hover:text-primary-content" />
@@ -57,7 +57,7 @@
 
 				<a
 					href={PUBLIC_CHROME_EXTENSION_URL}
-					class="btn btn-outline border-2 hover:bg-primary hover:text-primary-content hover:border-primary transition-all duration-300 group"
+					class="btn btn-outline border-2 hover:bg-primary hover:text-primary-content hover:border-primary transition-all duration-300 group sm:flex-1"
 				>
 					<div class="flex items-center gap-2">
 						<Chromium size={24} class="text-primary group-hover:text-primary-content" />
@@ -67,12 +67,10 @@
 						</div>
 					</div>
 				</a>
-			</div>
 
-			<div class="mt-4 max-w-sm mx-auto" in:fly={{ y: 20, duration: 300, delay: 250 }}>
 				<a
 					href="/products"
-					class="btn btn-outline border-2 hover:bg-primary hover:text-primary-content hover:border-primary transition-all duration-300 group w-full relative"
+					class="btn btn-outline border-2 hover:bg-primary hover:text-primary-content hover:border-primary transition-all duration-300 group relative sm:flex-1"
 				>
 					<span
 						class="badge badge-accent badge-sm absolute -top-2 -right-2 font-bold shadow-lg z-10"
