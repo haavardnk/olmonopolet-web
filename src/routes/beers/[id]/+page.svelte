@@ -2,10 +2,11 @@
 	import type { PageData } from './$types';
 	import { browser } from '$app/environment';
 	import { fly } from 'svelte/transition';
-	import { ArrowLeft, ExternalLink, TriangleAlert, Search, Info } from '@lucide/svelte';
+	import { ArrowLeft, ExternalLink, TriangleAlert } from '@lucide/svelte';
 	import Header from '$lib/components/common/Header.svelte';
 	import Footer from '$lib/components/common/Footer.svelte';
 	import StarRating from '$lib/components/common/StarRating.svelte';
+	import StoreStock from '$lib/components/product/StoreStock.svelte';
 
 	let { data }: { data: PageData } = $props();
 	const product = $derived(data.product);
@@ -24,13 +25,6 @@
 	function goBack() {
 		window.history.back();
 	}
-
-	let storeSearch = $state('');
-	let filteredStores = $derived(
-		product.stores.filter((store: { name: string; stock: number }) =>
-			store.name.toLowerCase().includes(storeSearch.toLowerCase())
-		)
-	);
 </script>
 
 <svelte:head>
@@ -332,68 +326,13 @@
 			</div>
 		</div>
 
-		<div class="bg-base-200 py-12" in:fly={{ y: 20, duration: 300, delay: 400 }}>
+		<div
+			class="bg-base-200 py-12"
+			in:fly={{ y: 20, duration: 300, delay: 400 }}
+			id="stores-section"
+		>
 			<div class="container mx-auto px-4">
-				<h2 class="text-3xl font-bold mb-6 text-base-content">Butikker med varen på lager</h2>
-
-				{#if product.stores.length > 0}
-					<div class="mb-6 max-w-md">
-						<label class="input input-bordered flex items-center gap-2">
-							<Search size={16} class="opacity-70" />
-							<input
-								type="text"
-								class="grow"
-								placeholder="Søk etter butikk..."
-								bind:value={storeSearch}
-								aria-label="Søk etter butikk"
-							/>
-						</label>
-						{#if storeSearch}
-							<p class="text-sm text-base-content/70 mt-2">
-								Viser {filteredStores.length} av {product.stores.length} butikker
-							</p>
-						{/if}
-					</div>
-
-					<div class="max-h-[450px] overflow-y-auto pr-2">
-						<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-							{#each filteredStores as store}
-								<div class="card bg-base-100 shadow-xl">
-									<div class="card-body">
-										<h3 class="card-title text-lg">{store.name}</h3>
-
-										<div class="divider my-2"></div>
-
-										<div class="flex items-center justify-between">
-											<span class="text-sm font-semibold">På lager:</span>
-											<div
-												class="badge badge-lg {store.stock > 10
-													? 'badge-success'
-													: store.stock > 5
-														? 'badge-warning'
-														: 'badge-error'}"
-											>
-												{store.stock} stk
-											</div>
-										</div>
-									</div>
-								</div>
-							{/each}
-						</div>
-
-						{#if filteredStores.length === 0 && storeSearch}
-							<div class="alert alert-info">
-								<Info size={24} />
-								<span>Ingen butikker matchet søket "{storeSearch}"</span>
-							</div>
-						{/if}
-					</div>
-				{:else}
-					<div class="alert alert-info">
-						<Info size={24} />
-						<span>Dette produktet er for øyeblikket ikke på lager i noen butikker.</span>
-					</div>
-				{/if}
+				<StoreStock stores={product.stores} />
 			</div>
 		</div>
 	</main>
