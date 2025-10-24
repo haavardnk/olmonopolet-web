@@ -4,7 +4,7 @@
 	import Header from '$lib/components/common/Header.svelte';
 	import Footer from '$lib/components/common/Footer.svelte';
 	import ReleaseInfo from '$lib/components/release/ReleaseInfo.svelte';
-	import ProductList from '$lib/components/release/ProductList.svelte';
+	import ReleaseProductList from '$lib/components/release/ReleaseProductList.svelte';
 
 	let { data } = $props();
 	let release = $derived(data.release);
@@ -65,7 +65,7 @@
 		<div class="container mx-auto px-4 py-8">
 			<div class="max-w-6xl mx-auto">
 				<ReleaseInfo {release} />
-				<ProductList products={release.products} {retryFetch} />
+				<ReleaseProductList products={release.products} {retryFetch} />
 			</div>
 		</div>
 	</main>

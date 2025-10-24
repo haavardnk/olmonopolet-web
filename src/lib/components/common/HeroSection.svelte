@@ -7,12 +7,12 @@
 		PUBLIC_SITE_DESCRIPTION
 	} from '$env/static/public';
 	import { fly } from 'svelte/transition';
-	import { Play, Apple, Chrome } from '@lucide/svelte';
+	import { Play, Apple, Chromium, Beer } from '@lucide/svelte';
 	import hero from '$lib/assets/hero.svg';
 </script>
 
 <div class="hero py-12 bg-base-200">
-	<div class="hero-content text-center">
+	<div class="text-center">
 		<div class="max-w-md">
 			<div class="relative flex items-center justify-center" in:fly={{ y: 20, duration: 300 }}>
 				<img src={hero} alt="Ølmonopolet hero" class="w-56 h-56 object-contain" />
@@ -60,10 +60,29 @@
 					class="btn btn-outline border-2 hover:bg-primary hover:text-primary-content hover:border-primary transition-all duration-300 group"
 				>
 					<div class="flex items-center gap-2">
-						<Chrome size={24} class="text-primary group-hover:text-primary-content" />
+						<Chromium size={24} class="text-primary group-hover:text-primary-content" />
 						<div class="flex flex-col items-start">
 							<span class="text-xs opacity-80">TILGJENGELIG I</span>
 							<span class="font-bold text-sm">Chrome Store</span>
+						</div>
+					</div>
+				</a>
+			</div>
+
+			<div class="mt-4 max-w-sm mx-auto" in:fly={{ y: 20, duration: 300, delay: 250 }}>
+				<a
+					href="/products"
+					class="btn btn-outline border-2 hover:bg-primary hover:text-primary-content hover:border-primary transition-all duration-300 group w-full relative"
+				>
+					<span
+						class="badge badge-accent badge-sm absolute -top-2 -right-2 font-bold shadow-lg z-10"
+						>NYHET</span
+					>
+					<div class="flex items-center gap-2">
+						<Beer size={24} class="text-primary group-hover:text-primary-content" />
+						<div class="flex flex-col items-start">
+							<span class="text-xs opacity-80">ØLMONOPOLET I</span>
+							<span class="font-bold text-sm">Nettleseren</span>
 						</div>
 					</div>
 				</a>

@@ -5,12 +5,16 @@
 	import StarRating from '$lib/components/common/StarRating.svelte';
 	import defaultLabel from '$lib/assets/default-label.png';
 
-	let { product, index }: { product: Product; index: number } = $props();
+	let {
+		product,
+		index,
+		noTransition = false
+	}: { product: Product; index: number; noTransition?: boolean } = $props();
 </script>
 
 <a
 	href="/products/{product.id}"
-	in:fly={{ y: 20, duration: 300, delay: index * 50 }}
+	in:fly={noTransition ? undefined : { y: 20, duration: 300, delay: index * 50 }}
 	class="card bg-base-200 hover:shadow-lg transition-all duration-200 hover:translate-y-[-2px] block"
 >
 	<div class="card-body p-4 sm:p-6">

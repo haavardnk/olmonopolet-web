@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Product } from '$lib/types';
 	import { Beer, RefreshCw, Funnel, ArrowUpDown } from '@lucide/svelte';
-	import ProductCard from '$lib/components/release/ProductCard.svelte';
+	import ProductCard from '$lib/components/product/ProductCard.svelte';
 	import orderBy from 'lodash/orderBy';
 
 	let { products, retryFetch }: { products: Product[]; retryFetch: () => void } = $props();
