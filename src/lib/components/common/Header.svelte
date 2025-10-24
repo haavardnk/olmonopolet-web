@@ -6,13 +6,23 @@
 		PUBLIC_SITE_TITLE,
 		PUBLIC_GITHUB_LINK
 	} from '$env/static/public';
+	import type { Snippet } from 'svelte';
 
-	export let right = null;
-	export let left = null;
-	export let showSocialLinks = false;
-	export let showMenu = false;
+	let {
+		right,
+		left,
+		center,
+		showSocialLinks = false,
+		showMenu = false
+	}: {
+		right?: Snippet;
+		left?: Snippet;
+		center?: Snippet;
+		showSocialLinks?: boolean;
+		showMenu?: boolean;
+	} = $props();
 
-	let menuOpen = false;
+	let menuOpen = $state(false);
 	function toggleMenu() {
 		menuOpen = !menuOpen;
 	}
@@ -28,7 +38,7 @@
 		<div class="navbar">
 			<div class="navbar-start">
 				{#if left}
-					<slot name="left">{left}</slot>
+					{@render left()}
 				{:else}
 					<a href="/" class="flex items-center gap-2 text-xl font-medium">
 						<span>{PUBLIC_SITE_TITLE}</span>
@@ -72,27 +82,31 @@
 							</a>
 						</li>
 					</ul>
-				{:else}
-					<slot name="center" />
+				{:else if center}
+					{@render center()}
 				{/if}
 			</div>
 			<div class="navbar-end">
 				{#if showMenu}
 					<div class="relative md:hidden">
-						<button class="btn btn-ghost btn-circle" on:click={toggleMenu} aria-label="Åpne meny">
+						<button
+							class="btn btn-ghost btn-circle"
+							onclick={toggleMenu}
+							aria-label={menuOpen ? 'Lukk meny' : 'Åpne meny'}
+						>
 							<Menu size={24} />
 						</button>
 						{#if menuOpen}
 							<ul
 								class="absolute right-0 mt-3 z-[1] p-2 shadow bg-base-200 rounded-box w-52 menu menu-sm dropdown-content"
-								on:mouseleave={closeMenu}
+								onmouseleave={closeMenu}
 							>
 								<li>
 									<a
 										href="https://patreon.com"
 										target="_blank"
 										rel="noopener noreferrer"
-										on:click={closeMenu}
+										onclick={closeMenu}
 									>
 										Patreon
 									</a>
@@ -102,7 +116,7 @@
 										href="https://facebook.com"
 										target="_blank"
 										rel="noopener noreferrer"
-										on:click={closeMenu}
+										onclick={closeMenu}
 									>
 										Facebook
 									</a>
@@ -112,7 +126,7 @@
 										href={PUBLIC_GITHUB_LINK}
 										target="_blank"
 										rel="noopener noreferrer"
-										on:click={closeMenu}
+										onclick={closeMenu}
 									>
 										GitHub
 									</a>
@@ -121,9 +135,9 @@
 						{/if}
 					</div>
 				{/if}
-				<slot name="right"
-					>{#if right}{right}{/if}</slot
-				>
+				{#if right}
+					{@render right()}
+				{/if}
 			</div>
 		</div>
 	</div>
