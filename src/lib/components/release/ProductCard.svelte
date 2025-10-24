@@ -9,7 +9,7 @@
 </script>
 
 <a
-	href="/beers/{product.id}"
+	href="/products/{product.id}"
 	in:fly={{ y: 20, duration: 300, delay: index * 50 }}
 	class="card bg-base-200 hover:shadow-lg transition-all duration-200 hover:translate-y-[-2px] block"
 >
