@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { Beer, ArrowLeft, RefreshCw } from '@lucide/svelte';
+	import Header from '$lib/components/common/Header.svelte';
+	import Footer from '$lib/components/common/Footer.svelte';
 
 	function retryFetch() {
 		location.reload();
@@ -12,26 +14,14 @@
 </svelte:head>
 
 <div class="flex flex-col min-h-screen">
-	<header
-		class="sticky top-0 z-10 bg-base-300/80 backdrop-blur-md border-b border-base-content/10 shadow-md"
-	>
-		<div class="container mx-auto">
-			<div class="navbar">
-				<div class="navbar-start">
-					<a href="/" class="flex items-center gap-2 text-xl font-medium">
-						<Beer class="text-primary" size={24} />
-						<span>Ølmonopolet</span>
-					</a>
-				</div>
-				<div class="navbar-end">
-					<a href="/" class="btn btn-ghost btn-sm">
-						<ArrowLeft size={16} />
-						Tilbake
-					</a>
-				</div>
-			</div>
-		</div>
-	</header>
+	<Header>
+		{#snippet right()}
+			<a href="/" class="btn btn-ghost btn-sm">
+				<ArrowLeft size={16} />
+				Tilbake
+			</a>
+		{/snippet}
+	</Header>
 
 	<main class="bg-base-100 text-base-content flex-1">
 		<div class="container mx-auto px-4 py-16">
@@ -57,17 +47,5 @@
 			</div>
 		</div>
 	</main>
-	<footer class="footer footer-center p-10 bg-base-200 text-base-content">
-		<div>
-			<Beer size={36} class="text-primary" />
-			<p class="font-bold">
-				Ølmonopolet <br />
-				Finn det beste av øl, sider og mjød
-			</p>
-			<p>
-				© {new Date().getFullYear()} Ølmonopolet. Alle rettigheter reservert.
-			</p>
-			<p class="opacity-70">Denne tjenesten er ikke tilknyttet Vinmonopolet.</p>
-		</div>
-	</footer>
+	<Footer />
 </div>
