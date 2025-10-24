@@ -5,6 +5,7 @@
 	import { fly } from 'svelte/transition';
 	import { browser } from '$app/environment';
 	import { beforeNavigate, afterNavigate } from '$app/navigation';
+	import { ArrowLeft } from '@lucide/svelte';
 
 	let { data } = $props();
 
@@ -102,15 +103,19 @@
 		}
 	}
 
+	let previousSearchParams = $state(data.searchParams.toString());
+
 	$effect(() => {
 		const newProducts = data.products || [];
 		const newPage = data.page || 1;
 		const newHasMore = data.hasMore || false;
+		const currentSearchParams = data.searchParams.toString();
 
-		if (!hasSavedState && newPage === 1) {
+		if (currentSearchParams !== previousSearchParams || (!hasSavedState && newPage === 1)) {
 			products = newProducts;
 			currentPage = newPage;
 			hasMore = newHasMore;
+			previousSearchParams = currentSearchParams;
 		}
 	});
 </script>
@@ -132,7 +137,14 @@
 </svelte:head>
 
 <div class="h-screen flex flex-col">
-	<Header showSocialLinks={true} showMenu={true} />
+	<Header showSocialLinks={false} showMenu={false}>
+		{#snippet right()}
+			<a href="/" class="btn btn-ghost btn-sm" aria-label="Gå tilbake til forsiden">
+				<ArrowLeft size={16} />
+				Tilbake
+			</a>
+		{/snippet}
+	</Header>
 
 	<div class="flex-1 overflow-hidden" in:fly={{ y: 20, duration: 300 }}>
 		<ProductList {hasMore} {loadMore} {products} {total} searchParams={data.searchParams} />
