@@ -13,9 +13,7 @@
 	let storesPerPage = 10;
 
 	let filteredStores = $derived(
-		stores.filter((store: { name: string; stock: number }) =>
-			store.name.toLowerCase().includes(storeSearch.toLowerCase())
-		)
+		stores.filter((store: Store) => store.name.toLowerCase().includes(storeSearch.toLowerCase()))
 	);
 
 	let totalPages = $derived(Math.ceil(filteredStores.length / storesPerPage));
@@ -24,8 +22,9 @@
 	);
 
 	$effect(() => {
-		storeSearch;
-		currentPage = 1;
+		if (storeSearch !== undefined) {
+			currentPage = 1;
+		}
 	});
 
 	function goToPage(page: number) {
