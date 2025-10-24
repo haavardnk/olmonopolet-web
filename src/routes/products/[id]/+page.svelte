@@ -15,13 +15,11 @@
 	let { data }: { data: PageData } = $props();
 	const product = $derived(data.product);
 
-	let canGoBack = $state(false);
+	const hasDetails = $derived(
+		product.description || product.taste || product.aroma || product.color || product.pairing
+	);
 
-	$effect(() => {
-		if (browser) {
-			canGoBack = sessionStorage.getItem('hasNavigated') === 'true';
-		}
-	});
+	let canGoBack = $state(browser && sessionStorage.getItem('hasNavigated') === 'true');
 
 	function goBack() {
 		window.history.back();
@@ -74,7 +72,7 @@
 
 		<div class="container mx-auto px-4 py-12">
 			<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-				{#if product.description || product.taste || product.aroma || product.color || product.pairing}
+				{#if hasDetails}
 					<div in:fly={{ y: 20, duration: 300, delay: 200 }}>
 						<ProductDetails {product} />
 					</div>
@@ -82,15 +80,7 @@
 
 				<div
 					in:fly={{ y: 20, duration: 300, delay: 300 }}
-					class={!(
-						product.description ||
-						product.taste ||
-						product.aroma ||
-						product.color ||
-						product.pairing
-					)
-						? 'lg:col-span-2'
-						: ''}
+					class={!hasDetails ? 'lg:col-span-2' : ''}
 				>
 					<ProductProduction {product} />
 				</div>
