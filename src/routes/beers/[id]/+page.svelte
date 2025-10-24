@@ -14,11 +14,8 @@
 	let canGoBack = $state(false);
 
 	$effect(() => {
-		if (browser && window.history.length > 1) {
-			const referrer = document.referrer;
-			if (referrer && new URL(referrer).origin === window.location.origin) {
-				canGoBack = true;
-			}
+		if (browser) {
+			canGoBack = sessionStorage.getItem('hasNavigated') === 'true';
 		}
 	});
 
