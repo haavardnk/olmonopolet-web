@@ -2,44 +2,46 @@
 	import { Beer, RefreshCw, Funnel, ArrowUpDown } from '@lucide/svelte';
 	import ProductCard from '$lib/components/product/ProductCard.svelte';
 	import orderBy from 'lodash/orderBy';
+	import type { Product } from '$lib/types';
 
-	export let products: Array<any> = [];
-	export let retryFetch: () => void;
+	let { products, retryFetch }: { products: Product[]; retryFetch: () => void } = $props();
 
-	let sortKey = 'rating';
-	let sortOrder: 'desc' | 'asc' = 'desc';
-	let selectedStyle = 'alle';
-	let styleSearchTerm = '';
+	let sortKey: keyof Product = $state('rating');
+	let sortOrder: 'desc' | 'asc' = $state('desc');
+	let selectedStyle = $state('alle');
+	let styleSearchTerm = $state('');
 
-	const sortOptions = [
+	const sortOptions: { key: keyof Product; label: string }[] = [
 		{ key: 'rating', label: 'Vurdering' },
 		{ key: 'price', label: 'Pris' },
-		{ key: 'abv', label: 'ABV' },
+		{ key: 'strength', label: 'ABV' },
 		{ key: 'volume', label: 'Volum' },
-		{ key: 'vmp_name', label: 'Navn' }
+		{ key: 'name', label: 'Navn' }
 	];
 
-	let sortedProducts = orderBy(products, [sortKey], [sortOrder]);
+	let sortedProducts = $state<Product[]>([]);
 
-	$: uniqueStyles = Array.from(
-		new Set(
-			products
-				.map((p) => p.style)
-				.filter((style) => style && style.trim() !== '')
-				.map((style) => {
-					if (style.startsWith('Belgian')) {
-						return 'Belgian';
-					}
-					return style.split(' - ')[0].trim();
-				})
-		)
-	).sort();
-
-	$: filteredStyles = uniqueStyles.filter((style) =>
-		style.toLowerCase().includes(styleSearchTerm.toLowerCase())
+	let uniqueStyles = $derived(
+		Array.from(
+			new Set(
+				products
+					.map((p) => p.style)
+					.filter((style) => style && style.trim() !== '')
+					.map((style) => {
+						if (style!.startsWith('Belgian')) {
+							return 'Belgian';
+						}
+						return style!.split(' - ')[0].trim();
+					})
+			)
+		).sort()
 	);
 
-	$: filteredProducts =
+	let filteredStyles = $derived(
+		uniqueStyles.filter((style) => style.toLowerCase().includes(styleSearchTerm.toLowerCase()))
+	);
+
+	let filteredProducts = $derived(
 		selectedStyle === 'alle'
 			? products
 			: products.filter((product) => {
@@ -48,18 +50,21 @@
 						return product.style.startsWith('Belgian');
 					}
 					return product.style.split(' - ')[0].trim() === selectedStyle;
-				});
-
-	$: sortedProducts = orderBy(
-		filteredProducts,
-		(product) => {
-			const value = product[sortKey];
-			return value == null ? 1 : typeof value === 'string' ? value.toLowerCase() : value;
-		},
-		sortOrder
+				})
 	);
 
-	function setSortKey(val: string) {
+	$effect(() => {
+		sortedProducts = orderBy(
+			filteredProducts,
+			(product) => {
+				const value = product[sortKey];
+				return value == null ? 1 : typeof value === 'string' ? value.toLowerCase() : value;
+			},
+			sortOrder
+		);
+	});
+
+	function setSortKey(val: keyof Product) {
 		sortKey = val;
 	}
 	function toggleSortOrder() {
@@ -85,14 +90,14 @@
 					id="sortKey"
 					bind:value={sortKey}
 					class="select select-sm select-bordered join-item pl-10 w-36 sm:w-48"
-					on:change={(e) => setSortKey((e.target as HTMLSelectElement).value)}
+					onchange={(e) => setSortKey((e.target as HTMLSelectElement).value as keyof Product)}
 				>
 					{#each sortOptions as opt}
 						<option value={opt.key}>{opt.label}</option>
 					{/each}
 				</select>
 			</div>
-			<button class="btn btn-sm join-item" on:click={toggleSortOrder}>
+			<button class="btn btn-sm join-item" onclick={toggleSortOrder}>
 				{sortOrder === 'asc' ? '↑' : '↓'}
 			</button>
 		</div>
@@ -121,7 +126,7 @@
 								'alle'
 									? 'active'
 									: ''}"
-								on:click={() => setStyleFilter('alle')}
+								onclick={() => setStyleFilter('alle')}
 							>
 								<input
 									type="radio"
@@ -143,7 +148,7 @@
 									style
 										? 'active'
 										: ''}"
-									on:click={() => setStyleFilter(style)}
+									onclick={() => setStyleFilter(style)}
 								>
 									<input
 										type="radio"
@@ -182,7 +187,7 @@
 				<Funnel size={48} class="text-primary opacity-50" />
 				<h3 class="font-bold text-lg">Ingen produkter funnet</h3>
 				<p class="text-sm opacity-70">Ingen produkter matcher det valgte filteret.</p>
-				<button class="btn btn-sm btn-outline mt-2" on:click={() => setStyleFilter('alle')}>
+				<button class="btn btn-sm btn-outline mt-2" onclick={() => setStyleFilter('alle')}>
 					Vis alle produkter
 				</button>
 			</div>
@@ -193,7 +198,7 @@
 				<Beer size={48} class="text-primary opacity-50" />
 				<h3 class="font-bold text-lg">Ingen produkter funnet</h3>
 				<p class="text-sm opacity-70">Det er ingen produkter tilgjengelig for denne lanseringen.</p>
-				<button class="btn btn-sm btn-outline mt-2" on:click={retryFetch}>
+				<button class="btn btn-sm btn-outline mt-2" onclick={retryFetch}>
 					<RefreshCw size={16} />
 					Last inn på nytt
 				</button>

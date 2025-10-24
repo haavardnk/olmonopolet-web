@@ -1,5 +1,6 @@
-import { formatDate } from '$lib/utils';
+import { formatDate, normalizeAssortmentName } from '$lib/utils';
 import type { PageServerLoad } from './$types';
+import type { Release } from '$lib/types';
 
 import { API_URL } from '$env/static/private';
 
@@ -16,13 +17,22 @@ export const load: PageServerLoad = async ({ fetch, url }) => {
 
 		const data = await response.json();
 
-		const releases = (data.results || []).map((release: any) => {
+		const releases: Release[] = (data.results || []).map((release: any) => {
 			return {
-				...release,
-				product_selections: (release.product_selections || []).map((ps: any) =>
-					ps === 'Spesialutvalg' ? 'Spesialutvalget' : ps
+				name: release.name,
+				releaseDate: release.release_date,
+				formattedDate: formatDate(release.release_date),
+				beerCount: release.beer_count,
+				assortments: (release.product_selections || []).map((ps: string) =>
+					normalizeAssortmentName(ps) || ps
 				),
-				formatted_date: formatDate(release.release_date)
+				stats: {
+					productCount: release.product_stats.product_count,
+					beerCount: release.product_stats.beer_count,
+					ciderCount: release.product_stats.cider_count,
+					meadCount: release.product_stats.mead_count
+				},
+				products: []
 			};
 		});
 

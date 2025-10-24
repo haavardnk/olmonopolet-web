@@ -1,6 +1,14 @@
 import { format, parseISO } from 'date-fns';
 import { nb } from 'date-fns/locale';
 
+export function slugify(str: string): string {
+	return str.replace(/\s+/g, '-');
+}
+
+export function unslugify(slug: string): string {
+	return slug.replace(/-/g, ' ');
+}
+
 export function formatDate(dateString: string): string {
 	try {
 		const date = parseISO(dateString);
@@ -13,12 +21,20 @@ export function formatDate(dateString: string): string {
 	}
 }
 
-export function slugify(str: string): string {
-	return str.replace(/\s+/g, '-');
+export const ASSORTMENT_DISPLAY_NAMES: Record<string, string> = {
+	Spesialutvalg: 'Spesialutvalget'
+};
+
+export function normalizeAssortmentName(
+	assortment: string | null | undefined
+): string | null | undefined {
+	if (!assortment) return assortment;
+	return ASSORTMENT_DISPLAY_NAMES[assortment] || assortment;
 }
 
-export function unslugify(slug: string): string {
-	return slug.replace(/-/g, ' ');
+export function normalizeCharacteristic(value: number | null | undefined): number | null {
+	if (value == null) return null;
+	return Math.round((value / 12) * 100);
 }
 
 export function getStarRating(rating: number) {

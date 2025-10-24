@@ -2,8 +2,9 @@
 	import { fly } from 'svelte/transition';
 	import { Calendar } from '@lucide/svelte';
 	import { slugify } from '$lib/utils';
+	import type { Release } from '$lib/types';
 
-	let { release, index } = $props();
+	let { release, index }: { release: Release; index: number } = $props();
 	const slug = slugify(release.name);
 </script>
 
@@ -16,7 +17,7 @@
 			<div class="flex flex-col">
 				<h3 class="card-title text-xl flex items-center gap-2">
 					<Calendar size={18} class="text-primary flex-shrink-0" />
-					{release.formatted_date}
+					{release.formattedDate}
 				</h3>
 			</div>
 			<div
@@ -24,25 +25,25 @@
 			>
 				<div class="flex items-center gap-1 text-xs sm:text-sm whitespace-nowrap">
 					<div class="badge badge-primary badge-sm sm:badge-md">
-						{release.product_stats.product_count}
+						{release.stats.productCount}
 					</div>
 					<span>Totalt</span>
 				</div>
 				<div class="flex items-center gap-1 text-xs sm:text-sm whitespace-nowrap">
 					<div class="badge badge-neutral badge-sm sm:badge-md">
-						{release.product_stats.beer_count}
+						{release.stats.beerCount}
 					</div>
 					<span>Øl</span>
 				</div>
 				<div class="flex items-center gap-1 text-xs sm:text-sm whitespace-nowrap">
 					<div class="badge badge-success badge-sm sm:badge-md">
-						{release.product_stats.cider_count}
+						{release.stats.ciderCount}
 					</div>
 					<span>Sider</span>
 				</div>
 				<div class="flex items-center gap-1 text-xs sm:text-sm whitespace-nowrap">
 					<div class="badge badge-warning badge-sm sm:badge-md">
-						{release.product_stats.mead_count}
+						{release.stats.meadCount}
 					</div>
 					<span>Mjød</span>
 				</div>
@@ -51,11 +52,11 @@
 		<div
 			class="flex flex-col md:flex-row items-start md:items-end justify-between mt-4 min-h-[3.5rem] pb-1 gap-2"
 		>
-			{#if Array.isArray(release.product_selections) && release.product_selections.length}
+			{#if Array.isArray(release.assortments) && release.assortments.length}
 				<div class="flex flex-wrap gap-2 md:w-auto justify-start">
-					{#each release.product_selections as selection}
+					{#each release.assortments as assortment}
 						<span class="badge badge-sm sm:badge-md badge-outline">
-							{selection}
+							{assortment}
 						</span>
 					{/each}
 				</div>

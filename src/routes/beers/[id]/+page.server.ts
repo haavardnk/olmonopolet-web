@@ -1,17 +1,9 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { API_URL } from '$env/static/private';
-import type { Product, Store } from '$lib/types/product';
+import type { Product, Store } from '$lib/types';
+import { normalizeAssortmentName, normalizeCharacteristic } from '$lib/utils';
 import logo from '$lib/assets/logo.png';
-
-const ASSORTMENT_DISPLAY_NAMES: Record<string, string> = {
-    'Spesialutvalg': 'Spesialutvalget'
-};
-
-function normalizeCharacteristic(value: number | null | undefined): number | null {
-    if (value == null) return null;
-    return Math.round((value / 12) * 100);
-}
 
 export const load: PageServerLoad = async ({ params, fetch }) => {
     const { id } = params;
@@ -65,7 +57,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
             allergens: apiData.allergens,
             brewery: apiData.brewery,
             country: apiData.country,
-            assortment: ASSORTMENT_DISPLAY_NAMES[apiData.product_selection] || apiData.product_selection,
+            assortment: normalizeAssortmentName(apiData.product_selection),
             vmpUrl: apiData.vmp_url,
             untappdUrl: apiData.untpd_url,
             stores: (apiData.all_stock)

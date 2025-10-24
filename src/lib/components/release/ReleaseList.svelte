@@ -1,9 +1,22 @@
 <script lang="ts">
-	import { Calendar, AlertCircle, RefreshCw, Beer } from '@lucide/svelte';
+	import { Calendar, CircleAlert, RefreshCw, Beer } from '@lucide/svelte';
 	import ReleaseCard from '$lib/components/release/ReleaseCard.svelte';
 	import { goto } from '$app/navigation';
+	import type { Release } from '$lib/types';
 
-	let { releases, error, page, total, page_size } = $props();
+	let {
+		releases,
+		error,
+		page,
+		total,
+		page_size
+	}: {
+		releases: Release[];
+		error?: { message: string; status: number } | null;
+		page: number;
+		total: number;
+		page_size: number;
+	} = $props();
 
 	let totalPages = Math.ceil(total / page_size);
 
@@ -26,7 +39,7 @@
 
 	{#if error}
 		<div class="alert alert-error shadow-lg mb-8">
-			<AlertCircle size={24} />
+			<CircleAlert size={24} />
 			<div>
 				<h3 class="font-bold">Kunne ikke laste data</h3>
 				<div class="text-xs">{error.message} (Status: {error.status})</div>

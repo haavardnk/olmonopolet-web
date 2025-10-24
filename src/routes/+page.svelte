@@ -9,28 +9,28 @@
 
 	let { data } = $props();
 
-	let releases = $derived(data?.releases ? data.releases : []);
-	let error = $derived(data?.error || null);
-	let page = $derived(data?.page || 1);
-	let total = $derived(data?.total || 0);
-	let page_size = $derived(data?.page_size || 5);
+	let releases = $derived(data.releases || []);
+	let error = $derived(data.error || null);
+	let page = $derived(data.page || 1);
+	let total = $derived(data.total || 0);
+	let page_size = $derived(data.page_size || 5);
 
 	const itemListJson = $derived.by(() => {
 		if (releases.length === 0) return null;
 		return {
 			'@context': 'https://schema.org',
 			'@type': 'ItemList',
-			itemListElement: releases.map((r: any, i: number) => {
-				const stats = r.product_stats;
-				const description = `Produkter i lansering: ${stats.product_count} (${stats.beer_count} øl, ${stats.cider_count} sider, ${stats.mead_count} mjød)`;
+			itemListElement: releases.map((release, i) => {
+				const stats = release.stats;
+				const description = `Produkter i lansering: ${stats.productCount} (${stats.beerCount} øl, ${stats.ciderCount} sider, ${stats.meadCount} mjød)`;
 
 				return {
 					'@type': 'ListItem',
 					position: i + 1,
 					item: {
 						'@type': 'Thing',
-						name: `Nyhetslansering ${r.formatted_date}`,
-						url: `${PUBLIC_SITE_URL}/release/${slugify(r.name)}`,
+						name: `Nyhetslansering ${release.formattedDate}`,
+						url: `${PUBLIC_SITE_URL}/release/${slugify(release.name)}`,
 						description
 					}
 				};

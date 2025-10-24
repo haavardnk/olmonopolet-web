@@ -35,3 +35,20 @@ export type Product = {
     untappdUrl?: string | null;
     stores: Store[];
 };
+
+export type ProductStats = {
+    productCount: number;
+    beerCount: number;
+    ciderCount: number;
+    meadCount: number;
+};
+
+export type Release = {
+    name: string;
+    releaseDate: string;
+    formattedDate: string;
+    beerCount: number;
+    assortments: string[];
+    products: Product[];
+    stats: ProductStats;
+};
