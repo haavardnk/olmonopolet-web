@@ -3,8 +3,12 @@
 	import ProductList from '$lib/components/product-list/ProductList.svelte';
 	import { PUBLIC_SITE_URL } from '$env/static/public';
 	import { fly } from 'svelte/transition';
+	import { browser } from '$app/environment';
+	import { beforeNavigate, afterNavigate } from '$app/navigation';
 
 	let { data } = $props();
+
+	const hasSavedState = browser && sessionStorage.getItem('products-data') !== null;
 
 	let currentPage = $state(data.page || 1);
 	let hasMore = $state(data.hasMore || false);
@@ -12,6 +16,59 @@
 	let products = $state(data.products || []);
 
 	const total = $derived(data.total || 0);
+
+	afterNavigate(({ from }) => {
+		if (browser && from?.route.id?.startsWith('/products/')) {
+			const savedScroll = sessionStorage.getItem('products-scroll');
+			const savedData = sessionStorage.getItem('products-data');
+
+			if (savedData) {
+				try {
+					const parsed = JSON.parse(savedData);
+
+					if (parsed.searchParams === data.searchParams.toString()) {
+						products = parsed.products;
+						currentPage = parsed.currentPage;
+						hasMore = parsed.hasMore;
+
+						if (savedScroll) {
+							requestAnimationFrame(() => {
+								const scrollElement = document.querySelector('[data-infinite-wrapper]');
+								if (scrollElement) {
+									scrollElement.scrollTop = parseInt(savedScroll);
+								}
+							});
+						}
+					}
+				} catch (e) {
+					console.error('Failed to restore state:', e);
+				} finally {
+					sessionStorage.removeItem('products-scroll');
+					sessionStorage.removeItem('products-data');
+				}
+			}
+		}
+	});
+
+	beforeNavigate(({ willUnload, to }) => {
+		if (!willUnload && to?.route.id?.startsWith('/products/')) {
+			if (browser) {
+				const scrollElement = document.querySelector('[data-infinite-wrapper]');
+				const scrollPos = scrollElement?.scrollTop || 0;
+
+				sessionStorage.setItem('products-scroll', scrollPos.toString());
+				sessionStorage.setItem(
+					'products-data',
+					JSON.stringify({
+						products,
+						currentPage,
+						hasMore,
+						searchParams: data.searchParams.toString()
+					})
+				);
+			}
+		}
+	});
 
 	async function loadMore(searchParams: URLSearchParams) {
 		if (loading || !hasMore) return;
@@ -50,7 +107,7 @@
 		const newPage = data.page || 1;
 		const newHasMore = data.hasMore || false;
 
-		if (newPage === 1) {
+		if (!hasSavedState && newPage === 1) {
 			products = newProducts;
 			currentPage = newPage;
 			hasMore = newHasMore;
