@@ -8,9 +8,10 @@
 	const slug = slugify(release.name);
 </script>
 
-<div
+<a
+	href="/release/{slug}"
 	in:fly={{ y: 20, duration: 300, delay: index * 50 }}
-	class="card bg-base-200 hover:shadow-lg transition-all hover:translate-y-[-2px]"
+	class="card bg-base-200 hover:shadow-lg transition-all hover:translate-y-[-2px] block no-underline"
 >
 	<div class="card-body p-3 md:p-4">
 		<div class="flex flex-col md:flex-row justify-between gap-3 md:gap-4 items-start">
@@ -49,23 +50,14 @@
 				</div>
 			</div>
 		</div>
-		<div
-			class="flex flex-col md:flex-row items-start md:items-end justify-between mt-4 min-h-[3.5rem] pb-1 gap-2"
-		>
-			{#if Array.isArray(release.assortments) && release.assortments.length}
-				<div class="flex flex-wrap gap-2 md:w-auto justify-start">
-					{#each release.assortments as assortment}
-						<span class="badge badge-sm sm:badge-md badge-outline">
-							{assortment}
-						</span>
-					{/each}
-				</div>
-			{/if}
-			<div class="card-actions w-full md:w-auto justify-end">
-				<a href={`/release/${slug}`} class="btn btn-sm btn-neutral w-full md:w-auto">
-					Se detaljer
-				</a>
+		{#if Array.isArray(release.assortments) && release.assortments.length}
+			<div class="flex flex-wrap gap-2 md:w-auto justify-start mt-4">
+				{#each release.assortments as assortment}
+					<span class="badge badge-sm sm:badge-md badge-outline">
+						{assortment}
+					</span>
+				{/each}
 			</div>
-		</div>
+		{/if}
 	</div>
-</div>
+</a>

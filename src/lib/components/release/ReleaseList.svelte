@@ -3,6 +3,7 @@
 	import ReleaseCard from '$lib/components/release/ReleaseCard.svelte';
 	import { goto } from '$app/navigation';
 	import type { Release } from '$lib/types';
+	import { fly } from 'svelte/transition';
 
 	let {
 		releases,
@@ -30,7 +31,10 @@
 </script>
 
 <section class="max-w-4xl mx-auto" aria-label="Nyhetslanseringer">
-	<div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+	<div
+		class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6"
+		in:fly={{ y: 20, duration: 300 }}
+	>
 		<h2 class="text-2xl font-bold flex items-center gap-2">
 			<Calendar size={24} class="text-primary" />
 			Nyhetslanseringer
@@ -66,9 +70,7 @@
 	{:else}
 		<div class="grid gap-4">
 			{#each releases as release, index}
-				<article>
-					<ReleaseCard {release} {index} />
-				</article>
+				<ReleaseCard {release} {index} />
 			{/each}
 		</div>
 
