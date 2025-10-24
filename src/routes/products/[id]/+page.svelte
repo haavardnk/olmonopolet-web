@@ -5,12 +5,12 @@
 	import { ArrowLeft } from '@lucide/svelte';
 	import Header from '$lib/components/common/Header.svelte';
 	import Footer from '$lib/components/common/Footer.svelte';
-	import ProductHero from '$lib/components/product/ProductHero.svelte';
-	import ProductStats from '$lib/components/product/ProductStats.svelte';
-	import ProductCharacteristics from '$lib/components/product/ProductCharacteristics.svelte';
-	import ProductDetails from '$lib/components/product/ProductDetails.svelte';
-	import ProductProduction from '$lib/components/product/ProductProduction.svelte';
-	import StoreStock from '$lib/components/product/StoreStock.svelte';
+	import ProductHero from '$lib/components/product-detail/ProductHero.svelte';
+	import ProductStats from '$lib/components/product-detail/ProductStats.svelte';
+	import ProductCharacteristics from '$lib/components/product-detail/ProductCharacteristics.svelte';
+	import ProductDetails from '$lib/components/product-detail/ProductDetails.svelte';
+	import ProductProduction from '$lib/components/product-detail/ProductProduction.svelte';
+	import StoreStock from '$lib/components/product-detail/StoreStock.svelte';
 
 	let { data }: { data: PageData } = $props();
 	const product = $derived(data.product);
