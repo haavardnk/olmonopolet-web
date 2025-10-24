@@ -3,7 +3,7 @@ import type { Product } from '$lib/types';
 
 export const load = async ({ url }: { url: URL }) => {
 	const search = url.searchParams.get('search') || '';
-	const sortBy = url.searchParams.get('sort') || '';
+	const sortBy = url.searchParams.get('sort') || '-rating';
 	const store = url.searchParams.get('store') || '';
 	const priceFrom = url.searchParams.get('priceFrom') || '';
 	const priceTo = url.searchParams.get('priceTo') || '';

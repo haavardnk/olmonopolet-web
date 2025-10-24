@@ -89,7 +89,7 @@
 		const params = new URLSearchParams();
 
 		if (searchQuery) params.set('search', searchQuery);
-		if (sortBy !== 'vmp_name') params.set('sort', sortBy);
+		if (sortBy && sortBy !== '-rating') params.set('sort', sortBy);
 
 		Object.entries(filters).forEach(([key, value]) => {
 			if (value) params.set(key, value);
