@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Play, Apple, Chrome } from '@lucide/svelte';
 	import hero from '$lib/assets/hero.svg';
+	import { fly } from 'svelte/transition';
 
 	import {
 		PUBLIC_APP_STORE_URL,
@@ -14,16 +15,21 @@
 <div class="hero py-12 bg-base-200">
 	<div class="hero-content text-center">
 		<div class="max-w-md">
-			<div class="relative flex items-center justify-center">
+			<div class="relative flex items-center justify-center" in:fly={{ y: 20, duration: 300 }}>
 				<img src={hero} alt="Ølmonopolet hero" class="w-56 h-56 object-contain" />
 			</div>
 
-			<h1 class="text-4xl font-bold mb-4">{PUBLIC_SITE_TITLE}</h1>
-			<p class="text-lg opacity-80 mb-8">
-				{PUBLIC_SITE_DESCRIPTION}
-			</p>
+			<div in:fly={{ y: 20, duration: 300, delay: 100 }}>
+				<h1 class="text-4xl font-bold mb-4">{PUBLIC_SITE_TITLE}</h1>
+				<p class="text-lg opacity-80 mb-8">
+					{PUBLIC_SITE_DESCRIPTION}
+				</p>
+			</div>
 
-			<div class="flex flex-col sm:flex-row justify-center gap-4 max-w-md mx-auto">
+			<div
+				class="flex flex-col sm:flex-row justify-center gap-4 max-w-md mx-auto"
+				in:fly={{ y: 20, duration: 300, delay: 200 }}
+			>
 				<a
 					href={PUBLIC_GOOGLE_PLAY_URL}
 					class="btn btn-outline border-2 hover:bg-primary hover:text-primary-content hover:border-primary transition-all duration-300 group"

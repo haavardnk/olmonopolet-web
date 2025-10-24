@@ -5,6 +5,7 @@
 	import StarRating from '$lib/components/common/StarRating.svelte';
 	import { ArrowLeft, ExternalLink, TriangleAlert, Search, Info } from '@lucide/svelte';
 	import { browser } from '$app/environment';
+	import { fly } from 'svelte/transition';
 
 	let { data }: { data: PageData } = $props();
 	const product = $derived(data.product);
@@ -57,7 +58,7 @@
 		<div class="bg-base-200">
 			<div class="container mx-auto px-4 py-8">
 				<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-					<div class="space-y-4">
+					<div class="space-y-4" in:fly={{ y: 20, duration: 300 }}>
 						<div class="flex justify-center">
 							<img
 								src={product.image}
@@ -67,7 +68,7 @@
 						</div>
 					</div>
 
-					<div class="space-y-6">
+					<div class="space-y-6" in:fly={{ y: 20, duration: 300, delay: 100 }}>
 						<div>
 							<h1 class="text-4xl font-bold text-base-content mb-2">{product.name}</h1>
 							<p class="text-xl text-base-content/70">{product.style || 'Øl'}</p>
@@ -229,7 +230,7 @@
 
 		<div class="container mx-auto px-4 py-12">
 			<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-				<div class="space-y-6">
+				<div class="space-y-6" in:fly={{ y: 20, duration: 300, delay: 200 }}>
 					{#if product.description}
 						<div class="card bg-base-100 shadow-xl">
 							<div class="card-body">
@@ -276,7 +277,7 @@
 					{/if}
 				</div>
 
-				<div class="space-y-6">
+				<div class="space-y-6" in:fly={{ y: 20, duration: 300, delay: 300 }}>
 					<div class="card bg-base-100 shadow-xl">
 						<div class="card-body">
 							<h2 class="card-title text-2xl mb-4">Produksjonsinformasjon</h2>
@@ -331,7 +332,7 @@
 			</div>
 		</div>
 
-		<div class="bg-base-200 py-12">
+		<div class="bg-base-200 py-12" in:fly={{ y: 20, duration: 300, delay: 400 }}>
 			<div class="container mx-auto px-4">
 				<h2 class="text-3xl font-bold mb-6 text-base-content">Butikker med varen på lager</h2>
 
