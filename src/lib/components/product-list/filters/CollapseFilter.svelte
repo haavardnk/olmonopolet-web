@@ -88,13 +88,17 @@
 	});
 </script>
 
-<div class="collapse collapse-arrow bg-base-100 relative" bind:this={collapseElement}>
+<div
+	class="collapse collapse-arrow relative"
+	class:bg-base-100={isOpen}
+	bind:this={collapseElement}
+>
 	<input type="checkbox" bind:checked={isOpen} />
-	<div class="collapse-title text-sm font-medium py-2">
+	<div class="collapse-title text-xs font-medium py-1.5 min-h-0">
 		<div class="flex items-center gap-2">
 			<span>{title}</span>
 			{#if computedSelectedCount > 0}
-				<span class="badge badge-primary badge-sm">{computedSelectedCount}</span>
+				<span class="badge badge-primary badge-xs">{computedSelectedCount}</span>
 			{/if}
 		</div>
 	</div>
@@ -106,15 +110,15 @@
 				e.stopPropagation();
 				onReset();
 			}}
-			class="btn btn-ghost btn-xs absolute top-1.5 right-10 z-10"
+			class="btn btn-ghost btn-xs absolute top-0.5 right-10 z-10"
 			aria-label="Tilbakestill {title}"
 		>
-			<X size={14} />
+			<X size={12} />
 		</button>
 	{/if}
-	<div class="collapse-content">
+	<div class="collapse-content pt-1 pb-2">
 		{#if showSearch}
-			<label class="input input-sm flex items-center gap-2 mb-2">
+			<label class="input input-sm flex items-center gap-2 mb-1.5">
 				<Search size={14} class="text-base-content/50" />
 				<input type="text" placeholder="Søk..." class="flex-1" bind:value={searchQuery} />
 				{#if searchQuery}
@@ -131,19 +135,21 @@
 				<button
 					type="button"
 					onclick={() => onSelectAllFiltered && items && onSelectAllFiltered(items)}
-					class="btn btn-ghost btn-xs w-full mb-2"
+					class="btn btn-ghost btn-xs w-full mb-1.5"
 				>
 					Velg alle ({items?.length})
 				</button>
 			{/if}
 		{/if}
 		{#if hasItems && items && selectedValues && onChange}
-			<div class="space-y-1 max-h-64 overflow-y-auto">
+			<div class="space-y-0.5 max-h-64 overflow-y-auto">
 				{#if isLoading}
-					<p class="text-xs text-base-content/50 py-2">{loadingMessage}</p>
+					<p class="text-xs text-base-content/50 py-1">{loadingMessage}</p>
 				{:else if items.length > 0}
 					{#each items as item}
-						<label class="flex items-center gap-2 cursor-pointer hover:bg-base-200 p-1 rounded">
+						<label
+							class="flex items-center gap-2 cursor-pointer hover:bg-base-200 px-1 py-0.5 rounded"
+						>
 							<input
 								type="checkbox"
 								class="checkbox checkbox-xs checkbox-primary"
@@ -151,7 +157,7 @@
 								onchange={() => onChange(item.value)}
 							/>
 							<div class="flex-1 flex items-center justify-between">
-								<span class="text-sm">{item.label}</span>
+								<span class="text-xs">{item.label}</span>
 								{#if item.meta}
 									<span class="text-xs text-base-content/50 ml-2">{item.meta}</span>
 								{/if}
@@ -159,7 +165,7 @@
 						</label>
 					{/each}
 				{:else}
-					<p class="text-xs text-base-content/50 py-2">{emptyMessage}</p>
+					<p class="text-xs text-base-content/50 py-1">{emptyMessage}</p>
 				{/if}
 			</div>
 		{:else if children}

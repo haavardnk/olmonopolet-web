@@ -288,7 +288,7 @@
 	}
 </script>
 
-<div class="space-y-2">
+<div class="space-y-1">
 	<RangeFilter
 		title="Pris"
 		bind:fromValue={filters.priceFrom}

@@ -23,10 +23,12 @@
 	} = $props();
 
 	let activeFiltersCount = $state(0);
+	let desktopFiltersScrollContainer: HTMLDivElement;
+	let previousActiveFiltersCount = $state(0);
+	let scrollContainer: HTMLDivElement;
 	let searchQuery = $state(searchParams.get('search') || '');
 	let showMobileFilters = $state(false);
 	let sortBy = $state(searchParams.get('sort') || '-rating');
-	let scrollContainer: HTMLDivElement;
 
 	let filters = $state({
 		abvFrom: searchParams.get('abvFrom') || '',
@@ -46,8 +48,27 @@
 
 	const loadedCount = $derived(products.length);
 
+	const FILTER_BUTTON_HEIGHT = 32;
+	const SLIDE_TRANSITION_DURATION = 200;
+
+	function compensateScrollForFilterButton(newCount: number) {
+		if (previousActiveFiltersCount === 0 && newCount > 0) {
+			setTimeout(() => {
+				desktopFiltersScrollContainer?.scrollBy({
+					top: FILTER_BUTTON_HEIGHT,
+					behavior: 'smooth'
+				});
+			}, SLIDE_TRANSITION_DURATION);
+		} else if (previousActiveFiltersCount > 0 && newCount === 0) {
+			desktopFiltersScrollContainer?.scrollBy({ top: -FILTER_BUTTON_HEIGHT, behavior: 'smooth' });
+		}
+	}
+
 	$effect(() => {
-		activeFiltersCount = Object.values(filters).filter((v) => v !== '').length;
+		const newCount = Object.values(filters).filter((v) => v !== '').length;
+		compensateScrollForFilterButton(newCount);
+		previousActiveFiltersCount = newCount;
+		activeFiltersCount = newCount;
 	});
 
 	function clearFilters() {
@@ -114,36 +135,45 @@
 	<div class="drawer-content"></div>
 	<div class="drawer-side z-50">
 		<label for="filter-drawer" class="drawer-overlay"></label>
-		<div class="bg-base-100 w-80 min-h-full p-4 overflow-y-auto space-y-2">
-			<div class="flex items-center justify-between mb-2">
-				<h2 class="text-xl font-bold">Filtre</h2>
-				<button
-					onclick={() => (showMobileFilters = false)}
-					class="btn btn-ghost btn-sm btn-circle"
-					aria-label="Lukk filtre"
-				>
-					<X size={20} />
-				</button>
-			</div>
-			{#if activeFiltersCount > 0}
-				<div class="flex items-center justify-end">
-					<button onclick={clearFilters} class="btn btn-ghost btn-xs">
-						<X size={14} />
-						Fjern ({activeFiltersCount})
+		<div class="bg-base-100 w-80 min-h-full flex flex-col">
+			<div
+				class="sticky top-0 bg-base-100 border-b border-base-content/10 px-3 py-2 space-y-2 z-10"
+			>
+				<div class="flex items-center justify-between">
+					<h2 class="text-lg font-bold">Filtre</h2>
+					<button
+						onclick={() => (showMobileFilters = false)}
+						class="btn btn-ghost btn-sm btn-circle"
+						aria-label="Lukk filtre"
+					>
+						<X size={20} />
 					</button>
 				</div>
-			{/if}
-			<ProductFilters bind:filters onFilterChange={handleFilterChange} />
+				{#if activeFiltersCount > 0}
+					<div transition:slide={{ duration: 200 }}>
+						<button onclick={clearFilters} class="btn btn-ghost btn-xs w-full justify-start">
+							<X size={14} />
+							Fjern alle filtre ({activeFiltersCount})
+						</button>
+					</div>
+				{/if}
+			</div>
+			<div class="flex-1 overflow-y-auto px-3 py-2">
+				<ProductFilters bind:filters onFilterChange={handleFilterChange} />
+			</div>
 		</div>
 	</div>
 </div>
 
 <div class="flex h-full">
-	<aside class="hidden lg:block w-80 bg-base-200 border-r border-base-content/10 overflow-y-auto">
-		<div class="sticky top-0 p-4 space-y-2">
-			<div class="bg-base-100 p-3 rounded-lg">
+	<aside class="hidden lg:flex lg:flex-col w-80 bg-base-200 border-r border-base-content/10">
+		<div
+			class="sticky top-0 bg-base-200 border-b border-base-content/10 px-3 py-2 space-y-1.5 z-10"
+		>
+			<div class="space-y-1">
+				<div class="text-xs font-medium text-base-content/70 px-1">Søk</div>
 				<label class="input input-sm flex items-center gap-2">
-					<Search size={18} class="text-base-content/50" />
+					<Search size={16} class="text-base-content/50" />
 					<input
 						type="text"
 						placeholder="Søk etter produkt..."
@@ -163,8 +193,8 @@
 				</label>
 			</div>
 
-			<div class="bg-base-100 p-3 rounded-lg">
-				<div class="text-sm font-medium mb-2">Sorter etter</div>
+			<div class="space-y-1">
+				<div class="text-xs font-medium text-base-content/70 px-1">Sorter etter</div>
 				<select bind:value={sortBy} onchange={handleSortChange} class="select select-sm w-full">
 					{#each SORT_LABELS as label}
 						<option value={SORT_OPTIONS[label]}>{label}</option>
@@ -173,14 +203,15 @@
 			</div>
 
 			{#if activeFiltersCount > 0}
-				<div class="flex items-center justify-end">
-					<button onclick={clearFilters} class="btn btn-ghost btn-xs">
+				<div transition:slide={{ duration: 200 }}>
+					<button onclick={clearFilters} class="btn btn-ghost btn-xs w-full justify-start">
 						<X size={14} />
-						Fjern ({activeFiltersCount})
+						Fjern alle filtre ({activeFiltersCount})
 					</button>
 				</div>
 			{/if}
-
+		</div>
+		<div class="flex-1 overflow-y-auto px-3 py-2" bind:this={desktopFiltersScrollContainer}>
 			<ProductFilters bind:filters onFilterChange={handleFilterChange} />
 		</div>
 	</aside>

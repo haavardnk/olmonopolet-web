@@ -28,12 +28,12 @@
 	const hasValue = $derived(fromValue !== '' || toValue !== '');
 </script>
 
-<div class="bg-base-100 p-3 rounded-lg">
-	<div class="flex items-center justify-between mb-2">
-		<div class="text-sm font-medium">{title}</div>
+<div class="px-2 py-1.5">
+	<div class="flex items-center justify-between mb-1.5">
+		<div class="text-xs font-medium text-base-content/70">{title}</div>
 		{#if hasValue}
 			<button onclick={onReset} class="btn btn-ghost btn-xs" aria-label="Tilbakestill {title}">
-				<X size={14} />
+				<X size={12} />
 			</button>
 		{/if}
 	</div>
