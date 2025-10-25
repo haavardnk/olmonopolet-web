@@ -50,8 +50,9 @@
 		onSelectAllFiltered && searchQuery && items && items.length > 0 && !isLoading
 	);
 
-	// Convert selectedValues to a plain array to avoid proxy issues
 	const selectedValuesArray = $derived(selectedValues ? [...selectedValues] : []);
+
+	const selectedValuesSet = $derived(new Set(selectedValuesArray));
 
 	function findScrollableParent(element: HTMLElement): HTMLElement | null {
 		let parent = element.parentElement;
@@ -146,7 +147,7 @@
 							<input
 								type="checkbox"
 								class="checkbox checkbox-xs checkbox-primary"
-								checked={selectedValuesArray.includes(item.value)}
+								checked={selectedValuesSet.has(item.value)}
 								onchange={() => onChange(item.value)}
 							/>
 							<div class="flex-1 flex items-center justify-between">
