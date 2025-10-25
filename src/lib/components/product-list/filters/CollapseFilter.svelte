@@ -1,9 +1,9 @@
-<script lang="ts">
+<script lang="ts" generics="T extends string | number = string">
 	import { Search, X } from '@lucide/svelte';
 	import type { Snippet } from 'svelte';
 
 	type Item = {
-		value: string;
+		value: T;
 		label: string;
 		meta?: string;
 	};
@@ -32,8 +32,8 @@
 		onReset: () => void;
 		children?: Snippet;
 		items?: Item[];
-		selectedValues?: string[];
-		onChange?: (value: string) => void;
+		selectedValues?: T[];
+		onChange?: (value: T) => void;
 		onSelectAllFiltered?: (items: Item[]) => void;
 		isLoading?: boolean;
 		emptyMessage?: string;
@@ -49,6 +49,9 @@
 	const showSelectAllButton = $derived(
 		onSelectAllFiltered && searchQuery && items && items.length > 0 && !isLoading
 	);
+
+	// Convert selectedValues to a plain array to avoid proxy issues
+	const selectedValuesArray = $derived(selectedValues ? [...selectedValues] : []);
 
 	function findScrollableParent(element: HTMLElement): HTMLElement | null {
 		let parent = element.parentElement;
@@ -143,7 +146,7 @@
 							<input
 								type="checkbox"
 								class="checkbox checkbox-xs checkbox-primary"
-								checked={selectedValues.includes(item.value)}
+								checked={selectedValuesArray.includes(item.value)}
 								onchange={() => onChange(item.value)}
 							/>
 							<div class="flex-1 flex items-center justify-between">

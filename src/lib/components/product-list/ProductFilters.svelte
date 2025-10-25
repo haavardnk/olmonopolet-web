@@ -40,7 +40,7 @@
 		filters.productSelection ? filters.productSelection.split(',') : []
 	);
 	let selectedReleases = $state<string[]>(filters.release ? filters.release.split(',') : []);
-	let selectedStores = $state<string[]>(filters.store ? filters.store.split(',') : []);
+	let selectedStores = $state<number[]>(filters.store ? filters.store.split(',').map(Number) : []);
 	let selectedStyles = $state<string[]>(filters.style ? filters.style.split(',') : []);
 	let stores = $state<Store[]>([]);
 	let storesLoading = $state(true);
@@ -70,11 +70,14 @@
 		let filtered = stores.filter((store) =>
 			store.name.toLowerCase().includes(storeSearchQuery.toLowerCase())
 		);
-			return (
-				selectedStoreIds.has(store.store_id) ||
-				store.name.toLowerCase().includes(storeSearchQuery.toLowerCase())
+
+		if (selectedStores.length > 0) {
+			const filteredIds = new Set(filtered.map((s) => s.store_id));
+			const selectedButNotFiltered = stores.filter(
+				(store) => selectedStores.includes(store.store_id) && !filteredIds.has(store.store_id)
 			);
-		});
+			filtered = [...selectedButNotFiltered, ...filtered];
+		}
 
 		if (userLocation) {
 			const location = userLocation;
@@ -112,16 +115,26 @@
 		releases.map((release) => ({ value: release.name, label: release.name }))
 	);
 
-	const storeItems = $derived.by(() => {
-		return filteredStores.map((store) => ({
-			value: store.store_id,
-			label: store.name,
-			meta: userLocation
-				? `${calculateDistance(userLocation.lat, userLocation.lng, store.gps_lat, store.gps_long).toFixed(1)} km`
-				: undefined
-		}));
-	});
+	const storeItems = $derived(
+		filteredStores.map((store) => {
+			const item: { value: number; label: string; meta?: string } = {
+				value: store.store_id,
+				label: store.name
+			};
 
+			if (userLocation) {
+				const distance = calculateDistance(
+					userLocation.lat,
+					userLocation.lng,
+					store.gps_lat,
+					store.gps_long
+				);
+				item.meta = `${distance.toFixed(1)} km`;
+			}
+
+			return item;
+		})
+	);
 	const styleItems = $derived(filteredStyles.map((style) => ({ value: style, label: style })));
 
 	$effect(() => {
@@ -134,7 +147,7 @@
 		selectedDeliveryOptions = filters.deliveryOptions ? filters.deliveryOptions.split(',') : [];
 		selectedProductSelections = filters.productSelection ? filters.productSelection.split(',') : [];
 		selectedReleases = filters.release ? filters.release.split(',') : [];
-		selectedStores = filters.store ? filters.store.split(',') : [];
+		selectedStores = filters.store ? filters.store.split(',').map(Number) : [];
 		selectedStyles = filters.style ? filters.style.split(',') : [];
 	});
 
@@ -228,7 +241,7 @@
 		onFilterChange();
 	}
 
-	function toggleSelection(array: string[], value: string) {
+	function toggleSelection<T extends string | number>(array: T[], value: T): T[] {
 		const index = array.indexOf(value);
 		if (index > -1) {
 			array.splice(index, 1);
@@ -238,38 +251,38 @@
 		return [...array];
 	}
 
-	function updateMultiSelectFilter(
-		selectedArray: string[],
-		value: string,
+	function updateMultiSelectFilter<T extends string | number>(
+		selectedArray: T[],
+		value: T,
 		filterKey: keyof typeof filters
-	) {
+	): T[] {
 		const newArray = toggleSelection(selectedArray, value);
 
 		isInternalUpdate = true;
 		if (filterKey === 'allergens') {
-			const allergenKeywords = newArray
+			const allergenKeywords = (newArray as string[])
 				.map((label) => ALLERGENS.find((a) => a.label === label)?.value)
 				.filter(Boolean)
 				.join(',');
 			filters[filterKey] = allergenKeywords;
 		} else {
-			filters[filterKey] = newArray.join(',');
+			filters[filterKey] = newArray.map(String).join(',');
 		}
 
 		onFilterChange();
 		return newArray;
 	}
 
-	function selectAllFiltered(
-		currentSelection: string[],
-		filteredItems: { value: string; label: string }[],
+	function selectAllFiltered<T extends string | number>(
+		currentSelection: T[],
+		filteredItems: { value: T; label: string }[],
 		filterKey: keyof typeof filters
-	) {
+	): T[] {
 		const allFilteredValues = filteredItems.map((item) => item.value);
 		const newSelection = [...new Set([...currentSelection, ...allFilteredValues])];
 
 		isInternalUpdate = true;
-		filters[filterKey] = newSelection.join(',');
+		filters[filterKey] = newSelection.map(String).join(',');
 		onFilterChange();
 		return newSelection;
 	}

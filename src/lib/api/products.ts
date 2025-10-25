@@ -19,7 +19,7 @@ export interface ProductFilters {
 }
 
 export interface Store {
-	store_id: string;
+	store_id: number;
 	name: string;
 	gps_lat: number;
 	gps_long: number;
