@@ -26,6 +26,7 @@
 	let searchQuery = $state(searchParams.get('search') || '');
 	let showMobileFilters = $state(false);
 	let sortBy = $state(searchParams.get('sort') || '-rating');
+	let scrollContainer: HTMLDivElement;
 
 	let filters = $state({
 		abvFrom: searchParams.get('abvFrom') || '',
@@ -96,6 +97,10 @@
 		});
 
 		goto(`/products?${params.toString()}`, { replaceState: true });
+
+		if (scrollContainer) {
+			scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
+		}
 	}
 </script>
 
@@ -233,7 +238,7 @@
 			</div>
 		</div>
 
-		<div class="flex-1 overflow-y-auto" data-infinite-wrapper>
+		<div class="flex-1 overflow-y-auto" data-infinite-wrapper bind:this={scrollContainer}>
 			<div class="p-4 lg:p-6">
 				<div class="mb-4 text-sm text-base-content/70">
 					Viser {loadedCount} av {total.toLocaleString('nb-NO')} produkter
