@@ -15,8 +15,13 @@
 	let hasMore = $state(data.hasMore || false);
 	let loading = $state(false);
 	let products = $state(data.products || []);
+	let canGoBack = $state(browser && sessionStorage.getItem('hasNavigated') === 'true');
 
 	const total = $derived(data.total || 0);
+
+	function goBack() {
+		window.history.back();
+	}
 
 	afterNavigate(({ from }) => {
 		if (browser && from?.route.id?.startsWith('/products/')) {
@@ -139,10 +144,21 @@
 <div class="h-screen flex flex-col">
 	<Header showSocialLinks={false} showMenu={false}>
 		{#snippet right()}
-			<a href="/" class="btn btn-ghost btn-sm" aria-label="Gå tilbake til forsiden">
-				<ArrowLeft size={16} />
-				Tilbake
-			</a>
+			{#if canGoBack}
+				<button
+					onclick={goBack}
+					class="btn btn-ghost btn-sm"
+					aria-label="Gå tilbake til forrige side"
+				>
+					<ArrowLeft size={16} />
+					Tilbake
+				</button>
+			{:else}
+				<a href="/" class="btn btn-ghost btn-sm" aria-label="Gå tilbake til forsiden">
+					<ArrowLeft size={16} />
+					Tilbake
+				</a>
+			{/if}
 		{/snippet}
 	</Header>
 

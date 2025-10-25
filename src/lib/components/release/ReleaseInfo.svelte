@@ -1,9 +1,11 @@
 <script lang="ts">
 	import type { Release } from '$lib/types';
 	import { fly } from 'svelte/transition';
-	import { Calendar } from '@lucide/svelte';
+	import { Calendar, Expand } from '@lucide/svelte';
 
 	let { release }: { release: Release } = $props();
+
+	const releaseFilter = $derived(release.name.replace(/-/g, '+'));
 </script>
 
 <div class="card bg-base-200 mb-8" in:fly={{ y: 20, duration: 300 }}>
@@ -55,6 +57,12 @@
 					</div>
 				{/if}
 			</div>
+			<div class="flex justify-end">
+				<a href="/products/?release={releaseFilter}" class="btn btn-outline btn-sm w-full">
+					<Expand size={16} />
+					Detaljert visning
+				</a>
+			</div>
 		</div>
 
 		<div class="hidden lg:flex lg:flex-col gap-6">
@@ -90,12 +98,23 @@
 			</div>
 
 			{#if release.assortments && release.assortments.length > 0}
-				<div>
+				<div class="flex justify-between items-center">
 					<div class="flex flex-wrap gap-2">
 						{#each release.assortments as assortment}
 							<span class="badge badge-md badge-outline">{assortment}</span>
 						{/each}
 					</div>
+					<a href="/products/?release={releaseFilter}" class="btn btn-outline">
+						<Expand size={18} />
+						Detaljert visning
+					</a>
+				</div>
+			{:else}
+				<div class="flex justify-end">
+					<a href="/products/?release={releaseFilter}" class="btn btn-outline">
+						<Expand size={18} />
+						Detaljert visning
+					</a>
 				</div>
 			{/if}
 		</div>
