@@ -19,6 +19,7 @@
 		items,
 		selectedValues = $bindable(),
 		onChange,
+		onSelectAllFiltered,
 		isLoading = false,
 		emptyMessage = 'Ingen resultater funnet',
 		loadingMessage = 'Laster...'
@@ -33,6 +34,7 @@
 		items?: Item[];
 		selectedValues?: string[];
 		onChange?: (value: string) => void;
+		onSelectAllFiltered?: (items: Item[]) => void;
 		isLoading?: boolean;
 		emptyMessage?: string;
 		loadingMessage?: string;
@@ -43,6 +45,9 @@
 	const hasItems = $derived(items !== undefined);
 	const computedSelectedCount = $derived(
 		selectedCount > 0 ? selectedCount : selectedValues?.length || 0
+	);
+	const showSelectAllButton = $derived(
+		onSelectAllFiltered && searchQuery && items && items.length > 0 && !isLoading
 	);
 
 	function findScrollableParent(element: HTMLElement): HTMLElement | null {
@@ -118,9 +123,18 @@
 					</button>
 				{/if}
 			</label>
+			{#if showSelectAllButton}
+				<button
+					type="button"
+					onclick={() => onSelectAllFiltered && items && onSelectAllFiltered(items)}
+					class="btn btn-ghost btn-xs w-full mb-2"
+				>
+					Velg alle ({items?.length})
+				</button>
+			{/if}
 		{/if}
 		{#if hasItems && items && selectedValues && onChange}
-			<div class="space-y-1 max-h-48 overflow-y-auto">
+			<div class="space-y-1 max-h-64 overflow-y-auto">
 				{#if isLoading}
 					<p class="text-xs text-base-content/50 py-2">{loadingMessage}</p>
 				{:else if items.length > 0}
