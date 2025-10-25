@@ -181,3 +181,15 @@ export async function fetchReleases(): Promise<ReleaseListResponse> {
 
 	return response.json();
 }
+
+export async function fetchStyles(): Promise<string[]> {
+	const url = `${API_URL}/beers/styles/`;
+
+	const response = await fetch(url);
+
+	if (!response.ok) {
+		throw new Error(`Failed to fetch styles: ${response.status} ${response.statusText}`);
+	}
+
+	return response.json();
+}

@@ -1,12 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import {
-		ALLERGENS,
-		BEER_STYLES,
-		COUNTRY_NAMES,
-		DELIVERY_OPTIONS,
-		PRODUCT_SELECTIONS
-	} from '$lib/constants';
+	import { ALLERGENS, COUNTRY_NAMES, DELIVERY_OPTIONS, PRODUCT_SELECTIONS } from '$lib/constants';
 	import type { Release, Store } from '$lib/api/products';
 	import FilterCollapse from '$lib/components/product-list/filters/CollapseFilter.svelte';
 	import RangeFilter from '$lib/components/product-list/filters/RangeFilter.svelte';
@@ -51,6 +45,8 @@
 	let stores = $state<Store[]>([]);
 	let storesLoading = $state(true);
 	let storeSearchQuery = $state('');
+	let styles = $state<string[]>([]);
+	let stylesLoading = $state(true);
 	let styleSearchQuery = $state('');
 	let userLocation = $state<{ lat: number; lng: number } | null>(null);
 
@@ -74,6 +70,11 @@
 		let filtered = stores.filter((store) =>
 			store.name.toLowerCase().includes(storeSearchQuery.toLowerCase())
 		);
+			return (
+				selectedStoreIds.has(store.store_id) ||
+				store.name.toLowerCase().includes(storeSearchQuery.toLowerCase())
+			);
+		});
 
 		if (userLocation) {
 			const location = userLocation;
@@ -88,7 +89,7 @@
 	});
 
 	const filteredStyles = $derived(
-		BEER_STYLES.filter((style) => style.toLowerCase().includes(styleSearchQuery.toLowerCase()))
+		styles.filter((style) => style.toLowerCase().includes(styleSearchQuery.toLowerCase()))
 	);
 
 	const allergenItems = $derived(
@@ -172,6 +173,17 @@
 			releases = [];
 		} finally {
 			releasesLoading = false;
+		}
+
+		try {
+			const response = await fetch('/api/styles');
+			const data = await response.json();
+			styles = data.styles || [];
+		} catch (error) {
+			console.error('Failed to fetch styles:', error);
+			styles = [];
+		} finally {
+			stylesLoading = false;
 		}
 	});
 
@@ -319,6 +331,8 @@
 		bind:isOpen={openSections.style}
 		showSearch={true}
 		bind:searchQuery={styleSearchQuery}
+		isLoading={stylesLoading}
+		loadingMessage="Laster stiler..."
 		emptyMessage="Ingen stiler funnet"
 		onReset={() => {
 			selectedStyles = resetMultiSelectFilter('style', (val) => (styleSearchQuery = val));
