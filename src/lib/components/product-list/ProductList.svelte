@@ -141,7 +141,8 @@
 <div class="flex h-full">
 	<aside class="hidden lg:block w-80 bg-base-200 border-r border-base-content/10 overflow-y-auto">
 		<div class="sticky top-0 p-4 space-y-2">
-			<div class="bg-base-100 p-3 rounded-lg">
+			<div class="px-3 space-y-1">
+				<div class="text-sm font-medium py-2">Søk</div>
 				<label class="input input-sm flex items-center gap-2">
 					<Search size={18} class="text-base-content/50" />
 					<input
@@ -163,8 +164,8 @@
 				</label>
 			</div>
 
-			<div class="bg-base-100 p-3 rounded-lg">
-				<div class="text-sm font-medium mb-2">Sorter etter</div>
+			<div class="px-3 space-y-1">
+				<div class="text-sm font-medium py-2">Sorter etter</div>
 				<select bind:value={sortBy} onchange={handleSortChange} class="select select-sm w-full">
 					{#each SORT_LABELS as label}
 						<option value={SORT_OPTIONS[label]}>{label}</option>

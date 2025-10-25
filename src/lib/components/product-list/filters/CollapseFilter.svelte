@@ -88,7 +88,7 @@
 	});
 </script>
 
-<div class="collapse collapse-arrow bg-base-100 relative" bind:this={collapseElement}>
+<div class="collapse collapse-arrow relative" class:bg-base-100={isOpen} bind:this={collapseElement}>
 	<input type="checkbox" bind:checked={isOpen} />
 	<div class="collapse-title text-sm font-medium py-2">
 		<div class="flex items-center gap-2">

@@ -28,7 +28,7 @@
 	const hasValue = $derived(fromValue !== '' || toValue !== '');
 </script>
 
-<div class="bg-base-100 p-3 rounded-lg">
+<div class="px-3 py-2">
 	<div class="flex items-center justify-between mb-2">
 		<div class="text-sm font-medium">{title}</div>
 		{#if hasValue}
