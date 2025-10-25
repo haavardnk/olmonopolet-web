@@ -247,6 +247,20 @@
 		onFilterChange();
 		return newArray;
 	}
+
+	function selectAllFiltered(
+		currentSelection: string[],
+		filteredItems: { value: string; label: string }[],
+		filterKey: keyof typeof filters
+	) {
+		const allFilteredValues = filteredItems.map((item) => item.value);
+		const newSelection = [...new Set([...currentSelection, ...allFilteredValues])];
+
+		isInternalUpdate = true;
+		filters[filterKey] = newSelection.join(',');
+		onFilterChange();
+		return newSelection;
+	}
 </script>
 
 <div class="space-y-2">
@@ -311,6 +325,9 @@
 		}}
 		onChange={(value) => {
 			selectedStyles = updateMultiSelectFilter(selectedStyles, value, 'style');
+		}}
+		onSelectAllFiltered={(items) => {
+			selectedStyles = selectAllFiltered(selectedStyles, items, 'style');
 		}}
 	/>
 
