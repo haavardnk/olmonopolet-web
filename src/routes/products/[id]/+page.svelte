@@ -49,14 +49,15 @@
 
 	<main class="flex-1 bg-base-100">
 		<div class="bg-base-200">
-			<div class="container mx-auto px-4 py-8">
-				<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+			<div class="container mx-auto px-4 py-4 sm:py-8">
+				<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
 					<div class="space-y-4" in:fly={{ y: 20, duration: 300 }}>
 						<div class="flex justify-center">
 							<img
 								src={product.image}
 								alt={product.name}
 								class="w-full h-auto max-h-[40vh] lg:max-h-[80vh] object-contain rounded-box"
+								style="clip-path: inset(0 round 0.5rem)"
 							/>
 						</div>
 					</div>
