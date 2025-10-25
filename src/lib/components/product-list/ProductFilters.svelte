@@ -8,8 +8,8 @@
 		PRODUCT_SELECTIONS
 	} from '$lib/constants';
 	import type { Release, Store } from '$lib/api/products';
-	import FilterCollapse from './FilterCollapse.svelte';
-	import RangeFilter from './RangeFilter.svelte';
+	import FilterCollapse from '$lib/components/product-list/filters/CollapseFilter.svelte';
+	import RangeFilter from '$lib/components/product-list/filters/RangeFilter.svelte';
 
 	let {
 		filters = $bindable(),
