@@ -16,6 +16,7 @@
 		searchQuery = $bindable(''),
 		onReset,
 		children,
+		itemLabel,
 		items,
 		selectedValues = $bindable(),
 		onChange,
@@ -31,6 +32,7 @@
 		searchQuery?: string;
 		onReset: () => void;
 		children?: Snippet;
+		itemLabel?: Snippet<[Item]>;
 		items?: Item[];
 		selectedValues?: T[];
 		onChange?: (value: T) => void;
@@ -157,9 +159,13 @@
 								onchange={() => onChange(item.value)}
 							/>
 							<div class="flex-1 flex items-center justify-between">
-								<span class="text-xs">{item.label}</span>
-								{#if item.meta}
-									<span class="text-xs text-base-content/50 ml-2">{item.meta}</span>
+								{#if itemLabel}
+									{@render itemLabel(item)}
+								{:else}
+									<span class="text-xs">{item.label}</span>
+									{#if item.meta}
+										<span class="text-xs text-base-content/50 ml-2">{item.meta}</span>
+									{/if}
 								{/if}
 							</div>
 						</label>

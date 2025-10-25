@@ -54,8 +54,12 @@ export const COUNTRIES = {
 	Østerrike: 'AT'
 } as const;
 
-export const COUNTRY_NAMES = Object.keys(COUNTRIES) as Array<keyof typeof COUNTRIES>;
-export const COUNTRY_CODES = Object.values(COUNTRIES);
-
 export type CountryName = keyof typeof COUNTRIES;
 export type CountryCode = (typeof COUNTRIES)[CountryName];
+
+export const COUNTRY_NAMES = Object.keys(COUNTRIES) as CountryName[];
+export const COUNTRY_CODES = Object.values(COUNTRIES);
+
+export function getCountryCode(countryName: string): CountryCode | undefined {
+	return COUNTRIES[countryName as CountryName];
+}

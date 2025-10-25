@@ -1,9 +1,16 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { ALLERGENS, COUNTRY_NAMES, DELIVERY_OPTIONS, PRODUCT_SELECTIONS } from '$lib/constants';
+	import {
+		ALLERGENS,
+		DELIVERY_OPTIONS,
+		PRODUCT_SELECTIONS,
+		getCountryCode,
+		COUNTRY_NAMES
+	} from '$lib/constants';
 	import type { Release, Store } from '$lib/api/products';
 	import FilterCollapse from '$lib/components/product-list/filters/CollapseFilter.svelte';
 	import RangeFilter from '$lib/components/product-list/filters/RangeFilter.svelte';
+	import CountryFlag from '$lib/components/common/CountryFlag.svelte';
 
 	let {
 		filters = $bindable(),
@@ -372,7 +379,14 @@
 		onChange={(value) => {
 			selectedCountries = updateMultiSelectFilter(selectedCountries, value, 'country');
 		}}
-	/>
+	>
+		{#snippet itemLabel(item)}
+			<div class="flex items-center gap-2">
+				<CountryFlag code={getCountryCode(item.label)} />
+				<span class="text-xs">{item.label}</span>
+			</div>
+		{/snippet}
+	</FilterCollapse>
 
 	<FilterCollapse
 		title="Produktutvalg"
