@@ -92,18 +92,6 @@
 
 	function clearSearch() {
 		searchQuery = '';
-		handleSearch();
-	}
-
-	function handleFilterChange() {
-		updateUrl();
-	}
-
-	function handleSearch() {
-		updateUrl();
-	}
-
-	function handleSortChange() {
 		updateUrl();
 	}
 
@@ -159,7 +147,7 @@
 				{/if}
 			</div>
 			<div class="flex-1 overflow-y-auto px-3 py-2">
-				<ProductFilters bind:filters onFilterChange={handleFilterChange} />
+				<ProductFilters bind:filters onFilterChange={updateUrl} />
 			</div>
 		</div>
 	</div>
@@ -179,7 +167,7 @@
 						placeholder="Søk etter produkt..."
 						class="flex-1"
 						bind:value={searchQuery}
-						onkeydown={(e) => e.key === 'Enter' && handleSearch()}
+						onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && updateUrl()}
 					/>
 					{#if searchQuery}
 						<button
@@ -195,7 +183,7 @@
 
 			<div class="space-y-1">
 				<div class="text-xs font-medium text-base-content/70 px-1">Sorter etter</div>
-				<select bind:value={sortBy} onchange={handleSortChange} class="select select-sm w-full">
+				<select bind:value={sortBy} onchange={updateUrl} class="select select-sm w-full">
 					{#each SORT_LABELS as label}
 						<option value={SORT_OPTIONS[label]}>{label}</option>
 					{/each}
@@ -212,7 +200,7 @@
 			{/if}
 		</div>
 		<div class="flex-1 overflow-y-auto px-3 py-2" bind:this={desktopFiltersScrollContainer}>
-			<ProductFilters bind:filters onFilterChange={handleFilterChange} />
+			<ProductFilters bind:filters onFilterChange={updateUrl} />
 		</div>
 	</aside>
 
@@ -243,7 +231,7 @@
 							placeholder="Søk..."
 							class="flex-1 text-sm"
 							bind:value={searchQuery}
-							onkeydown={(e) => e.key === 'Enter' && handleSearch()}
+							onkeydown={(e) => e.key === 'Enter' && updateUrl()}
 						/>
 						{#if searchQuery}
 							<button
@@ -258,7 +246,7 @@
 
 					<select
 						bind:value={sortBy}
-						onchange={handleSortChange}
+						onchange={updateUrl}
 						class="select select-sm w-32 md:w-64 ml-auto"
 					>
 						{#each SORT_LABELS as label}
