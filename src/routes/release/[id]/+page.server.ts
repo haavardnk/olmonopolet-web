@@ -2,7 +2,7 @@ import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
 import { API_URL } from '$env/static/private';
 import type { Product, Release, ProductStats } from '$lib/types';
-import { formatDate, slugify, unslugify, normalizeAssortmentName } from '$lib/utils';
+import { formatDate, slugify, unslugify, getAssortmentDisplayName } from '$lib/utils/helpers';
 
 export const load: PageServerLoad = async ({ params, fetch }) => {
 	const name = unslugify(params.id);
@@ -47,7 +47,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 			ibu: p.ibu,
 			alcoholUnits: p.alcohol_units,
 			country: p.country,
-			assortment: normalizeAssortmentName(p.product_selection),
+			assortment: getAssortmentDisplayName(p.product_selection),
 			vmpUrl: p.vmp_url,
 			untappdUrl: p.untpd_url,
 			stores: []
@@ -65,9 +65,9 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 			releaseDate: releaseInfo.release_date,
 			formattedDate: formatDate(releaseInfo.release_date),
 			beerCount: releaseInfo.beer_count,
-			assortments: (releaseInfo.product_selections || []).map(
-				(ps: string) => normalizeAssortmentName(ps) || ps
-			),
+			assortments: (releaseInfo.product_selections || [])
+				.map((ps: string) => getAssortmentDisplayName(ps))
+				.filter((name: string | null): name is string => name !== null),
 			products,
 			stats
 		};

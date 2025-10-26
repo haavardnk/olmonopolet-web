@@ -1,5 +1,6 @@
 import { fetchProducts, type ProductFilters } from '$lib/api/products';
 import type { Product } from '$lib/types';
+import { getAssortmentDisplayName } from '$lib/utils/helpers';
 
 export const load = async ({ url }: { url: URL }) => {
 	const search = url.searchParams.get('search') || '';
@@ -54,7 +55,7 @@ export const load = async ({ url }: { url: URL }) => {
 			strength: item.abv,
 			country: item.country,
 			countryCode: item.country_code,
-			assortment: item.product_selection,
+			assortment: getAssortmentDisplayName(item.product_selection),
 			vmpUrl: item.vmp_url,
 			untappdUrl: item.untpd_url,
 			stores: []

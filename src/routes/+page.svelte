@@ -5,7 +5,7 @@
 	import ReleaseList from '$lib/components/release/ReleaseList.svelte';
 
 	import { PUBLIC_SITE_URL, PUBLIC_SITE_TITLE, PUBLIC_SITE_DESCRIPTION } from '$env/static/public';
-	import { slugify } from '$lib/utils.js';
+	import { slugify } from '$lib/utils/helpers';
 
 	let { data } = $props();
 

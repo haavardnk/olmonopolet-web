@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Star, StarHalf } from '@lucide/svelte';
-	import { getStarRating } from '$lib/utils';
+	import { getStarRating } from '$lib/utils/helpers';
 
 	let {
 		rating,

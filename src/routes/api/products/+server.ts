@@ -1,6 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { fetchProducts, type ProductFilters } from '$lib/api/products';
+import { getAssortmentDisplayName } from '$lib/utils/helpers';
 
 export const GET: RequestHandler = async ({ url }) => {
 	const search = url.searchParams.get('search') || '';
@@ -55,7 +56,7 @@ export const GET: RequestHandler = async ({ url }) => {
 			strength: item.abv,
 			country: item.country,
 			countryCode: item.country_code,
-			assortment: item.product_selection,
+			assortment: getAssortmentDisplayName(item.product_selection),
 			vmpUrl: item.vmp_url,
 			untappdUrl: item.untpd_url,
 			stores: []

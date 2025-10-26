@@ -2,7 +2,7 @@ import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
 import { API_URL } from '$env/static/private';
 import type { Product, Store } from '$lib/types';
-import { normalizeAssortmentName, normalizeCharacteristic } from '$lib/utils';
+import { normalizeCharacteristic, getAssortmentDisplayName } from '$lib/utils/helpers';
 import logo from '$lib/assets/logo.png';
 
 export const load: PageServerLoad = async ({ params, fetch }) => {
@@ -59,7 +59,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 			brewery: apiData.brewery,
 			country: apiData.country,
 			countryCode: apiData.country_code,
-			assortment: normalizeAssortmentName(apiData.product_selection),
+			assortment: getAssortmentDisplayName(apiData.product_selection),
 			vmpUrl: apiData.vmp_url,
 			untappdUrl: apiData.untpd_url,
 			stores: apiData.all_stock
