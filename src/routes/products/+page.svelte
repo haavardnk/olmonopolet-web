@@ -75,7 +75,13 @@
 	});
 
 	async function loadMore(currentSearchParams: URLSearchParams) {
-		if (loading || !hasMore) return;
+		if (loading) {
+			return;
+		}
+
+		if (!hasMore) {
+			return;
+		}
 
 		loading = true;
 		const nextPage = currentPage + 1;
@@ -117,9 +123,10 @@
 		if (currentSearchParams !== previousSearchParams) {
 			products = newProducts;
 			currentPage = newPage;
-			hasMore = newHasMore;
 			previousSearchParams = currentSearchParams;
 		}
+
+		hasMore = newHasMore;
 	});
 </script>
 

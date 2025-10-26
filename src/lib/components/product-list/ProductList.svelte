@@ -29,6 +29,7 @@
 	let scrollContainer: HTMLDivElement;
 	let searchQuery = $state(searchParams.get('search') || '');
 	let showMobileFilters = $state(false);
+	let hasNavigatedWithinFilters = $state(false);
 
 	const initialSort = searchParams.get('sort') || '-rating';
 	let sortBy = $state<SortField>(
@@ -54,9 +55,6 @@
 
 	const loadedCount = $derived(products.length);
 
-	const FILTER_BUTTON_HEIGHT = 32;
-	const SLIDE_TRANSITION_DURATION = 200;
-
 	const currentSearchParams = $derived.by(() => {
 		const params = new URLSearchParams();
 
@@ -72,19 +70,18 @@
 		return params;
 	});
 
-	const infiniteKey = $derived(currentSearchParams.toString());
-	const isDataSynced = $derived(searchParams.toString() === infiniteKey);
+	const infiniteKey = $derived(searchParams.toString());
 
 	function compensateScrollForFilterButton(newCount: number) {
 		if (previousActiveFiltersCount === 0 && newCount > 0) {
 			setTimeout(() => {
 				desktopFiltersScrollContainer?.scrollBy({
-					top: FILTER_BUTTON_HEIGHT,
+					top: 32,
 					behavior: 'smooth'
 				});
-			}, SLIDE_TRANSITION_DURATION);
+			}, 200);
 		} else if (previousActiveFiltersCount > 0 && newCount === 0) {
-			desktopFiltersScrollContainer?.scrollBy({ top: -FILTER_BUTTON_HEIGHT, behavior: 'smooth' });
+			desktopFiltersScrollContainer?.scrollBy({ top: -32, behavior: 'smooth' });
 		}
 	}
 
@@ -136,7 +133,10 @@
 			if (value) params.set(key, value);
 		});
 
-		goto(`/products?${params.toString()}`);
+		const replaceState = hasNavigatedWithinFilters;
+		hasNavigatedWithinFilters = true;
+
+		goto(`/products?${params.toString()}`, { replaceState, noScroll: true });
 
 		if (scrollContainer) {
 			scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
@@ -274,44 +274,50 @@
 							<ProductCard {product} index={i} noTransition={true} />
 						{/each}
 					</div>
+				{/if}
 
-					{#if isDataSynced}
-						{#key infiniteKey}
-							<InfiniteLoading
-								forceUseInfiniteWrapper
-								distance={250}
-								on:infinite={async ({ detail: { loaded, complete } }) => {
-									if (!hasMore) {
-										complete();
-										return;
-									}
+				{#if products.length > 0 && total > products.length}
+					{#key infiniteKey}
+						<InfiniteLoading
+							forceUseInfiniteWrapper
+							distance={250}
+							on:infinite={async ({ detail: { loaded, complete } }) => {
+								if (!hasMore) {
+									complete();
+									return;
+								}
 
-									try {
-										await loadMore(currentSearchParams);
-										if (hasMore) {
-											loaded();
-										} else {
-											complete();
-										}
-									} catch (e) {
-										console.error('Infinite loading error:', e);
+								try {
+									await loadMore(currentSearchParams);
+									if (hasMore) {
+										loaded();
+									} else {
 										complete();
 									}
-								}}
-							>
-								<div slot="spinner" class="flex justify-center py-8">
-									<span class="loading loading-spinner loading-lg text-primary"></span>
-								</div>
-								<div slot="noMore" class="text-center py-8 text-base-content/50 text-sm">
-									Ingen flere produkter
-								</div>
-								<div slot="noResults" class="text-center py-8 text-base-content/50 text-sm">
-									Ingen produkter funnet
-								</div>
-							</InfiniteLoading>
-						{/key}
-					{/if}
-				{:else}
+								} catch (e) {
+									console.error('Infinite loading error:', e);
+									complete();
+								}
+							}}
+						>
+							<div slot="spinner" class="flex justify-center py-8">
+								<span class="loading loading-spinner loading-lg text-primary"></span>
+							</div>
+							<div slot="noMore" class="text-center py-8 text-base-content/50 text-sm">
+								Ingen flere produkter
+							</div>
+							<div slot="noResults" class="text-center py-8 text-base-content/50 text-sm">
+								Ingen produkter funnet
+							</div>
+						</InfiniteLoading>
+					{/key}
+				{/if}
+
+				{#if products.length > 0 && products.length >= total}
+					<div class="text-center py-8 text-base-content/50 text-sm">Ingen flere produkter</div>
+				{/if}
+
+				{#if products.length === 0}
 					<div class="text-center py-12">
 						<p class="text-lg text-base-content/70 mb-4">Ingen produkter funnet</p>
 						<p class="text-sm text-base-content/50">Prøv å justere søket eller filtrene dine</p>
