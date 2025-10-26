@@ -112,7 +112,7 @@
 				e.stopPropagation();
 				onReset();
 			}}
-			class="btn btn-ghost btn-xs absolute top-0.5 right-10 z-10"
+			class="btn btn-ghost btn-xs absolute top-1 right-10 z-10"
 			aria-label="Tilbakestill {title}"
 		>
 			<X size={12} />

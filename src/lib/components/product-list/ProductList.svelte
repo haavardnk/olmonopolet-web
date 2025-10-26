@@ -4,7 +4,7 @@
 	import { Funnel, Search, X, ArrowDownNarrowWide, ArrowUpWideNarrow } from '@lucide/svelte';
 	import { slide } from 'svelte/transition';
 	import InfiniteLoading from 'svelte-infinite-loading';
-	import { SORT_FIELD_LABELS, type SortField } from '$lib/constants';
+	import { SORT_FIELD_LABELS, type SortField } from '$lib/constants/sorting';
 	import ProductCard from '$lib/components/product/ProductCard.svelte';
 	import ProductFilters from '$lib/components/product-list/ProductFilters.svelte';
 	import SearchAndSort from '$lib/components/product-list/controls/SearchAndSort.svelte';

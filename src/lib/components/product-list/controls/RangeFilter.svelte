@@ -6,9 +6,6 @@
 		fromValue = $bindable(''),
 		toValue = $bindable(''),
 		unit = '',
-		placeholder = '∞',
-		min = 0,
-		max,
 		step = 1,
 		onChange,
 		onReset
@@ -17,9 +14,6 @@
 		fromValue?: string;
 		toValue?: string;
 		unit?: string;
-		placeholder?: string;
-		min?: number;
-		max?: number;
 		step?: number;
 		onChange: () => void;
 		onReset: () => void;
@@ -46,8 +40,7 @@
 				bind:value={fromValue}
 				onchange={onChange}
 				class="flex-1 w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-				{min}
-				{max}
+				min="0"
 				{step}
 			/>
 			{#if unit}
@@ -58,12 +51,11 @@
 			<span class="text-xs text-base-content/70 mr-1">Til:</span>
 			<input
 				type="number"
-				{placeholder}
+				placeholder="∞"
 				bind:value={toValue}
 				onchange={onChange}
 				class="flex-1 w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-				{min}
-				{max}
+				min="0"
 				{step}
 			/>
 			{#if unit}
