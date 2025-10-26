@@ -30,7 +30,6 @@
 	let searchQuery = $state(searchParams.get('search') || '');
 	let showMobileFilters = $state(false);
 
-	// Parse sort from URL (e.g., "-rating" -> field: "rating", descending: true)
 	const initialSort = searchParams.get('sort') || '-rating';
 	let sortBy = $state<SortField>(
 		initialSort.startsWith('-') ? (initialSort.slice(1) as SortField) : (initialSort as SortField)
@@ -72,6 +71,9 @@
 
 		return params;
 	});
+
+	const infiniteKey = $derived(currentSearchParams.toString());
+	const isDataSynced = $derived(searchParams.toString() === infiniteKey);
 
 	function compensateScrollForFilterButton(newCount: number) {
 		if (previousActiveFiltersCount === 0 && newCount > 0) {
@@ -134,7 +136,7 @@
 			if (value) params.set(key, value);
 		});
 
-		goto(`/products?${params.toString()}`, { replaceState: true });
+		goto(`/products?${params.toString()}`);
 
 		if (scrollContainer) {
 			scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
@@ -273,38 +275,42 @@
 						{/each}
 					</div>
 
-					<InfiniteLoading
-						forceUseInfiniteWrapper
-						distance={250}
-						on:infinite={async ({ detail: { loaded, complete } }) => {
-							if (!hasMore) {
-								complete();
-								return;
-							}
+					{#if isDataSynced}
+						{#key infiniteKey}
+							<InfiniteLoading
+								forceUseInfiniteWrapper
+								distance={250}
+								on:infinite={async ({ detail: { loaded, complete } }) => {
+									if (!hasMore) {
+										complete();
+										return;
+									}
 
-							try {
-								await loadMore(currentSearchParams);
-								if (hasMore) {
-									loaded();
-								} else {
-									complete();
-								}
-							} catch (e) {
-								console.error('Infinite loading error:', e);
-								complete();
-							}
-						}}
-					>
-						<div slot="spinner" class="flex justify-center py-8">
-							<span class="loading loading-spinner loading-lg text-primary"></span>
-						</div>
-						<div slot="noMore" class="text-center py-8 text-base-content/50 text-sm">
-							Ingen flere produkter
-						</div>
-						<div slot="noResults" class="text-center py-8 text-base-content/50 text-sm">
-							Ingen produkter funnet
-						</div>
-					</InfiniteLoading>
+									try {
+										await loadMore(currentSearchParams);
+										if (hasMore) {
+											loaded();
+										} else {
+											complete();
+										}
+									} catch (e) {
+										console.error('Infinite loading error:', e);
+										complete();
+									}
+								}}
+							>
+								<div slot="spinner" class="flex justify-center py-8">
+									<span class="loading loading-spinner loading-lg text-primary"></span>
+								</div>
+								<div slot="noMore" class="text-center py-8 text-base-content/50 text-sm">
+									Ingen flere produkter
+								</div>
+								<div slot="noResults" class="text-center py-8 text-base-content/50 text-sm">
+									Ingen produkter funnet
+								</div>
+							</InfiniteLoading>
+						{/key}
+					{/if}
 				{:else}
 					<div class="text-center py-12">
 						<p class="text-lg text-base-content/70 mb-4">Ingen produkter funnet</p>

@@ -9,8 +9,6 @@
 
 	let { data } = $props();
 
-	const hasSavedState = browser && sessionStorage.getItem('products-data') !== null;
-
 	let currentPage = $state(data.page || 1);
 	let hasMore = $state(data.hasMore || false);
 	let loading = $state(false);
@@ -24,7 +22,7 @@
 	}
 
 	afterNavigate(({ from }) => {
-		if (browser && from?.route.id?.startsWith('/products/')) {
+		if (browser && from?.route.id?.startsWith('/products/[id]')) {
 			const savedScroll = sessionStorage.getItem('products-scroll');
 			const savedData = sessionStorage.getItem('products-data');
 
@@ -57,7 +55,7 @@
 	});
 
 	beforeNavigate(({ willUnload, to }) => {
-		if (!willUnload && to?.route.id?.startsWith('/products/')) {
+		if (!willUnload && to?.route.id?.startsWith('/products/[id]')) {
 			if (browser) {
 				const scrollElement = document.querySelector('[data-infinite-wrapper]');
 				const scrollPos = scrollElement?.scrollTop || 0;
@@ -116,7 +114,7 @@
 		const newHasMore = data.hasMore || false;
 		const currentSearchParams = data.searchParams.toString();
 
-		if (currentSearchParams !== previousSearchParams || (!hasSavedState && newPage === 1)) {
+		if (currentSearchParams !== previousSearchParams) {
 			products = newProducts;
 			currentPage = newPage;
 			hasMore = newHasMore;
