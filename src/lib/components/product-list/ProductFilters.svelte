@@ -8,8 +8,8 @@
 		COUNTRY_NAMES
 	} from '$lib/constants';
 	import type { Release, Store } from '$lib/api/products';
-	import FilterCollapse from '$lib/components/product-list/filters/CollapseFilter.svelte';
-	import RangeFilter from '$lib/components/product-list/filters/RangeFilter.svelte';
+	import FilterCollapse from '$lib/components/product-list/controls/CollapseFilter.svelte';
+	import RangeFilter from '$lib/components/product-list/controls/RangeFilter.svelte';
 	import CountryFlag from '$lib/components/common/CountryFlag.svelte';
 
 	let {
