@@ -63,10 +63,14 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 			vmpUrl: apiData.vmp_url,
 			untappdUrl: apiData.untpd_url,
 			stores: apiData.all_stock
-				.map((s: { store_name: string; quantity: number }) => ({
-					name: s.store_name,
-					stock: s.quantity
-				}))
+				.map(
+					(s: { store_name: string; quantity: number; gps_lat?: number; gps_long?: number }) => ({
+						name: s.store_name,
+						stock: s.quantity,
+						lat: s.gps_lat,
+						lng: s.gps_long
+					})
+				)
 				.sort((a: Store, b: Store) => a.name.localeCompare(b.name, 'no'))
 		};
 

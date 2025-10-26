@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { Store } from '$lib/types';
 	import { Search, Info } from '@lucide/svelte';
+	import { calculateDistance, formatDistance, requestUserLocation } from '$lib/utils/geolocation';
+	import type { UserLocation } from '$lib/types';
 
 	let {
 		stores
@@ -11,9 +13,47 @@
 	let storeSearch = $state('');
 	let currentPage = $state(1);
 	let storesPerPage = 10;
+	let userLocation = $state<UserLocation | null>(null);
+	let locationRequested = $state(false);
+
+	type StoreWithDistance = Store & { distance?: number };
+
+	$effect(() => {
+		if (!locationRequested) {
+			locationRequested = true;
+			requestUserLocation((location) => {
+				userLocation = location;
+			});
+		}
+	});
+
+	let storesWithDistance = $derived.by(() => {
+		const storesWithDist: StoreWithDistance[] = stores.map((store) => {
+			if (userLocation && store.lat && store.lng) {
+				const dist = calculateDistance(userLocation.lat, userLocation.lng, store.lat, store.lng);
+				return {
+					...store,
+					distance: dist
+				};
+			}
+			return store;
+		});
+
+		if (userLocation) {
+			return [...storesWithDist].sort((a, b) => {
+				if (a.distance === undefined) return 1;
+				if (b.distance === undefined) return -1;
+				return a.distance - b.distance;
+			});
+		}
+
+		return [...storesWithDist].sort((a, b) => a.name.localeCompare(b.name, 'no'));
+	});
 
 	let filteredStores = $derived(
-		stores.filter((store: Store) => store.name.toLowerCase().includes(storeSearch.toLowerCase()))
+		storesWithDistance.filter((store: StoreWithDistance) =>
+			store.name.toLowerCase().includes(storeSearch.toLowerCase())
+		)
 	);
 
 	let totalPages = $derived(Math.ceil(filteredStores.length / storesPerPage));
@@ -69,6 +109,9 @@
 						<thead>
 							<tr>
 								<th class="w-full">Butikknavn</th>
+								{#if userLocation}
+									<th class="text-right whitespace-nowrap min-w-24">Avstand</th>
+								{/if}
 								<th class="text-right whitespace-nowrap">På lager</th>
 							</tr>
 						</thead>
@@ -76,6 +119,15 @@
 							{#each paginatedStores as store}
 								<tr>
 									<td class="font-medium">{store.name}</td>
+									{#if userLocation}
+										<td class="text-right text-sm text-base-content/70 whitespace-nowrap">
+											{#if store.distance !== undefined}
+												{formatDistance(store.distance)}
+											{:else}
+												-
+											{/if}
+										</td>
+									{/if}
 									<td class="text-right">
 										<div
 											class="badge badge-sm {store.stock > 10

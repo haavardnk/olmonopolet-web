@@ -6,7 +6,12 @@ export async function GET() {
 		const response = await fetchStores();
 
 		return json({
-			stores: response.results,
+			stores: response.results.map((store) => ({
+				store_id: store.store_id,
+				name: store.name,
+				lat: store.gps_lat,
+				lng: store.gps_long
+			})),
 			total: response.count
 		});
 	} catch (error) {

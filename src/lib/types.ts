@@ -1,6 +1,13 @@
+export type UserLocation = {
+	lat: number;
+	lng: number;
+};
+
 export type Store = {
 	name: string;
 	stock: number;
+	lat: number;
+	lng: number;
 };
 
 export type Product = {
@@ -75,6 +82,13 @@ export interface ProductFilters {
 export interface ApiStore {
 	store_id: number;
 	name: string;
+	lat: number;
+	lng: number;
+}
+
+export interface ApiStoreResponse {
+	store_id: number;
+	name: string;
 	gps_lat: number;
 	gps_long: number;
 }
@@ -83,7 +97,7 @@ export interface StoreListResponse {
 	count: number;
 	next: string | null;
 	previous: string | null;
-	results: ApiStore[];
+	results: ApiStoreResponse[];
 }
 
 export interface ApiRelease {
