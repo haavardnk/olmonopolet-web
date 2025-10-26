@@ -4,6 +4,8 @@
 	import StarRating from '$lib/components/common/StarRating.svelte';
 
 	let { product }: { product: Product } = $props();
+
+	const hasExternalLinks = $derived(product.vmpUrl || product.untappdUrl);
 </script>
 
 <div>
@@ -14,7 +16,7 @@
 		<StarRating rating={product.rating} size={20} showValue={true} checkins={product.checkins} />
 	</div>
 
-	{#if product.vmpUrl || product.untappdUrl}
+	{#if hasExternalLinks}
 		<div class="flex gap-2 mt-4 text-sm">
 			{#if product.vmpUrl}
 				<a

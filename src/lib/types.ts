@@ -27,6 +27,10 @@ export type Product = {
 	fullness?: number | null;
 	bitterness?: number | null;
 	sweetness?: number | null;
+	sugar?: number | null;
+	acid?: number | null;
+	year?: number | null;
+	storable?: string | null;
 	description?: string | null;
 	taste?: string | null;
 	aroma?: string | null;

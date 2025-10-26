@@ -27,6 +27,12 @@
 						</span>
 					</div>
 				{/if}
+				{#if product.year}
+					<div class="list-row">
+						<span class="font-semibold">Årgang:</span>
+						<span class="text-base-content/80">{product.year}</span>
+					</div>
+				{/if}
 				{#if product.method}
 					<div class="list-row">
 						<span class="font-semibold">Metode:</span>
@@ -37,6 +43,12 @@
 					<div class="list-row">
 						<span class="font-semibold">Råstoff:</span>
 						<span class="text-base-content/80">{product.ingredients}</span>
+					</div>
+				{/if}
+				{#if product.storable}
+					<div class="list-row">
+						<span class="font-semibold">Lagringsevne:</span>
+						<span class="text-base-content/80">{product.storable}</span>
 					</div>
 				{/if}
 				{#if product.assortment}

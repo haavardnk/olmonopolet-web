@@ -2,9 +2,16 @@
 	import type { Product } from '$lib/types';
 
 	let { product }: { product: Product } = $props();
+
+	const hasCharacteristics = $derived(
+		product.freshness != null ||
+			product.fullness != null ||
+			product.bitterness != null ||
+			product.sweetness != null
+	);
 </script>
 
-{#if product.freshness != null || product.fullness != null || product.bitterness != null || product.sweetness != null}
+{#if hasCharacteristics}
 	<div class="card bg-base-100 shadow">
 		<div class="card-body">
 			<h3 class="card-title text-lg mb-4">Egenskaper</h3>

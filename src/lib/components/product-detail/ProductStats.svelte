@@ -54,4 +54,20 @@
 			</div>
 		</div>
 	{/if}
+	{#if product.sugar}
+		<div class="card bg-base-100 shadow">
+			<div class="card-body p-4">
+				<h3 class="font-semibold text-sm text-base-content/70">Sukker</h3>
+				<p class="text-2xl font-bold">{product.sugar} g/L</p>
+			</div>
+		</div>
+	{/if}
+	{#if product.acid}
+		<div class="card bg-base-100 shadow">
+			<div class="card-body p-4">
+				<h3 class="font-semibold text-sm text-base-content/70">Syre</h3>
+				<p class="text-2xl font-bold">{product.acid} g/L</p>
+			</div>
+		</div>
+	{/if}
 </div>
