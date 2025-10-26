@@ -58,6 +58,21 @@
 	const FILTER_BUTTON_HEIGHT = 32;
 	const SLIDE_TRANSITION_DURATION = 200;
 
+	const currentSearchParams = $derived.by(() => {
+		const params = new URLSearchParams();
+
+		if (searchQuery) params.set('search', searchQuery);
+
+		const sortValue = sortDescending ? `-${sortBy}` : sortBy;
+		params.set('sort', sortValue);
+
+		Object.entries(filters).forEach(([key, value]) => {
+			if (value) params.set(key, value);
+		});
+
+		return params;
+	});
+
 	function compensateScrollForFilterButton(newCount: number) {
 		if (previousActiveFiltersCount === 0 && newCount > 0) {
 			setTimeout(() => {
@@ -112,7 +127,6 @@
 
 		if (searchQuery) params.set('search', searchQuery);
 
-		// Construct sort value with direction prefix
 		const sortValue = sortDescending ? `-${sortBy}` : sortBy;
 		if (sortValue !== '-rating') params.set('sort', sortValue);
 
@@ -269,7 +283,7 @@
 							}
 
 							try {
-								await loadMore(searchParams);
+								await loadMore(currentSearchParams);
 								if (hasMore) {
 									loaded();
 								} else {

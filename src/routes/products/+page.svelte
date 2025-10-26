@@ -76,14 +76,14 @@
 		}
 	});
 
-	async function loadMore(searchParams: URLSearchParams) {
+	async function loadMore(currentSearchParams: URLSearchParams) {
 		if (loading || !hasMore) return;
 
 		loading = true;
 		const nextPage = currentPage + 1;
 
 		try {
-			const params = new URLSearchParams(searchParams);
+			const params = new URLSearchParams(currentSearchParams);
 			params.set('page', nextPage.toString());
 
 			const response = await fetch(`/api/products?${params.toString()}`);

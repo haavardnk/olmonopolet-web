@@ -4,7 +4,7 @@ import { fetchProducts, type ProductFilters } from '$lib/api/products';
 
 export const GET: RequestHandler = async ({ url }) => {
 	const search = url.searchParams.get('search') || '';
-	const sortBy = url.searchParams.get('sort') || '';
+	const sortBy = url.searchParams.get('sort') || '-rating';
 	const store = url.searchParams.get('store') || '';
 	const priceFrom = url.searchParams.get('priceFrom') || '';
 	const priceTo = url.searchParams.get('priceTo') || '';
@@ -54,6 +54,7 @@ export const GET: RequestHandler = async ({ url }) => {
 			checkins: item.checkins,
 			strength: item.abv,
 			country: item.country,
+			countryCode: item.country_code,
 			assortment: item.product_selection,
 			vmpUrl: item.vmp_url,
 			untappdUrl: item.untpd_url,
