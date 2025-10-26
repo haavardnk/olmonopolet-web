@@ -53,3 +53,93 @@ export type Release = {
 	products: Product[];
 	stats: ProductStats;
 };
+
+export interface ProductFilters {
+	store?: string;
+	priceFrom?: string;
+	priceTo?: string;
+	pricePerLiterFrom?: string;
+	pricePerLiterTo?: string;
+	style?: string;
+	country?: string;
+	abvFrom?: string;
+	abvTo?: string;
+	allergens?: string;
+	productSelection?: string;
+	deliveryOptions?: string;
+	release?: string;
+	search?: string;
+	sortBy?: string;
+}
+
+export interface ApiStore {
+	store_id: number;
+	name: string;
+	gps_lat: number;
+	gps_long: number;
+}
+
+export interface StoreListResponse {
+	count: number;
+	next: string | null;
+	previous: string | null;
+	results: ApiStore[];
+}
+
+export interface ApiRelease {
+	name: string;
+	release_date: string;
+	beer_count: number;
+	product_selections: string;
+}
+
+export interface ReleaseListResponse {
+	count: number;
+	next: string | null;
+	previous: string | null;
+	results: ApiRelease[];
+}
+
+export interface ApiProduct {
+	vmp_id: string;
+	vmp_name: string;
+	price: number;
+	rating: number | null;
+	checkins: number;
+	label_sm_url: string;
+	main_category: string;
+	sub_category: string;
+	style: string;
+	stock: number;
+	abv: number;
+	volume: number;
+	price_per_volume: number;
+	vmp_url: string;
+	untpd_url: string | null;
+	untpd_id: string | null;
+	country: string;
+	country_code: string | null;
+	product_selection: string;
+}
+
+export interface ProductListResponse {
+	count: number;
+	next: string | null;
+	previous: string | null;
+	results: ApiProduct[];
+}
+
+export interface Country {
+	name: string;
+	iso_code: string;
+}
+
+export enum SortField {
+	ABV = 'abv',
+	Brewery = 'brewery',
+	CreatedAt = 'created_at',
+	Rating = 'rating',
+	Name = 'vmp_name',
+	Price = 'price',
+	PricePerVolume = 'price_per_volume'
+}

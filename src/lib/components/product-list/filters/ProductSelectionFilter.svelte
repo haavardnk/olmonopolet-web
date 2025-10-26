@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { PRODUCT_SELECTIONS } from '$lib/constants/filters';
+	import { PRODUCT_SELECTIONS } from '$lib/constants';
 	import FilterCollapse from '$lib/components/product-list/controls/CollapseFilter.svelte';
 
 	let {

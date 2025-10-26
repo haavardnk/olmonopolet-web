@@ -1,10 +1,11 @@
 <script lang="ts">
 	import type { Product } from '$lib/types';
+	import { SortField } from '$lib/types';
+	import { SORT_FIELD_LABELS } from '$lib/constants';
 	import { goto } from '$app/navigation';
 	import { Funnel, Search, X, ArrowDownNarrowWide, ArrowUpWideNarrow } from '@lucide/svelte';
 	import { slide } from 'svelte/transition';
 	import InfiniteLoading from 'svelte-infinite-loading';
-	import { SORT_FIELD_LABELS, type SortField } from '$lib/constants/sorting';
 	import ProductCard from '$lib/components/product/ProductCard.svelte';
 	import ProductFilters from '$lib/components/product-list/ProductFilters.svelte';
 	import SearchAndSort from '$lib/components/product-list/controls/SearchAndSort.svelte';
@@ -31,9 +32,9 @@
 	let showMobileFilters = $state(false);
 	let hasNavigatedWithinFilters = $state(false);
 
-	const initialSort = searchParams.get('sort') || '-rating';
+	const initialSort = searchParams.get('sort') || `-${SortField.Rating}`;
 	let sortBy = $state<SortField>(
-		initialSort.startsWith('-') ? (initialSort.slice(1) as SortField) : (initialSort as SortField)
+		(initialSort.startsWith('-') ? initialSort.slice(1) : initialSort) as SortField
 	);
 	let sortDescending = $state(initialSort.startsWith('-'));
 
@@ -127,7 +128,7 @@
 		if (searchQuery) params.set('search', searchQuery);
 
 		const sortValue = sortDescending ? `-${sortBy}` : sortBy;
-		if (sortValue !== '-rating') params.set('sort', sortValue);
+		if (sortValue !== `-${SortField.Rating}`) params.set('sort', sortValue);
 
 		Object.entries(filters).forEach(([key, value]) => {
 			if (value) params.set(key, value);
