@@ -53,6 +53,7 @@ export const load = async ({ url }: { url: URL }) => {
 			checkins: item.checkins,
 			strength: item.abv,
 			country: item.country,
+			countryCode: item.country_code,
 			assortment: item.product_selection,
 			vmpUrl: item.vmp_url,
 			untappdUrl: item.untpd_url,

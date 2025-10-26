@@ -1,9 +1,6 @@
 <script lang="ts">
 	import type { Product } from '$lib/types';
 	import { TriangleAlert } from '@lucide/svelte';
-	import CountryFlag from '$lib/components/common/CountryFlag.svelte';
-	import { getCountryCode } from '$lib/constants';
-
 	let { product }: { product: Product } = $props();
 </script>
 
@@ -23,7 +20,9 @@
 					<div class="list-row">
 						<span class="font-semibold">Land:</span>
 						<span class="text-base-content/80 flex items-center gap-2">
-							<CountryFlag code={getCountryCode(product.country)} />
+							{#if product.countryCode}
+								<span class="fi fi-{product.countryCode.toLowerCase()}"></span>
+							{/if}
 							{product.country}
 						</span>
 					</div>

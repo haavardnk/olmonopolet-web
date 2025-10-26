@@ -58,6 +58,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 			allergens: apiData.allergens,
 			brewery: apiData.brewery,
 			country: apiData.country,
+			countryCode: apiData.country_code,
 			assortment: normalizeAssortmentName(apiData.product_selection),
 			vmpUrl: apiData.vmp_url,
 			untappdUrl: apiData.untpd_url,

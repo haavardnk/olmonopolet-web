@@ -3,8 +3,6 @@
 	import { fly } from 'svelte/transition';
 	import { DollarSign, Droplets, Percent, Tag } from '@lucide/svelte';
 	import StarRating from '$lib/components/common/StarRating.svelte';
-	import CountryFlag from '$lib/components/common/CountryFlag.svelte';
-	import { getCountryCode } from '$lib/constants';
 	import defaultLabel from '$lib/assets/default-label.png';
 
 	let {
@@ -60,7 +58,9 @@
 					{/if}
 					{#if product.country}
 						<span class="flex items-center gap-1.5">
-							<CountryFlag code={getCountryCode(product.country)} />
+							{#if product.countryCode}
+								<span class="fi fi-{product.countryCode.toLowerCase()}"></span>
+							{/if}
 							<span>{product.country}</span>
 						</span>
 					{/if}

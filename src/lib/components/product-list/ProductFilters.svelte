@@ -1,16 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import {
-		ALLERGENS,
-		DELIVERY_OPTIONS,
-		PRODUCT_SELECTIONS,
-		getCountryCode,
-		COUNTRY_NAMES
-	} from '$lib/constants';
-	import type { Release, Store } from '$lib/api/products';
+	import { ALLERGENS, DELIVERY_OPTIONS, PRODUCT_SELECTIONS } from '$lib/constants';
+	import type { Release, Store, Country } from '$lib/api/products';
 	import FilterCollapse from '$lib/components/product-list/controls/CollapseFilter.svelte';
 	import RangeFilter from '$lib/components/product-list/controls/RangeFilter.svelte';
-	import CountryFlag from '$lib/components/common/CountryFlag.svelte';
 
 	let {
 		filters = $bindable(),
@@ -35,6 +28,8 @@
 	} = $props();
 
 	let countrySearchQuery = $state('');
+	let countries = $state<Country[]>([]);
+	let countriesLoading = $state(true);
 	let isInternalUpdate = false;
 	let releases = $state<Release[]>([]);
 	let releasesLoading = $state(true);
@@ -68,8 +63,8 @@
 	});
 
 	const filteredCountries = $derived(
-		COUNTRY_NAMES.filter((country) =>
-			country.toLowerCase().includes(countrySearchQuery.toLowerCase())
+		countries.filter((country) =>
+			country.name.toLowerCase().includes(countrySearchQuery.toLowerCase())
 		)
 	);
 
@@ -107,7 +102,7 @@
 	);
 
 	const countryItems = $derived(
-		filteredCountries.map((country) => ({ value: country, label: country }))
+		filteredCountries.map((country) => ({ value: country.name, label: country.name }))
 	);
 
 	const deliveryItems = $derived(
@@ -171,6 +166,17 @@
 					console.warn('Location access denied or unavailable:', error);
 				}
 			);
+		}
+
+		try {
+			const response = await fetch('/api/countries');
+			const data = await response.json();
+			countries = data.countries || [];
+		} catch (error) {
+			console.error('Failed to fetch countries:', error);
+			countries = [];
+		} finally {
+			countriesLoading = false;
 		}
 
 		try {
@@ -372,6 +378,8 @@
 		bind:isOpen={openSections.country}
 		showSearch={true}
 		bind:searchQuery={countrySearchQuery}
+		isLoading={countriesLoading}
+		loadingMessage="Laster land..."
 		emptyMessage="Ingen land funnet"
 		onReset={() => {
 			selectedCountries = resetMultiSelectFilter('country', (val) => (countrySearchQuery = val));
@@ -381,8 +389,11 @@
 		}}
 	>
 		{#snippet itemLabel(item)}
+			{@const country = countries.find((c) => c.name === item.label)}
 			<div class="flex items-center gap-2">
-				<CountryFlag code={getCountryCode(item.label)} />
+				{#if country?.iso_code}
+					<span class="fi fi-{country.iso_code.toLowerCase()}"></span>
+				{/if}
 				<span class="text-xs">{item.label}</span>
 			</div>
 		{/snippet}

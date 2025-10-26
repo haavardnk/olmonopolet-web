@@ -68,6 +68,7 @@ export interface ProductListResponse {
 		untpd_url: string | null;
 		untpd_id: string | null;
 		country: string;
+		country_code: string | null;
 		product_selection: string;
 	}>;
 }
@@ -95,6 +96,7 @@ export async function fetchProducts(
 		'untpd_url',
 		'untpd_id',
 		'country',
+		'country_code',
 		'product_selection'
 	].join(',');
 
@@ -189,6 +191,23 @@ export async function fetchStyles(): Promise<string[]> {
 
 	if (!response.ok) {
 		throw new Error(`Failed to fetch styles: ${response.status} ${response.statusText}`);
+	}
+
+	return response.json();
+}
+
+export interface Country {
+	name: string;
+	iso_code: string;
+}
+
+export async function fetchCountries(): Promise<Country[]> {
+	const url = `${API_URL}/countries/active/`;
+
+	const response = await fetch(url);
+
+	if (!response.ok) {
+		throw new Error(`Failed to fetch countries: ${response.status} ${response.statusText}`);
 	}
 
 	return response.json();

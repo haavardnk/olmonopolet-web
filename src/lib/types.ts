@@ -30,6 +30,7 @@ export type Product = {
 	allergens?: string | null;
 	brewery?: string | null;
 	country?: string | null;
+	countryCode?: string | null;
 	assortment?: string | null;
 	vmpUrl?: string | null;
 	untappdUrl?: string | null;
