@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Search, X, ArrowDownNarrowWide, ArrowUpWideNarrow } from '@lucide/svelte';
-	import { SORT_FIELD_LABELS, type SortField } from '$lib/constants/sorting';
+	import type { SortField } from '$lib/types';
+	import { SORT_FIELD_LABELS } from '$lib/constants';
 
 	let {
 		searchQuery = $bindable(),

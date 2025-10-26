@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ALLERGENS } from '$lib/constants/filters';
+	import { ALLERGENS } from '$lib/constants';
 	import FilterCollapse from '$lib/components/product-list/controls/CollapseFilter.svelte';
 
 	let {

@@ -1,77 +1,13 @@
 import { API_URL } from '$env/static/private';
+import type {
+	ProductFilters,
+	ProductListResponse,
+	StoreListResponse,
+	ReleaseListResponse,
+	Country
+} from '$lib/types';
 
-export interface ProductFilters {
-	store?: string;
-	priceFrom?: string;
-	priceTo?: string;
-	pricePerLiterFrom?: string;
-	pricePerLiterTo?: string;
-	style?: string;
-	country?: string;
-	abvFrom?: string;
-	abvTo?: string;
-	allergens?: string;
-	productSelection?: string;
-	deliveryOptions?: string;
-	release?: string;
-	search?: string;
-	sortBy?: string;
-}
-
-export interface Store {
-	store_id: number;
-	name: string;
-	gps_lat: number;
-	gps_long: number;
-}
-
-export interface StoreListResponse {
-	count: number;
-	next: string | null;
-	previous: string | null;
-	results: Store[];
-}
-
-export interface Release {
-	name: string;
-	release_date: string;
-	beer_count: number;
-	product_selections: string;
-}
-
-export interface ReleaseListResponse {
-	count: number;
-	next: string | null;
-	previous: string | null;
-	results: Release[];
-}
-
-export interface ProductListResponse {
-	count: number;
-	next: string | null;
-	previous: string | null;
-	results: Array<{
-		vmp_id: string;
-		vmp_name: string;
-		price: number;
-		rating: number | null;
-		checkins: number;
-		label_sm_url: string;
-		main_category: string;
-		sub_category: string;
-		style: string;
-		stock: number;
-		abv: number;
-		volume: number;
-		price_per_volume: number;
-		vmp_url: string;
-		untpd_url: string | null;
-		untpd_id: string | null;
-		country: string;
-		country_code: string | null;
-		product_selection: string;
-	}>;
-}
+export type { ProductFilters };
 
 export async function fetchProducts(
 	page: number = 1,
@@ -194,11 +130,6 @@ export async function fetchStyles(): Promise<string[]> {
 	}
 
 	return response.json();
-}
-
-export interface Country {
-	name: string;
-	iso_code: string;
 }
 
 export async function fetchCountries(): Promise<Country[]> {

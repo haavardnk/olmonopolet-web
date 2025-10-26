@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { DELIVERY_OPTIONS } from '$lib/constants/filters';
+	import { DELIVERY_OPTIONS } from '$lib/constants';
 	import FilterCollapse from '$lib/components/product-list/controls/CollapseFilter.svelte';
 
 	let {
