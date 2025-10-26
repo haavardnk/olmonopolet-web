@@ -1,8 +1,7 @@
 import { json } from '@sveltejs/kit';
 import { fetchStyles } from '$lib/api/products';
-import type { RequestHandler } from './$types';
 
-export const GET: RequestHandler = async () => {
+export async function GET() {
 	try {
 		const styles = await fetchStyles();
 
@@ -21,4 +20,4 @@ export const GET: RequestHandler = async () => {
 			{ status: 500 }
 		);
 	}
-};
+}
