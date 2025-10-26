@@ -2,6 +2,11 @@
 	import { onMount } from 'svelte';
 	import type { Store } from '$lib/api/products';
 	import FilterCollapse from '$lib/components/product-list/controls/CollapseFilter.svelte';
+	import {
+		calculateDistance,
+		requestUserLocation,
+		type UserLocation
+	} from '$lib/utils/geolocation';
 
 	let {
 		selectedStores = $bindable(),
@@ -16,7 +21,7 @@
 	let stores = $state<Store[]>([]);
 	let storesLoading = $state(true);
 	let storeSearchQuery = $state('');
-	let userLocation = $state<{ lat: number; lng: number } | null>(null);
+	let userLocation = $state<UserLocation | null>(null);
 
 	const filteredStores = $derived.by(() => {
 		let filtered = stores.filter((store) =>
