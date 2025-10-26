@@ -1,22 +1,16 @@
-export const SORT_OPTIONS = {
-	'Alkohol (høy til lav)': '-abv',
-	'Alkohol (lav til høy)': 'abv',
-	'Bryggeri (A-Å)': 'brewery',
-	'Bryggeri (Å-A)': '-brewery',
-	'Nyeste først': '-created_at',
-	'Eldste først': 'created_at',
-	'Rating (høy til lav)': '-rating',
-	'Rating (lav til høy)': 'rating',
-	'Navn (A-Å)': 'vmp_name',
-	'Navn (Å-A)': '-vmp_name',
-	'Pris (høy til lav)': '-price',
-	'Pris (lav til høy)': 'price',
-	'Pris per liter (høy til lav)': '-price_per_volume',
-	'Pris per liter (lav til høy)': 'price_per_volume'
+export const SORT_FIELDS = {
+	abv: 'Alkohol',
+	brewery: 'Bryggeri',
+	created_at: 'Dato',
+	rating: 'Rating',
+	vmp_name: 'Navn',
+	price: 'Pris',
+	price_per_volume: 'Pris per liter'
 } as const;
 
-export const SORT_LABELS = Object.keys(SORT_OPTIONS) as Array<keyof typeof SORT_OPTIONS>;
-export const SORT_VALUES = Object.values(SORT_OPTIONS);
+export const SORT_FIELD_LABELS = Object.entries(SORT_FIELDS).map(([value, label]) => ({
+	value,
+	label
+}));
 
-export type SortLabel = keyof typeof SORT_OPTIONS;
-export type SortValue = (typeof SORT_OPTIONS)[SortLabel];
+export type SortField = keyof typeof SORT_FIELDS;

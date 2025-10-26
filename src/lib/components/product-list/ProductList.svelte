@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { Product } from '$lib/types';
 	import { goto } from '$app/navigation';
-	import { Funnel, Search, X } from '@lucide/svelte';
+	import { Funnel, Search, X, ArrowDownNarrowWide, ArrowUpWideNarrow } from '@lucide/svelte';
 	import { slide } from 'svelte/transition';
 	import InfiniteLoading from 'svelte-infinite-loading';
-	import { SORT_LABELS, SORT_OPTIONS } from '$lib/constants';
+	import { SORT_FIELD_LABELS, type SortField } from '$lib/constants';
 	import ProductCard from '$lib/components/product/ProductCard.svelte';
 	import ProductFilters from '$lib/components/product-list/ProductFilters.svelte';
 
@@ -28,7 +28,13 @@
 	let scrollContainer: HTMLDivElement;
 	let searchQuery = $state(searchParams.get('search') || '');
 	let showMobileFilters = $state(false);
-	let sortBy = $state(searchParams.get('sort') || '-rating');
+
+	// Parse sort from URL (e.g., "-rating" -> field: "rating", descending: true)
+	const initialSort = searchParams.get('sort') || '-rating';
+	let sortBy = $state<SortField>(
+		initialSort.startsWith('-') ? (initialSort.slice(1) as SortField) : (initialSort as SortField)
+	);
+	let sortDescending = $state(initialSort.startsWith('-'));
 
 	let filters = $state({
 		abvFrom: searchParams.get('abvFrom') || '',
@@ -95,11 +101,19 @@
 		updateUrl();
 	}
 
+	function toggleSortDirection() {
+		sortDescending = !sortDescending;
+		updateUrl();
+	}
+
 	function updateUrl() {
 		const params = new URLSearchParams();
 
 		if (searchQuery) params.set('search', searchQuery);
-		if (sortBy && sortBy !== '-rating') params.set('sort', sortBy);
+
+		// Construct sort value with direction prefix
+		const sortValue = sortDescending ? `-${sortBy}` : sortBy;
+		if (sortValue !== '-rating') params.set('sort', sortValue);
 
 		Object.entries(filters).forEach(([key, value]) => {
 			if (value) params.set(key, value);
@@ -158,8 +172,8 @@
 		<div
 			class="sticky top-0 bg-base-200 border-b border-base-content/10 px-3 py-2 space-y-1.5 z-10"
 		>
-			<div class="space-y-1">
-				<div class="text-xs font-medium text-base-content/70 px-1">Søk</div>
+			<div class="space-y-1 px-2">
+				<div class="text-xs font-medium text-base-content/70">Søk</div>
 				<label class="input input-sm flex items-center gap-2">
 					<Search size={16} class="text-base-content/50" />
 					<input
@@ -181,17 +195,31 @@
 				</label>
 			</div>
 
-			<div class="space-y-1">
-				<div class="text-xs font-medium text-base-content/70 px-1">Sorter etter</div>
-				<select bind:value={sortBy} onchange={updateUrl} class="select select-sm w-full">
-					{#each SORT_LABELS as label}
-						<option value={SORT_OPTIONS[label]}>{label}</option>
-					{/each}
-				</select>
+			<div class="space-y-1 px-2">
+				<div class="text-xs font-medium text-base-content/70">Sorter etter</div>
+				<div class="flex gap-1">
+					<select bind:value={sortBy} onchange={updateUrl} class="select select-sm flex-1">
+						{#each SORT_FIELD_LABELS as { value, label }}
+							<option {value}>{label}</option>
+						{/each}
+					</select>
+					<button
+						onclick={toggleSortDirection}
+						class="btn btn-sm btn-square"
+						aria-label={sortDescending ? 'Synkende' : 'Stigende'}
+						title={sortDescending ? 'Synkende' : 'Stigende'}
+					>
+						{#if sortDescending}
+							<ArrowDownNarrowWide size={16} />
+						{:else}
+							<ArrowUpWideNarrow size={16} />
+						{/if}
+					</button>
+				</div>
 			</div>
 
 			{#if activeFiltersCount > 0}
-				<div transition:slide={{ duration: 200 }}>
+				<div transition:slide={{ duration: 200 }} class="px-2">
 					<button onclick={clearFilters} class="btn btn-ghost btn-xs w-full justify-start">
 						<X size={14} />
 						Fjern alle filtre ({activeFiltersCount})
@@ -244,15 +272,25 @@
 						{/if}
 					</label>
 
-					<select
-						bind:value={sortBy}
-						onchange={updateUrl}
-						class="select select-sm w-32 md:w-64 ml-auto"
-					>
-						{#each SORT_LABELS as label}
-							<option value={SORT_OPTIONS[label]}>{label}</option>
-						{/each}
-					</select>
+					<div class="flex gap-1 ml-auto">
+						<select bind:value={sortBy} onchange={updateUrl} class="select select-sm w-28 md:w-48">
+							{#each SORT_FIELD_LABELS as { value, label }}
+								<option {value}>{label}</option>
+							{/each}
+						</select>
+						<button
+							onclick={toggleSortDirection}
+							class="btn btn-sm btn-square"
+							aria-label={sortDescending ? 'Synkende' : 'Stigende'}
+							title={sortDescending ? 'Synkende' : 'Stigende'}
+						>
+							{#if sortDescending}
+								<ArrowDownNarrowWide size={16} />
+							{:else}
+								<ArrowUpWideNarrow size={16} />
+							{/if}
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>
