@@ -186,7 +186,7 @@
 </div>
 
 <div class="flex h-full">
-	<aside class="hidden lg:flex lg:flex-col w-80 bg-base-200 border-r border-base-content/10">
+	<aside class="hidden xl:flex xl:flex-col w-80 bg-base-200 border-r border-base-content/10">
 		<SearchAndSort
 			bind:searchQuery
 			bind:sortBy
@@ -201,7 +201,7 @@
 	</aside>
 
 	<main class="flex-1 flex flex-col overflow-hidden">
-		<div class="lg:hidden sticky top-0 z-40 bg-base-100 border-b border-base-content/10 shadow-sm">
+		<div class="xl:hidden sticky top-0 z-40 bg-base-100 border-b border-base-content/10 shadow-sm">
 			<div class="p-2">
 				<div class="flex gap-2">
 					<button
@@ -270,7 +270,7 @@
 				</div>
 
 				{#if products.length > 0}
-					<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-8">
+					<div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4 mb-8">
 						{#each products as product, i (product.id)}
 							<ProductCard {product} index={i} noTransition={true} />
 						{/each}
