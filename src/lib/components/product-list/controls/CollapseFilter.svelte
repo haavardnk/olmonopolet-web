@@ -48,6 +48,13 @@
 	const computedSelectedCount = $derived(
 		selectedCount > 0 ? selectedCount : selectedValues?.length || 0
 	);
+
+	const allFilteredSelected = $derived(
+		items && items.length > 0 && selectedValues
+			? items.every((item) => selectedValues.includes(item.value))
+			: false
+	);
+
 	const showSelectAllButton = $derived(
 		onSelectAllFiltered && searchQuery && items && items.length > 0 && !isLoading
 	);
@@ -139,7 +146,11 @@
 					onclick={() => onSelectAllFiltered && items && onSelectAllFiltered(items)}
 					class="btn btn-ghost btn-xs w-full mb-1.5"
 				>
-					Velg alle ({items?.length})
+					{#if allFilteredSelected}
+						Fjern alle ({items?.length})
+					{:else}
+						Velg alle ({items?.length})
+					{/if}
 				</button>
 			{/if}
 		{/if}
