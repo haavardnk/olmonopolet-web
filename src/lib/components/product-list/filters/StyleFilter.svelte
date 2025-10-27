@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import FilterCollapse from '$lib/components/product-list/controls/CollapseFilter.svelte';
+	import type { FilterItem } from '$lib/types';
 
 	let {
 		selectedStyles = $bindable(),
@@ -52,9 +53,15 @@
 		onFilterChange();
 	}
 
-	function handleSelectAllFiltered(items: { value: string; label: string }[]) {
+	function handleSelectAllFiltered(items: FilterItem<string>[]) {
 		const allFilteredValues = items.map((item) => item.value);
-		selectedStyles = [...new Set([...selectedStyles, ...allFilteredValues])];
+		const allSelected = allFilteredValues.every((value) => selectedStyles.includes(value));
+
+		if (allSelected) {
+			selectedStyles = selectedStyles.filter((style) => !allFilteredValues.includes(style));
+		} else {
+			selectedStyles = [...new Set([...selectedStyles, ...allFilteredValues])];
+		}
 		onFilterChange();
 	}
 </script>

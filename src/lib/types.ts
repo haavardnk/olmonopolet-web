@@ -161,3 +161,9 @@ export enum SortField {
 	Price = 'price',
 	PricePerVolume = 'price_per_volume'
 }
+
+export type FilterItem<T extends string | number = string> = {
+	value: T;
+	label: string;
+	meta?: string;
+};

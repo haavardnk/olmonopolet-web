@@ -1,12 +1,7 @@
 <script lang="ts" generics="T extends string | number = string">
 	import { Search, X } from '@lucide/svelte';
 	import type { Snippet } from 'svelte';
-
-	type Item = {
-		value: T;
-		label: string;
-		meta?: string;
-	};
+	import type { FilterItem } from '$lib/types';
 
 	let {
 		title,
@@ -32,11 +27,11 @@
 		searchQuery?: string;
 		onReset: () => void;
 		children?: Snippet;
-		itemLabel?: Snippet<[Item]>;
-		items?: Item[];
+		itemLabel?: Snippet<[FilterItem<T>]>;
+		items?: FilterItem<T>[];
 		selectedValues?: T[];
 		onChange?: (value: T) => void;
-		onSelectAllFiltered?: (items: Item[]) => void;
+		onSelectAllFiltered?: (items: FilterItem<T>[]) => void;
 		isLoading?: boolean;
 		emptyMessage?: string;
 		loadingMessage?: string;
