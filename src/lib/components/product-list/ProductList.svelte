@@ -1,9 +1,8 @@
 <script lang="ts">
 	import type { Product } from '$lib/types';
 	import { SortField } from '$lib/types';
-	import { SORT_FIELD_LABELS } from '$lib/constants';
 	import { goto } from '$app/navigation';
-	import { Funnel, Search, X, ArrowDownNarrowWide, ArrowUpWideNarrow } from '@lucide/svelte';
+	import { X } from '@lucide/svelte';
 	import { slide } from 'svelte/transition';
 	import InfiniteLoading from 'svelte-infinite-loading';
 	import ProductCard from '$lib/components/product/ProductCard.svelte';
@@ -117,11 +116,6 @@
 		updateUrl();
 	}
 
-	function toggleSortDirection() {
-		sortDescending = !sortDescending;
-		updateUrl();
-	}
-
 	function updateUrl() {
 		const params = new URLSearchParams();
 
@@ -202,65 +196,16 @@
 
 	<main class="flex-1 flex flex-col overflow-hidden">
 		<div class="xl:hidden sticky top-0 z-40 bg-base-100 border-b border-base-content/10 shadow-sm">
-			<div class="p-2">
-				<div class="flex gap-2">
-					<button
-						onclick={() => (showMobileFilters = true)}
-						class="btn btn-sm btn-square sm:btn-sm sm:w-24 relative"
-						class:btn-primary={activeFiltersCount > 0}
-						aria-label="Åpne filtre"
-					>
-						<Funnel size={18} />
-						<span class="hidden sm:inline ml-1">Filtre</span>
-						{#if activeFiltersCount > 0}
-							<span
-								class="badge badge-xs badge-accent absolute top-0 right-0 translate-x-1/2 -translate-y-1/2"
-								>{activeFiltersCount}</span
-							>
-						{/if}
-					</button>
-
-					<label class="input input-sm flex items-center gap-2 flex-1">
-						<Search size={16} class="text-base-content/50" />
-						<input
-							type="text"
-							placeholder="Søk..."
-							class="flex-1 text-sm"
-							bind:value={searchQuery}
-							onkeydown={(e) => e.key === 'Enter' && updateUrl()}
-						/>
-						{#if searchQuery}
-							<button
-								onclick={clearSearch}
-								class="btn btn-ghost btn-xs btn-circle"
-								aria-label="Tøm søk"
-							>
-								<X size={14} />
-							</button>
-						{/if}
-					</label>
-
-					<div class="flex gap-1 ml-auto">
-						<select bind:value={sortBy} onchange={updateUrl} class="select select-sm w-28 md:w-48">
-							{#each SORT_FIELD_LABELS as { value, label }}
-								<option {value}>{label}</option>
-							{/each}
-						</select>
-						<button
-							onclick={toggleSortDirection}
-							class="btn btn-sm btn-square"
-							aria-label={sortDescending ? 'Synkende' : 'Stigende'}
-							title={sortDescending ? 'Synkende' : 'Stigende'}
-						>
-							{#if sortDescending}
-								<ArrowDownNarrowWide size={16} />
-							{:else}
-								<ArrowUpWideNarrow size={16} />
-							{/if}
-						</button>
-					</div>
-				</div>
-			</div>
+			<SearchAndSort
+				bind:searchQuery
+				bind:sortBy
+				bind:sortDescending
+				{activeFiltersCount}
+				onUpdate={updateUrl}
+				onClearFilters={clearFilters}
+				mobile={true}
+				onOpenFilters={() => (showMobileFilters = true)}
+			/>
 		</div>
 
 		<div class="flex-1 overflow-y-auto" data-infinite-wrapper bind:this={scrollContainer}>

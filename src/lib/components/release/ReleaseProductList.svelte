@@ -1,6 +1,13 @@
 <script lang="ts">
 	import type { Product } from '$lib/types';
-	import { Beer, RefreshCw, Funnel, ArrowUpDown } from '@lucide/svelte';
+	import {
+		Beer,
+		RefreshCw,
+		Funnel,
+		ArrowUpDown,
+		ArrowDownNarrowWide,
+		ArrowUpWideNarrow
+	} from '@lucide/svelte';
 	import ProductCard from '$lib/components/product/ProductCard.svelte';
 	import orderBy from 'lodash/orderBy';
 
@@ -97,8 +104,17 @@
 					{/each}
 				</select>
 			</div>
-			<button class="btn btn-sm join-item" onclick={toggleSortOrder}>
-				{sortOrder === 'asc' ? '↑' : '↓'}
+			<button
+				class="btn btn-sm join-item"
+				onclick={toggleSortOrder}
+				aria-label={sortOrder === 'asc' ? 'Stigende' : 'Synkende'}
+				title={sortOrder === 'asc' ? 'Stigende' : 'Synkende'}
+			>
+				{#if sortOrder === 'desc'}
+					<ArrowDownNarrowWide size={16} />
+				{:else}
+					<ArrowUpWideNarrow size={16} />
+				{/if}
 			</button>
 		</div>
 
