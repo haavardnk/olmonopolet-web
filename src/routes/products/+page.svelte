@@ -13,7 +13,13 @@
 	let hasMore = $state(data.hasMore || false);
 	let loading = $state(false);
 	let products = $state(data.products || []);
-	let canGoBack = $state(browser && sessionStorage.getItem('hasNavigated') === 'true');
+	let canGoBack = $state(false);
+
+	afterNavigate(({ from }) => {
+		if (browser && from) {
+			canGoBack = true;
+		}
+	});
 
 	const total = $derived(data.total || 0);
 
@@ -158,11 +164,6 @@
 					<ArrowLeft size={16} />
 					Tilbake
 				</button>
-			{:else}
-				<a href="/" class="btn btn-ghost btn-sm" aria-label="Gå tilbake til forsiden">
-					<ArrowLeft size={16} />
-					Tilbake
-				</a>
 			{/if}
 		{/snippet}
 	</Header>

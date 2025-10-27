@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { browser } from '$app/environment';
+	import { afterNavigate } from '$app/navigation';
 	import { fly } from 'svelte/transition';
 	import { ArrowLeft } from '@lucide/svelte';
 	import Header from '$lib/components/common/Header.svelte';
@@ -19,7 +20,13 @@
 		product.description || product.taste || product.aroma || product.color || product.pairing
 	);
 
-	let canGoBack = $state(browser && sessionStorage.getItem('hasNavigated') === 'true');
+	let canGoBack = $state(false);
+
+	afterNavigate(({ from }) => {
+		if (browser && from) {
+			canGoBack = true;
+		}
+	});
 
 	function goBack() {
 		window.history.back();
