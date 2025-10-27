@@ -2,14 +2,28 @@
 	import type { Release } from '$lib/types';
 	import { fly } from 'svelte/transition';
 	import { Calendar, Expand } from '@lucide/svelte';
+	import ChristmasDecoration from '$lib/components/release/ReleaseCardChristmasDecoration.svelte';
 
 	let { release }: { release: Release } = $props();
 
 	const releaseFilter = $derived(release.name.replace(/-/g, '+'));
+	const isChristmas = $derived(release.name.toLowerCase().includes('november'));
 </script>
 
-<div class="card bg-base-200 mb-8" in:fly={{ y: 20, duration: 300 }}>
-	<div class="card-body">
+<div
+	class="card mb-8 relative overflow-hidden"
+	class:bg-base-200={!isChristmas}
+	class:bg-gradient-to-br={isChristmas}
+	class:from-red-50={isChristmas}
+	class:to-green-50={isChristmas}
+	class:border-2={isChristmas}
+	class:border-red-200={isChristmas}
+	in:fly={{ y: 20, duration: 300 }}
+>
+	{#if isChristmas}
+		<ChristmasDecoration />
+	{/if}
+	<div class="card-body relative">
 		<div class="flex flex-col lg:hidden gap-4">
 			<h1 class="text-xl font-bold flex items-center gap-3">
 				<Calendar size={24} class="text-primary" />

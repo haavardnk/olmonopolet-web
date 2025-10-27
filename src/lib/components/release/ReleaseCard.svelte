@@ -3,17 +3,28 @@
 	import { fly } from 'svelte/transition';
 	import { Calendar } from '@lucide/svelte';
 	import { slugify } from '$lib/utils/helpers';
+	import ChristmasDecoration from '$lib/components/release/ReleaseCardChristmasDecoration.svelte';
 
 	let { release, index }: { release: Release; index: number } = $props();
 	const slug = slugify(release.name);
+	const isChristmas = $derived(release.name.toLowerCase().includes('november'));
 </script>
 
 <a
 	href="/release/{slug}"
 	in:fly={{ y: 20, duration: 300, delay: index * 50 }}
-	class="card bg-base-200 hover:shadow-lg transition-all hover:translate-y-[-2px] block no-underline"
+	class="card hover:shadow-lg transition-all hover:translate-y-[-2px] block no-underline relative overflow-hidden"
+	class:bg-base-200={!isChristmas}
+	class:bg-gradient-to-br={isChristmas}
+	class:from-red-50={isChristmas}
+	class:to-green-50={isChristmas}
+	class:border-2={isChristmas}
+	class:border-red-200={isChristmas}
 >
-	<div class="card-body p-3 md:p-4">
+	{#if isChristmas}
+		<ChristmasDecoration />
+	{/if}
+	<div class="card-body p-3 md:p-4 relative">
 		<div class="flex flex-col md:flex-row justify-between gap-3 md:gap-4 items-start">
 			<div class="flex flex-col">
 				<h3 class="card-title text-xl flex items-center gap-2">
