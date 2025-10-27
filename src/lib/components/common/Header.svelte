@@ -13,13 +13,15 @@
 		left,
 		center,
 		showSocialLinks = false,
-		showMenu = false
+		showMenu = false,
+		fullWidth = false
 	}: {
 		right?: Snippet;
 		left?: Snippet;
 		center?: Snippet;
 		showSocialLinks?: boolean;
 		showMenu?: boolean;
+		fullWidth?: boolean;
 	} = $props();
 
 	let menuOpen = $state(false);
@@ -34,7 +36,7 @@
 <header
 	class="top-0 z-10 bg-base-300/80 backdrop-blur-md border-b border-base-content/10 shadow-md"
 >
-	<div class="container mx-auto">
+	<div class:container={!fullWidth} class:mx-auto={!fullWidth} class:lg:px-4={fullWidth}>
 		<div class="navbar">
 			<div class="navbar-start">
 				{#if left}

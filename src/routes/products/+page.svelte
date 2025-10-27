@@ -153,7 +153,7 @@
 </svelte:head>
 
 <div class="h-screen flex flex-col">
-	<Header showSocialLinks={false} showMenu={false}>
+	<Header showSocialLinks={false} showMenu={false} fullWidth={true}>
 		{#snippet right()}
 			{#if canGoBack}
 				<button
