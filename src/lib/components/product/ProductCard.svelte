@@ -32,13 +32,21 @@
 			</div>
 
 			<div class="flex flex-col gap-3 flex-1 min-w-0">
-				<div class="flex flex-col gap-1">
+				<div class="flex flex-col gap-2">
 					<h3 class="font-bold text-lg sm:text-xl line-clamp-2">
 						{product.name}
 					</h3>
-					{#if product.style}
-						<p class="text-sm opacity-70">{product.style}</p>
-					{/if}
+					<div class="flex items-center gap-2 flex-wrap">
+						{#if product.isChristmasBeer}
+							<div class="badge badge-error gap-1 shadow-sm">
+								<span>🎄</span>
+								<span class="font-semibold">Juleøl</span>
+							</div>
+						{/if}
+						{#if product.style}
+							<p class="text-sm opacity-70">{product.style}</p>
+						{/if}
+					</div>
 				</div>
 
 				<div class="flex flex-wrap gap-x-4 gap-y-2 text-sm">

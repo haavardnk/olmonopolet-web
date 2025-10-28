@@ -38,3 +38,8 @@ export function getAssortmentDisplayName(apiValue: string | null | undefined): s
 	if (apiValue === 'Spesialutvalg') return 'Spesialutvalget';
 	return apiValue;
 }
+
+export function isChristmasSeason(): boolean {
+	const currentMonth = new Date().getMonth();
+	return currentMonth === 10 || currentMonth === 11;
+}

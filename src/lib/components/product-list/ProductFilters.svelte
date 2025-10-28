@@ -8,6 +8,7 @@
 	import AllergenFilter from '$lib/components/product-list/filters/AllergenFilter.svelte';
 	import DeliveryFilter from '$lib/components/product-list/filters/DeliveryFilter.svelte';
 	import ReleaseFilter from '$lib/components/product-list/filters/ReleaseFilter.svelte';
+	import { isChristmasSeason } from '$lib/utils/helpers';
 
 	let {
 		filters = $bindable(),
@@ -19,6 +20,7 @@
 			allergens: string;
 			country: string;
 			deliveryOptions: string;
+			is_christmas_beer: string;
 			priceFrom: string;
 			pricePerLiterFrom: string;
 			pricePerLiterTo: string;
@@ -88,9 +90,27 @@
 		filters[toKey] = '';
 		onFilterChange();
 	}
+
+	function toggleChristmasBeer() {
+		filters.is_christmas_beer = filters.is_christmas_beer === 'True' ? '' : 'True';
+		onFilterChange();
+	}
 </script>
 
 <div class="space-y-1">
+	{#if isChristmasSeason()}
+		<div class="p-2">
+			<button
+				onclick={toggleChristmasBeer}
+				class="btn btn-sm w-full {filters.is_christmas_beer === 'True'
+					? 'btn-error'
+					: 'btn-outline'}"
+			>
+				🎄 {filters.is_christmas_beer === 'True' ? 'Viser kun juleøl' : 'Vis kun juleøl'}
+			</button>
+		</div>
+	{/if}
+
 	<RangeFilter
 		title="Pris"
 		bind:fromValue={filters.priceFrom}

@@ -7,6 +7,7 @@
 		PUBLIC_GITHUB_LINK
 	} from '$env/static/public';
 	import { HeartHandshake, Facebook, Menu, Github } from '@lucide/svelte';
+	import { isChristmasSeason } from '$lib/utils/helpers';
 
 	let {
 		right,
@@ -43,7 +44,7 @@
 					{@render left()}
 				{:else}
 					<a href="/" class="flex items-center gap-2 text-xl font-medium">
-						<span>{PUBLIC_SITE_TITLE}</span>
+						<span>{PUBLIC_SITE_TITLE}{isChristmasSeason() ? '🎄' : ''}</span>
 					</a>
 				{/if}
 			</div>

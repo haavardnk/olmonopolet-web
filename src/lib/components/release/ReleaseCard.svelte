@@ -15,11 +15,19 @@
 >
 	<div class="card-body p-3 md:p-4">
 		<div class="flex flex-col md:flex-row justify-between gap-3 md:gap-4 items-start">
-			<div class="flex flex-col">
-				<h3 class="card-title text-xl flex items-center gap-2">
-					<Calendar size={18} class="text-primary flex-shrink-0" />
-					{release.formattedDate}
-				</h3>
+			<div class="flex flex-col gap-2">
+				<div class="flex items-center gap-2 flex-wrap">
+					<h3 class="card-title text-xl flex items-center gap-2">
+						<Calendar size={18} class="text-primary flex-shrink-0" />
+						{release.formattedDate}
+					</h3>
+					{#if release.isChristmasRelease}
+						<div class="badge badge-error gap-1 shadow-sm">
+							<span>🎄</span>
+							<span class="font-semibold">Juleøl</span>
+						</div>
+					{/if}
+				</div>
 			</div>
 			<div
 				class="flex items-center md:mt-0 mt-2 self-start overflow-x-auto pb-1 gap-2 md:gap-3 flex-shrink-0"

@@ -32,6 +32,12 @@
 		};
 	});
 
+	const releaseImage = $derived(
+		release.isChristmasRelease
+			? `${PUBLIC_SITE_URL}/release-image-christmas.jpg`
+			: `${PUBLIC_SITE_URL}/release-image.jpg`
+	);
+
 	function retryFetch() {
 		location.reload();
 	}
@@ -44,8 +50,9 @@
 	<meta property="og:type" content="article" />
 	<meta property="og:title" content={title} />
 	<meta property="og:description" content={description} />
-	<meta property="og:url" content={`${PUBLIC_SITE_URL}/release/${slug}`} />
-	<meta property="og:image" content={`${PUBLIC_SITE_URL}/release-image.jpg`} />
+	<meta property="og:image" content={releaseImage} />
+	<meta property="og:url" content="{PUBLIC_SITE_URL}/release/{slug}" />
+	<meta property="og:site_name" content={PUBLIC_SITE_TITLE} />
 	<meta property="article:publisher" content={PUBLIC_FACEBOOK_URL} />
 	<meta property="fb:pages" content="BeermonopolyNO" />
 	{@html `<script type="application/ld+json">${JSON.stringify(articleJson)}</script>`}

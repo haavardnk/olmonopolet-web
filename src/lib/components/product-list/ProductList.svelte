@@ -43,6 +43,7 @@
 		allergens: searchParams.get('allergens') || '',
 		country: searchParams.get('country') || '',
 		deliveryOptions: searchParams.get('deliveryOptions') || '',
+		is_christmas_beer: searchParams.get('is_christmas_beer') || '',
 		priceFrom: searchParams.get('priceFrom') || '',
 		pricePerLiterFrom: searchParams.get('pricePerLiterFrom') || '',
 		pricePerLiterTo: searchParams.get('pricePerLiterTo') || '',
@@ -99,6 +100,7 @@
 			allergens: '',
 			country: '',
 			deliveryOptions: '',
+			is_christmas_beer: '',
 			priceFrom: '',
 			pricePerLiterFrom: '',
 			pricePerLiterTo: '',
@@ -108,11 +110,6 @@
 			store: '',
 			style: ''
 		};
-		updateUrl();
-	}
-
-	function clearSearch() {
-		searchQuery = '';
 		updateUrl();
 	}
 
