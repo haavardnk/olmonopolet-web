@@ -191,7 +191,7 @@
 		</div>
 	</aside>
 
-	<main class="flex-1 flex flex-col overflow-hidden">
+	<main class="flex-1 flex flex-col overflow-hidden bg-base-100">
 		<div class="xl:hidden sticky top-0 z-40 bg-base-100 border-b border-base-content/10 shadow-sm">
 			<SearchAndSort
 				bind:searchQuery
@@ -205,7 +205,11 @@
 			/>
 		</div>
 
-		<div class="flex-1 overflow-y-auto" data-infinite-wrapper bind:this={scrollContainer}>
+		<div
+			class="flex-1 overflow-y-auto bg-base-100"
+			data-infinite-wrapper
+			bind:this={scrollContainer}
+		>
 			<div class="p-4 lg:p-6">
 				<div class="mb-4 text-sm text-base-content/70">
 					Viser {loadedCount} av {total.toLocaleString('nb-NO')} produkter

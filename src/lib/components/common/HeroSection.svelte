@@ -15,7 +15,14 @@
 	<div class="text-center">
 		<div class="max-w-xl">
 			<div class="relative flex items-center justify-center" in:fly={{ y: 20, duration: 300 }}>
-				<img src={hero} alt="Ølmonopolet hero" class="w-56 h-56 object-contain" />
+				<img
+					src={hero}
+					alt="Ølmonopolet hero"
+					class="w-56 h-56 object-contain"
+					loading="eager"
+					decoding="async"
+					fetchpriority="high"
+				/>
 			</div>
 
 			<div in:fly={{ y: 20, duration: 300, delay: 100 }}>

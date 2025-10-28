@@ -21,7 +21,8 @@
 	<link rel="icon" type="image/x-icon" href="/favicon.ico" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<meta charset="utf-8" />
-	<meta name="theme-color" content="#fbbf24" />
+	<meta name="theme-color" content="#FFDEB6" media="(prefers-color-scheme: light)" />
+	<meta name="theme-color" content="#FFDEB6" media="(prefers-color-scheme: dark)" />
 	<meta property="og:locale" content="nb_NO" />
 	{@html `<script type="application/ld+json">${JSON.stringify(organizationJson)}</script>`}
 </svelte:head>

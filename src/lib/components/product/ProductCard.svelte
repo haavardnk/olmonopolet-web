@@ -28,6 +28,8 @@
 					src={product.image || defaultLabel}
 					alt={product.name + ' etikett'}
 					class="w-24 h-24 sm:w-32 sm:h-32 object-contain rounded-lg"
+					loading={index < 6 ? 'eager' : 'lazy'}
+					decoding="async"
 				/>
 			</div>
 

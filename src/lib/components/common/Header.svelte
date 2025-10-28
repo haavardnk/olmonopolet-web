@@ -35,7 +35,8 @@
 </script>
 
 <header
-	class="top-0 z-10 bg-base-300/80 backdrop-blur-md border-b border-base-content/10 shadow-md"
+	class="sticky top-0 z-10 bg-base-300 border-b border-base-content/10 shadow-md"
+	style="padding-top: env(safe-area-inset-top);"
 >
 	<div class:container={!fullWidth} class:mx-auto={!fullWidth} class:lg:px-4={fullWidth}>
 		<div class="navbar">
@@ -104,9 +105,6 @@
 								class="absolute right-0 mt-3 z-[1] p-2 shadow bg-base-200 rounded-box w-52 menu menu-sm dropdown-content"
 								onmouseleave={closeMenu}
 							>
-								<li>
-									<a href="/products" onclick={closeMenu}>Produkter</a>
-								</li>
 								<li>
 									<a
 										href={PUBLIC_PATREON_URL}

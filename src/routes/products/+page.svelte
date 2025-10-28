@@ -152,7 +152,7 @@
 	<meta property="og:url" content="{PUBLIC_SITE_URL}/products" />
 </svelte:head>
 
-<div class="h-screen flex flex-col">
+<div class="min-h-screen xl:h-screen flex flex-col">
 	<Header showSocialLinks={false} showMenu={false} fullWidth={true}>
 		{#snippet right()}
 			{#if canGoBack}

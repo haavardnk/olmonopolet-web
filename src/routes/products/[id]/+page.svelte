@@ -54,7 +54,7 @@
 		{/snippet}
 	</Header>
 
-	<main class="flex-1 bg-base-100">
+	<main class="flex-1 bg-base-100" style="padding-bottom: env(safe-area-inset-bottom);">
 		<div class="bg-base-200">
 			<div class="container mx-auto px-4 py-4 sm:py-8">
 				<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
@@ -65,6 +65,9 @@
 								alt={product.name}
 								class="w-full h-auto max-h-[40vh] lg:max-h-[80vh] object-contain rounded-box"
 								style="clip-path: inset(0 round 0.5rem)"
+								loading="eager"
+								decoding="async"
+								fetchpriority="high"
 							/>
 						</div>
 					</div>
