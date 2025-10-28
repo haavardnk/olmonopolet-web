@@ -136,7 +136,7 @@
 	}
 </script>
 
-<div class="drawer lg:hidden">
+<div class="drawer xl:hidden">
 	<input
 		id="filter-drawer"
 		type="checkbox"
