@@ -154,7 +154,7 @@
 	<meta property="og:site_name" content={PUBLIC_SITE_TITLE} />
 </svelte:head>
 
-<div class="min-h-screen xl:h-screen flex flex-col">
+<div class="h-screen flex flex-col">
 	<Header showSocialLinks={false} showMenu={false} fullWidth={true}>
 		{#snippet right()}
 			{#if canGoBack}
