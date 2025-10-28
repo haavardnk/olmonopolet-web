@@ -13,48 +13,49 @@
 
 {#if hasCharacteristics}
 	<div class="card bg-base-100 shadow">
-		<div class="card-body">
-			<h3 class="card-title text-lg mb-4">Egenskaper</h3>
+		<div class="card-body p-3 sm:p-4">
+			<h3 class="card-title text-sm sm:text-base mb-2">Egenskaper</h3>
 
 			{#if product.freshness != null}
-				<div class="mb-4">
-					<div class="flex justify-between mb-1">
-						<span class="text-sm font-semibold">Friskhet</span>
-						<span class="text-sm font-bold text-success">{product.freshness}%</span>
+				<div class="mb-2">
+					<div class="flex justify-between mb-0.5">
+						<span class="text-xs font-medium">Friskhet</span>
+						<span class="text-xs font-bold text-success">{product.freshness}%</span>
 					</div>
-					<progress class="progress progress-success" value={product.freshness} max="100"
+					<progress class="progress progress-success h-1.5" value={product.freshness} max="100"
 					></progress>
 				</div>
 			{/if}
 
 			{#if product.fullness != null}
-				<div class="mb-4">
-					<div class="flex justify-between mb-1">
-						<span class="text-sm font-semibold">Fylde</span>
-						<span class="text-sm font-bold text-primary">{product.fullness}%</span>
+				<div class="mb-2">
+					<div class="flex justify-between mb-0.5">
+						<span class="text-xs font-medium">Fylde</span>
+						<span class="text-xs font-bold text-primary">{product.fullness}%</span>
 					</div>
-					<progress class="progress progress-primary" value={product.fullness} max="100"></progress>
+					<progress class="progress progress-primary h-1.5" value={product.fullness} max="100"
+					></progress>
 				</div>
 			{/if}
 
 			{#if product.bitterness != null}
-				<div class="mb-4">
-					<div class="flex justify-between mb-1">
-						<span class="text-sm font-semibold">Bitterhet</span>
-						<span class="text-sm font-bold text-warning">{product.bitterness}%</span>
+				<div class="mb-2">
+					<div class="flex justify-between mb-0.5">
+						<span class="text-xs font-medium">Bitterhet</span>
+						<span class="text-xs font-bold text-warning">{product.bitterness}%</span>
 					</div>
-					<progress class="progress progress-warning" value={product.bitterness} max="100"
+					<progress class="progress progress-warning h-1.5" value={product.bitterness} max="100"
 					></progress>
 				</div>
 			{/if}
 
 			{#if product.sweetness != null}
 				<div>
-					<div class="flex justify-between mb-1">
-						<span class="text-sm font-semibold">Sødme</span>
-						<span class="text-sm font-bold text-secondary">{product.sweetness}%</span>
+					<div class="flex justify-between mb-0.5">
+						<span class="text-xs font-medium">Sødme</span>
+						<span class="text-xs font-bold text-secondary">{product.sweetness}%</span>
 					</div>
-					<progress class="progress progress-secondary" value={product.sweetness} max="100"
+					<progress class="progress progress-secondary h-1.5" value={product.sweetness} max="100"
 					></progress>
 				</div>
 			{/if}

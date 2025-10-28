@@ -31,10 +31,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 		const product: Product = {
 			id: apiData.vmp_id,
 			name: apiData.vmp_name,
-			image:
-				apiData.label_hd_url && !apiData.label_hd_url.includes('badge-beer-default')
-					? apiData.label_hd_url
-					: logo,
+			image: apiData.label_hd_url ? apiData.label_hd_url : logo,
 			price: apiData.price,
 			volume: apiData.volume,
 			pricePerLiter: apiData.price_per_volume,

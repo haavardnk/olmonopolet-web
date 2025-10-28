@@ -93,15 +93,14 @@
 
 	<main class="flex-1 bg-base-100" style="padding-bottom: env(safe-area-inset-bottom);">
 		<div class="bg-base-200">
-			<div class="container mx-auto px-4 py-4 sm:py-8">
-				<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
-					<div class="space-y-4" in:fly={{ y: 20, duration: 300 }}>
-						<div class="flex justify-center">
+			<div class="container mx-auto px-4 py-3 sm:py-6 lg:pb-12">
+				<div class="grid grid-cols-1 lg:grid-cols-20 gap-3 lg:gap-4 items-start">
+					<div class="lg:col-span-7" in:fly={{ y: 20, duration: 300 }}>
+						<div class="flex justify-center lg:sticky lg:top-24 h-full">
 							<img
 								src={product.image}
 								alt={product.name}
-								class="w-full h-auto max-h-[40vh] lg:max-h-[80vh] object-contain rounded-box"
-								style="clip-path: inset(0 round 0.5rem)"
+								class="w-full h-auto max-h-[40vh] lg:max-h-full object-contain rounded-box"
 								loading="eager"
 								decoding="async"
 								fetchpriority="high"
@@ -109,7 +108,7 @@
 						</div>
 					</div>
 
-					<div class="space-y-6" in:fly={{ y: 20, duration: 300, delay: 100 }}>
+					<div class="lg:col-span-13 space-y-3" in:fly={{ y: 20, duration: 300, delay: 100 }}>
 						<ProductHero {product} />
 						<ProductStats {product} />
 						<ProductCharacteristics {product} />
@@ -118,7 +117,7 @@
 			</div>
 		</div>
 
-		<div class="container mx-auto px-4 py-12">
+		<div class="container mx-auto px-4 py-6 sm:py-12">
 			<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 				{#if hasDetails}
 					<div in:fly={{ y: 20, duration: 300, delay: 200 }}>
