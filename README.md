@@ -42,4 +42,4 @@ npm run preview
 
 ## License
 
-GPL-3.0 License - See [LICENSE](LICENSE) file for details.
+LGPL-3.0 License - See [LICENSE](LICENSE) file for details.
