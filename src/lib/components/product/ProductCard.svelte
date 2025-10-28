@@ -9,7 +9,11 @@
 		product,
 		index,
 		noTransition = false
-	}: { product: Product; index: number; noTransition?: boolean } = $props();
+	}: {
+		product: Product;
+		index: number;
+		noTransition?: boolean;
+	} = $props();
 </script>
 
 <a

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Product } from '$lib/types';
+	import type { Product, Release } from '$lib/types';
 	import {
 		Beer,
 		RefreshCw,
@@ -11,8 +11,9 @@
 	import ProductCard from '$lib/components/product/ProductCard.svelte';
 	import orderBy from 'lodash/orderBy';
 
-	let { products, retryFetch }: { products: Product[]; retryFetch: () => void } = $props();
+	let { release, retryFetch }: { release: Release; retryFetch: () => void } = $props();
 
+	let products = $derived(release.products);
 	let sortKey: keyof Product = $state('rating');
 	let sortOrder: 'desc' | 'asc' = $state('desc');
 	let selectedStyle = $state('alle');

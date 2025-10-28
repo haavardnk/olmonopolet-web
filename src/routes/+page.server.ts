@@ -1,22 +1,22 @@
 import type { PageServerLoad } from './$types';
 import { API_URL } from '$env/static/private';
-import type { Release } from '$lib/types';
+import type { Release, ReleaseListResponse, ApiRelease } from '$lib/types';
 import { formatDate, getAssortmentDisplayName } from '$lib/utils/helpers';
 
 export const load: PageServerLoad = async ({ fetch, url }) => {
 	try {
 		const page = Number(url.searchParams.get('page')) || 1;
 		const page_size = 5;
-		const apiUrl = `${API_URL}/release/?fields=name,release_date,beer_count,product_selections,product_stats&page_size=${page_size}&page=${page}`;
+		const apiUrl = `${API_URL}/release/?fields=name,release_date,beer_count,product_selections,product_stats,is_christmas_release&page_size=${page_size}&page=${page}`;
 		const response = await fetch(apiUrl);
 
 		if (!response.ok) {
 			throw new Error(`API returnerte ${response.status}: ${response.statusText}`);
 		}
 
-		const data = await response.json();
+		const data: ReleaseListResponse = await response.json();
 
-		const releases: Release[] = (data.results || []).map((release: any) => {
+		const releases: Release[] = (data.results || []).map((release: ApiRelease) => {
 			return {
 				name: release.name,
 				releaseDate: release.release_date,
@@ -25,6 +25,7 @@ export const load: PageServerLoad = async ({ fetch, url }) => {
 				assortments: (release.product_selections || [])
 					.map((ps: string) => getAssortmentDisplayName(ps))
 					.filter((name: string | null): name is string => name !== null),
+				isChristmasRelease: release.is_christmas_release,
 				stats: {
 					productCount: release.product_stats.product_count,
 					beerCount: release.product_stats.beer_count,

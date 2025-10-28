@@ -6,8 +6,8 @@ export type UserLocation = {
 export type Store = {
 	name: string;
 	stock: number;
-	lat: number;
-	lng: number;
+	lat?: number;
+	lng?: number;
 };
 
 export type Product = {
@@ -18,6 +18,7 @@ export type Product = {
 	volume?: number | null;
 	pricePerLiter?: number | null;
 	style?: string | null;
+	isChristmasBeer?: boolean;
 	rating?: number | null;
 	checkins?: number | null;
 	strength?: number | null;
@@ -61,6 +62,7 @@ export type Release = {
 	formattedDate: string;
 	beerCount: number;
 	assortments: string[];
+	isChristmasRelease: boolean;
 	products: Product[];
 	stats: ProductStats;
 };
@@ -108,7 +110,14 @@ export interface ApiRelease {
 	name: string;
 	release_date: string;
 	beer_count: number;
-	product_selections: string;
+	product_selections: string[];
+	is_christmas_release: boolean;
+	product_stats: {
+		product_count: number;
+		beer_count: number;
+		cider_count: number;
+		mead_count: number;
+	};
 }
 
 export interface ReleaseListResponse {
@@ -125,19 +134,46 @@ export interface ApiProduct {
 	rating: number | null;
 	checkins: number;
 	label_sm_url: string;
-	main_category: string;
-	sub_category: string;
-	style: string;
-	stock: number;
+	label_hd_url?: string;
+	main_category?: string;
+	sub_category?: string;
+	style?: string;
+	is_christmas_beer?: boolean;
+	stock?: number;
 	abv: number;
+	ibu?: number;
+	alcohol_units?: number;
 	volume: number;
 	price_per_volume: number;
 	vmp_url: string;
 	untpd_url: string | null;
 	untpd_id: string | null;
-	country: string;
-	country_code: string | null;
-	product_selection: string;
+	country?: string;
+	country_code?: string | null;
+	product_selection?: string;
+	freshness?: number;
+	fullness?: number;
+	bitterness?: number;
+	sweetness?: number;
+	sugar?: number;
+	acid?: number;
+	year?: number;
+	storable?: string;
+	description?: string;
+	taste?: string;
+	aroma?: string;
+	color?: string;
+	food_pairing?: string;
+	raw_materials?: string;
+	method?: string;
+	allergens?: string;
+	brewery?: string;
+	all_stock?: Array<{
+		store_name: string;
+		quantity: number;
+		gps_lat?: number;
+		gps_long?: number;
+	}>;
 }
 
 export interface ProductListResponse {

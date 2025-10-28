@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
 import { API_URL } from '$env/static/private';
-import type { Product, Store } from '$lib/types';
+import type { Product, Store, ProductListResponse, ApiProduct } from '$lib/types';
 import { normalizeCharacteristic, getAssortmentDisplayName } from '$lib/utils/helpers';
 import logo from '$lib/assets/logo.png';
 
@@ -21,8 +21,8 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 			});
 		}
 
-		const data = await response.json();
-		const apiData = data.results?.[0];
+		const data: ProductListResponse = await response.json();
+		const apiData: ApiProduct | undefined = data.results?.[0];
 
 		if (!apiData) {
 			throw error(404, { message: 'Øl ikke funnet' });
@@ -39,6 +39,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 			volume: apiData.volume,
 			pricePerLiter: apiData.price_per_volume,
 			style: apiData.style || apiData.sub_category || apiData.main_category,
+			isChristmasBeer: apiData.is_christmas_beer,
 			rating: apiData.rating,
 			checkins: apiData.checkins,
 			strength: apiData.abv,
@@ -66,15 +67,13 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 			assortment: getAssortmentDisplayName(apiData.product_selection),
 			vmpUrl: apiData.vmp_url,
 			untappdUrl: apiData.untpd_url,
-			stores: apiData.all_stock
-				.map(
-					(s: { store_name: string; quantity: number; gps_lat?: number; gps_long?: number }) => ({
-						name: s.store_name,
-						stock: s.quantity,
-						lat: s.gps_lat,
-						lng: s.gps_long
-					})
-				)
+			stores: (apiData.all_stock || [])
+				.map((s) => ({
+					name: s.store_name,
+					stock: s.quantity,
+					lat: s.gps_lat,
+					lng: s.gps_long
+				}))
 				.sort((a: Store, b: Store) => a.name.localeCompare(b.name, 'no'))
 		};
 
