@@ -47,7 +47,7 @@
 	<meta property="og:title" content={PUBLIC_SITE_TITLE} />
 	<meta property="og:description" content={PUBLIC_SITE_DESCRIPTION} />
 	<meta property="og:url" content={PUBLIC_SITE_URL} />
-	<meta property="og:image" content={`${PUBLIC_SITE_URL}/icon.png`} />
+	<meta property="og:image" content="{PUBLIC_SITE_URL}/icon.png" />
 	<meta property="og:site_name" content={PUBLIC_SITE_TITLE} />
 	{#if itemListJson}
 		{@html `<script type="application/ld+json">${JSON.stringify(itemListJson)}</script>`}

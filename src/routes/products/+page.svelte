@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Header from '$lib/components/common/Header.svelte';
 	import ProductList from '$lib/components/product-list/ProductList.svelte';
-	import { PUBLIC_SITE_URL } from '$env/static/public';
+	import { PUBLIC_SITE_URL, PUBLIC_SITE_TITLE } from '$env/static/public';
 	import { fly } from 'svelte/transition';
 	import { browser } from '$app/environment';
 	import { beforeNavigate, afterNavigate } from '$app/navigation';
@@ -137,19 +137,21 @@
 </script>
 
 <svelte:head>
-	<title>Produktoversikt - Ølmonopolet</title>
+	<title>Produktoversikt - {PUBLIC_SITE_TITLE}</title>
 	<meta
 		name="description"
 		content="Utforsk alle produkter fra Vinmonopolet. Søk, filtrer og sorter etter pris, stil, land, alkoholprosent og mer."
 	/>
 	<link rel="canonical" href="{PUBLIC_SITE_URL}/products" />
 	<meta property="og:type" content="website" />
-	<meta property="og:title" content="Produktoversikt - Ølmonopolet" />
+	<meta property="og:title" content="Produktoversikt - {PUBLIC_SITE_TITLE}" />
 	<meta
 		property="og:description"
 		content="Utforsk alle produkter fra Vinmonopolet. Søk, filtrer og sorter etter pris, stil, land, alkoholprosent og mer."
 	/>
 	<meta property="og:url" content="{PUBLIC_SITE_URL}/products" />
+	<meta property="og:image" content="{PUBLIC_SITE_URL}/icon.png" />
+	<meta property="og:site_name" content={PUBLIC_SITE_TITLE} />
 </svelte:head>
 
 <div class="min-h-screen xl:h-screen flex flex-col">

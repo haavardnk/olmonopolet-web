@@ -4,6 +4,7 @@
 	import { afterNavigate } from '$app/navigation';
 	import { fly } from 'svelte/transition';
 	import { ArrowLeft } from '@lucide/svelte';
+	import { PUBLIC_SITE_URL, PUBLIC_SITE_TITLE } from '$env/static/public';
 	import Header from '$lib/components/common/Header.svelte';
 	import Footer from '$lib/components/common/Footer.svelte';
 	import ProductHero from '$lib/components/product-detail/ProductHero.svelte';
@@ -31,11 +32,47 @@
 	function goBack() {
 		window.history.back();
 	}
+
+	const title = $derived(`${product.name} - ${PUBLIC_SITE_TITLE}`);
+	const description = $derived(
+		product.description ||
+			`${product.name} - ${product.style || 'Øl'} fra ${product.country || 'Norge'}. ${product.strength}% alkohol, ${product.volume ? `${(product.volume * 1000).toFixed(0)} ml` : ''}.`
+	);
+
+	const productJson = $derived.by(() => {
+		return {
+			'@context': 'https://schema.org',
+			'@type': 'Product',
+			name: product.name,
+			description: description,
+			image: product.image,
+			brand: {
+				'@type': 'Brand',
+				name: product.brewery || 'Ukjent produsent'
+			},
+			offers: {
+				'@type': 'Offer',
+				price: product.price,
+				priceCurrency: 'NOK',
+				availability: 'https://schema.org/InStock'
+			}
+		};
+	});
 </script>
 
 <svelte:head>
-	<title>{product.name} - Ølmonopolet</title>
-	<meta name="description" content={product.description} />
+	<title>{title}</title>
+	<meta name="description" content={description} />
+	<link rel="canonical" href="{PUBLIC_SITE_URL}/products/{product.id}" />
+	<meta property="og:type" content="product" />
+	<meta property="og:title" content={title} />
+	<meta property="og:description" content={description} />
+	<meta property="og:url" content="{PUBLIC_SITE_URL}/products/{product.id}" />
+	<meta property="og:image" content={product.image} />
+	<meta property="og:site_name" content={PUBLIC_SITE_TITLE} />
+	<meta property="product:price:amount" content={product.price?.toString()} />
+	<meta property="product:price:currency" content="NOK" />
+	{@html `<script type="application/ld+json">${JSON.stringify(productJson)}</script>`}
 </svelte:head>
 
 <div class="min-h-screen flex flex-col">

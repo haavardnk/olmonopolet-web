@@ -46,7 +46,7 @@
 <svelte:head>
 	<title>{title}</title>
 	<meta name="description" content={description} />
-	<link rel="canonical" href={`${PUBLIC_SITE_URL}/release/${slug}`} />
+	<link rel="canonical" href="{PUBLIC_SITE_URL}/release/{slug}" />
 	<meta property="og:type" content="article" />
 	<meta property="og:title" content={title} />
 	<meta property="og:description" content={description} />
