@@ -42,10 +42,19 @@
 						hasMore = parsed.hasMore;
 
 						if (savedScroll) {
+							const scrollY = parseInt(savedScroll);
+							const isWideScreen = window.matchMedia('(min-width: 1280px)').matches;
+
 							requestAnimationFrame(() => {
-								const scrollElement = document.querySelector('[data-infinite-wrapper]');
-								if (scrollElement) {
-									scrollElement.scrollTop = parseInt(savedScroll);
+								if (isWideScreen) {
+									const scrollContainer = document.querySelector(
+										'[data-scroll-container]'
+									) as HTMLElement;
+									if (scrollContainer) {
+										scrollContainer.scrollTop = scrollY;
+									}
+								} else {
+									window.scrollTo(0, scrollY);
 								}
 							});
 						}
@@ -63,8 +72,15 @@
 	beforeNavigate(({ willUnload, to }) => {
 		if (!willUnload && to?.route.id?.startsWith('/products/[id]')) {
 			if (browser) {
-				const scrollElement = document.querySelector('[data-infinite-wrapper]');
-				const scrollPos = scrollElement?.scrollTop || 0;
+				const isWideScreen = window.matchMedia('(min-width: 1280px)').matches;
+				let scrollPos = 0;
+
+				if (isWideScreen) {
+					const scrollContainer = document.querySelector('[data-scroll-container]') as HTMLElement;
+					scrollPos = scrollContainer?.scrollTop || 0;
+				} else {
+					scrollPos = window.scrollY;
+				}
 
 				sessionStorage.setItem('products-scroll', scrollPos.toString());
 				sessionStorage.setItem(
@@ -154,7 +170,7 @@
 	<meta property="og:site_name" content={PUBLIC_SITE_TITLE} />
 </svelte:head>
 
-<div class="h-screen flex flex-col">
+<div class="min-h-screen xl:h-screen flex flex-col">
 	<Header showSocialLinks={false} showMenu={false} fullWidth={true}>
 		{#snippet right()}
 			{#if canGoBack}
@@ -170,7 +186,7 @@
 		{/snippet}
 	</Header>
 
-	<div class="flex-1 overflow-hidden" in:fly={{ y: 20, duration: 300 }}>
+	<div class="flex-1 xl:overflow-hidden" in:fly={{ y: 20, duration: 300 }}>
 		<ProductList {hasMore} {loadMore} {products} {total} searchParams={data.searchParams} />
 	</div>
 </div>

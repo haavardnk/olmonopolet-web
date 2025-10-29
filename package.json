@@ -36,7 +36,6 @@
 		"vite": "^7.1.4"
 	},
 	"dependencies": {
-		"flag-icons": "^7.5.0",
-		"svelte-infinite-loading": "^1.4.0"
+		"flag-icons": "^7.5.0"
 	}
 }

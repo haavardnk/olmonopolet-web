@@ -3,22 +3,23 @@ import type { Product } from '$lib/types';
 import { getAssortmentDisplayName } from '$lib/utils/helpers';
 
 export const load = async ({ url }: { url: URL }) => {
-	const search = url.searchParams.get('search') || '';
-	const sortBy = url.searchParams.get('sort') || '-rating';
-	const store = url.searchParams.get('store') || '';
-	const priceFrom = url.searchParams.get('priceFrom') || '';
-	const priceTo = url.searchParams.get('priceTo') || '';
-	const pricePerLiterFrom = url.searchParams.get('pricePerLiterFrom') || '';
-	const pricePerLiterTo = url.searchParams.get('pricePerLiterTo') || '';
-	const style = url.searchParams.get('style') || '';
-	const country = url.searchParams.get('country') || '';
-	const abvFrom = url.searchParams.get('abvFrom') || '';
-	const abvTo = url.searchParams.get('abvTo') || '';
-	const allergens = url.searchParams.get('allergens') || '';
-	const productSelection = url.searchParams.get('productSelection') || '';
-	const deliveryOptions = url.searchParams.get('deliveryOptions') || '';
-	const release = url.searchParams.get('release') || '';
-	const page = parseInt(url.searchParams.get('page') || '1');
+	const searchParams = new URLSearchParams(url.searchParams);
+	const search = searchParams.get('search') || '';
+	const sortBy = searchParams.get('sort') || '-rating';
+	const store = searchParams.get('store') || '';
+	const priceFrom = searchParams.get('priceFrom') || '';
+	const priceTo = searchParams.get('priceTo') || '';
+	const pricePerLiterFrom = searchParams.get('pricePerLiterFrom') || '';
+	const pricePerLiterTo = searchParams.get('pricePerLiterTo') || '';
+	const style = searchParams.get('style') || '';
+	const country = searchParams.get('country') || '';
+	const abvFrom = searchParams.get('abvFrom') || '';
+	const abvTo = searchParams.get('abvTo') || '';
+	const allergens = searchParams.get('allergens') || '';
+	const productSelection = searchParams.get('productSelection') || '';
+	const deliveryOptions = searchParams.get('deliveryOptions') || '';
+	const release = searchParams.get('release') || '';
+	const page = parseInt(searchParams.get('page') || '1');
 	const pageSize = 24;
 
 	const filters: ProductFilters = {
@@ -67,7 +68,7 @@ export const load = async ({ url }: { url: URL }) => {
 			page,
 			pageSize,
 			hasMore: products.length === pageSize && response.count > page * pageSize,
-			searchParams: url.searchParams
+			searchParams
 		};
 	} catch (error) {
 		console.error('Error loading products:', error);
@@ -78,7 +79,7 @@ export const load = async ({ url }: { url: URL }) => {
 			pageSize,
 			hasMore: false,
 			error: 'Kunne ikke laste produkter',
-			searchParams: url.searchParams
+			searchParams
 		};
 	}
 };

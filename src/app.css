@@ -5,7 +5,21 @@
 	themes: caramellatte --default;
 }
 
+:root {
+	--header-offset: 64px;
+}
+
 body,
 html {
 	font-family: 'JetBrains Mono', 'Quicksand', Arial, Helvetica, sans-serif;
+}
+
+@media (max-width: 1279px) {
+	html {
+		scrollbar-width: none;
+		-ms-overflow-style: none;
+	}
+	html::-webkit-scrollbar {
+		display: none;
+	}
 }

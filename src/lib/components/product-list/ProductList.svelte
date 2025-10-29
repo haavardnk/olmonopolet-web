@@ -4,7 +4,7 @@
 	import { goto } from '$app/navigation';
 	import { X } from '@lucide/svelte';
 	import { slide } from 'svelte/transition';
-	import InfiniteLoading from 'svelte-infinite-loading';
+	import InfiniteScroll from '$lib/components/common/InfiniteScroll.svelte';
 	import ProductCard from '$lib/components/product/ProductCard.svelte';
 	import ProductFilters from '$lib/components/product-list/ProductFilters.svelte';
 	import SearchAndSort from '$lib/components/product-list/controls/SearchAndSort.svelte';
@@ -24,13 +24,15 @@
 	} = $props();
 
 	let activeFiltersCount = $state(0);
-	let desktopFiltersScrollContainer: HTMLDivElement;
 	let previousActiveFiltersCount = $state(0);
-	let scrollContainer: HTMLDivElement;
-	let searchQuery = $state(searchParams.get('search') || '');
 	let showMobileFilters = $state(false);
 	let hasNavigatedWithinFilters = $state(false);
+	let infiniteLoading = $state(false);
+	let isWideScreen = $state(false);
+	let desktopFiltersScrollContainer: HTMLDivElement;
+	let mainScrollContainer = $state<HTMLDivElement>();
 
+	let searchQuery = $state(searchParams.get('search') || '');
 	const initialSort = searchParams.get('sort') || `-${SortField.Rating}`;
 	let sortBy = $state<SortField>(
 		(initialSort.startsWith('-') ? initialSort.slice(1) : initialSort) as SortField
@@ -54,8 +56,8 @@
 		style: searchParams.get('style') || ''
 	});
 
+	let scrollThreshold = $derived(isWideScreen ? 600 : 1200);
 	const loadedCount = $derived(products.length);
-
 	const currentSearchParams = $derived.by(() => {
 		const params = new URLSearchParams();
 
@@ -71,7 +73,24 @@
 		return params;
 	});
 
-	const infiniteKey = $derived(searchParams.toString());
+	$effect(() => {
+		const mediaQuery = window.matchMedia('(min-width: 1280px)');
+		isWideScreen = mediaQuery.matches;
+
+		const handleChange = (e: MediaQueryListEvent) => {
+			isWideScreen = e.matches;
+		};
+
+		mediaQuery.addEventListener('change', handleChange);
+		return () => mediaQuery.removeEventListener('change', handleChange);
+	});
+
+	$effect(() => {
+		const newCount = Object.values(filters).filter((v) => v !== '').length;
+		compensateScrollForFilterButton(newCount);
+		previousActiveFiltersCount = newCount;
+		activeFiltersCount = newCount;
+	});
 
 	function compensateScrollForFilterButton(newCount: number) {
 		if (previousActiveFiltersCount === 0 && newCount > 0) {
@@ -85,13 +104,6 @@
 			desktopFiltersScrollContainer?.scrollBy({ top: -32, behavior: 'smooth' });
 		}
 	}
-
-	$effect(() => {
-		const newCount = Object.values(filters).filter((v) => v !== '').length;
-		compensateScrollForFilterButton(newCount);
-		previousActiveFiltersCount = newCount;
-		activeFiltersCount = newCount;
-	});
 
 	function clearFilters() {
 		filters = {
@@ -130,8 +142,10 @@
 
 		goto(`/products?${params.toString()}`, { replaceState, noScroll: true });
 
-		if (scrollContainer) {
-			scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
+		if (isWideScreen && mainScrollContainer) {
+			mainScrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
+		} else {
+			window.scrollTo({ top: 0, behavior: 'smooth' });
 		}
 	}
 </script>
@@ -191,8 +205,10 @@
 		</div>
 	</aside>
 
-	<main class="flex-1 flex flex-col overflow-hidden bg-base-100">
-		<div class="xl:hidden sticky top-0 z-40 bg-base-100 border-b border-base-content/10 shadow-sm">
+	<main class="flex-1 flex flex-col xl:overflow-hidden bg-base-100">
+		<div
+			class="xl:hidden sticky top-[var(--header-offset,0px)] z-40 bg-base-100 border-b border-base-content/10 shadow-sm"
+		>
 			<SearchAndSort
 				bind:searchQuery
 				bind:sortBy
@@ -206,9 +222,9 @@
 		</div>
 
 		<div
-			class="flex-1 overflow-y-auto bg-base-100"
-			data-infinite-wrapper
-			bind:this={scrollContainer}
+			class="flex-1 xl:overflow-y-auto bg-base-100"
+			bind:this={mainScrollContainer}
+			data-scroll-container
 		>
 			<div class="p-4 lg:p-6">
 				<div class="mb-4 text-sm text-base-content/70">
@@ -223,52 +239,28 @@
 					</div>
 				{/if}
 
-				{#if products.length > 0 && total > products.length}
-					{#key infiniteKey}
-						<InfiniteLoading
-							forceUseInfiniteWrapper
-							distance={250}
-							on:infinite={async ({ detail: { loaded, complete } }) => {
-								if (!hasMore) {
-									complete();
-									return;
-								}
-
-								try {
-									await loadMore(currentSearchParams);
-									if (hasMore) {
-										loaded();
-									} else {
-										complete();
-									}
-								} catch (e) {
-									console.error('Infinite loading error:', e);
-									complete();
-								}
-							}}
-						>
-							<div slot="spinner" class="flex justify-center py-8">
-								<span class="loading loading-spinner loading-lg text-primary"></span>
-							</div>
-							<div slot="noMore" class="text-center py-8 text-base-content/50 text-sm">
-								Ingen flere produkter
-							</div>
-							<div slot="noResults" class="text-center py-8 text-base-content/50 text-sm">
-								Ingen produkter funnet
-							</div>
-						</InfiniteLoading>
-					{/key}
-				{/if}
-
-				{#if products.length > 0 && products.length >= total}
-					<div class="text-center py-8 text-base-content/50 text-sm">Ingen flere produkter</div>
-				{/if}
-
 				{#if products.length === 0}
 					<div class="text-center py-12">
 						<p class="text-lg text-base-content/70 mb-4">Ingen produkter funnet</p>
 						<p class="text-sm text-base-content/50">Prøv å justere søket eller filtrene dine</p>
 					</div>
+				{:else}
+					<InfiniteScroll
+						{hasMore}
+						bind:loading={infiniteLoading}
+						onLoadMore={() => loadMore(currentSearchParams)}
+						threshold={scrollThreshold}
+						scrollRoot={isWideScreen ? mainScrollContainer : null}
+					>
+						{#snippet spinner()}
+							<div class="flex justify-center py-8">
+								<span class="loading loading-spinner loading-lg text-primary"></span>
+							</div>
+						{/snippet}
+						{#snippet complete()}
+							<div class="text-center py-8 text-base-content/50 text-sm">Ingen flere produkter</div>
+						{/snippet}
+					</InfiniteScroll>
 				{/if}
 			</div>
 		</div>
