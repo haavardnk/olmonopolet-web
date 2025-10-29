@@ -12,17 +12,17 @@
 
 	const valueScore = $derived(
 		product.rating && product.rating > 0 && product.pricePerLiter && product.pricePerLiter > 0
-			? Math.pow(product.rating, 2.5) / (product.pricePerLiter / 100)
+			? (Math.pow(product.rating, 4.8) / Math.pow(product.pricePerLiter / 100, 0.32)) * 0.0176
 			: null
 	);
 
 	const valueScoreInfo = $derived.by(() => {
 		if (!valueScore) return null;
 
-		if (valueScore >= 15) return { color: 'text-success', label: 'Utmerket' };
-		if (valueScore >= 10) return { color: 'text-info', label: 'God verdi' };
-		if (valueScore >= 5) return { color: 'text-warning', label: 'OK verdi' };
-		return { color: 'text-error', label: 'Dårlig verdi' };
+		if (valueScore >= 15) return { color: 'text-success' };
+		if (valueScore >= 10) return { color: 'text-info' };
+		if (valueScore >= 5) return { color: 'text-warning' };
+		return { color: 'text-error' };
 	});
 
 	const specsCount = $derived(
@@ -76,11 +76,21 @@
 			{/if}
 			{#if valueScore && valueScoreInfo}
 				<div class="stat py-3">
-					<div class="stat-title text-xs">Stjerner per krone</div>
-					<div class="stat-value text-xl sm:text-2xl {valueScoreInfo.color}">
-						{valueScore.toFixed(1)}
+					<div class="stat-title text-xs">Verdi for pengene</div>
+					<div class="w-full mt-2">
+						<progress
+							class="progress {valueScoreInfo.color === 'text-success'
+								? 'progress-success'
+								: valueScoreInfo.color === 'text-info'
+									? 'progress-info'
+									: valueScoreInfo.color === 'text-warning'
+										? 'progress-warning'
+										: 'progress-error'} h-3"
+							value={Math.min(valueScore, 20)}
+							max="20"
+						></progress>
 					</div>
-					<div class="stat-desc flex items-center gap-1 text-xs">
+					<div class="stat-desc flex items-center gap-1 text-xs mt-1">
 						<span>{product.rating?.toFixed(1)}</span>
 						<Star size={10} class="fill-current" />
 						<span>• {product.pricePerLiter?.toFixed(0)} kr/L</span>
