@@ -10,6 +10,7 @@
 	} from '@lucide/svelte';
 	import ProductCard from '$lib/components/product/ProductCard.svelte';
 	import orderBy from 'lodash/orderBy';
+	import { browser } from '$app/environment';
 
 	let { release, retryFetch }: { release: Release; retryFetch: () => void } = $props();
 
@@ -19,6 +20,7 @@
 	let selectedStyle = $state('alle');
 	let styleSearchTerm = $state('');
 	let showOnlyChristmasBeer = $state(false);
+	let isMobile = $state(browser ? window.innerWidth < 768 : false);
 
 	const sortOptions: { key: keyof Product; label: string }[] = [
 		{ key: 'rating', label: 'Vurdering' },
@@ -27,8 +29,6 @@
 		{ key: 'volume', label: 'Volum' },
 		{ key: 'name', label: 'Navn' }
 	];
-
-	let sortedProducts = $state<Product[]>([]);
 
 	let uniqueStyles = $derived(
 		Array.from(
@@ -45,6 +45,18 @@
 			)
 		).sort()
 	);
+
+	let styleCounts = $derived.by(() => {
+		const counts = new Map<string, number>();
+		products.forEach((p) => {
+			if (!p.style) return;
+			const normalizedStyle = p.style.startsWith('Belgian')
+				? 'Belgian'
+				: p.style.split(' - ')[0].trim();
+			counts.set(normalizedStyle, (counts.get(normalizedStyle) || 0) + 1);
+		});
+		return counts;
+	});
 
 	let filteredStyles = $derived(
 		uniqueStyles.filter((style) => style.toLowerCase().includes(styleSearchTerm.toLowerCase()))
@@ -63,16 +75,16 @@
 				})
 	);
 
-	$effect(() => {
-		sortedProducts = orderBy(
+	let sortedProducts = $derived(
+		orderBy(
 			filteredProducts,
 			(product) => {
 				const value = product[sortKey];
 				return value == null ? 1 : typeof value === 'string' ? value.toLowerCase() : value;
 			},
 			sortOrder
-		);
-	});
+		)
+	);
 
 	function setSortKey(val: keyof Product) {
 		sortKey = val;
@@ -193,13 +205,7 @@
 										/>
 										<span class="flex-1">{style}</span>
 										<span class="badge badge-sm badge-outline">
-											{products.filter((p) => {
-												if (!p.style) return false;
-												if (style === 'Belgian') {
-													return p.style.startsWith('Belgian');
-												}
-												return p.style.split(' - ')[0].trim() === style;
-											}).length}
+											{styleCounts.get(style) || 0}
 										</span>
 									</button>
 								</li>
@@ -254,7 +260,7 @@
 	{:else}
 		<div class="grid grid-cols-1 gap-4">
 			{#each sortedProducts as product, index}
-				<ProductCard {product} {index} />
+				<ProductCard {product} {index} noTransition={isMobile || index >= 10} />
 			{/each}
 		</div>
 	{/if}

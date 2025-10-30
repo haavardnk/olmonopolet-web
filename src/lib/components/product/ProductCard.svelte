@@ -18,7 +18,7 @@
 
 <a
 	href="/products/{product.id}"
-	in:fly={noTransition ? undefined : { y: 20, duration: 300, delay: index * 50 }}
+	in:fly={noTransition ? { y: 0, duration: 0 } : { y: 20, duration: 300, delay: index * 50 }}
 	class="card bg-base-200 hover:shadow-xl transition-all duration-300 hover:translate-y-[-4px] block"
 >
 	<div class="card-body p-4 sm:p-6">
