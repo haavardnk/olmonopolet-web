@@ -5,7 +5,11 @@ import type { Product, Store, ProductListResponse, ApiProduct } from '$lib/types
 import { normalizeCharacteristic, getAssortmentDisplayName } from '$lib/utils/helpers';
 import logo from '$lib/assets/logo.png';
 
-export const load: PageServerLoad = async ({ params, fetch }) => {
+export const load: PageServerLoad = async ({ params, fetch, setHeaders }) => {
+	setHeaders({
+		'Cache-Control': 'public, max-age=300, s-maxage=3600'
+	});
+
 	const { id } = params;
 
 	try {

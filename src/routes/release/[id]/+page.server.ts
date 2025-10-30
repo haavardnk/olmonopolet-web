@@ -11,7 +11,11 @@ import type {
 } from '$lib/types';
 import { formatDate, slugify, unslugify, getAssortmentDisplayName } from '$lib/utils/helpers';
 
-export const load: PageServerLoad = async ({ params, fetch }) => {
+export const load: PageServerLoad = async ({ params, fetch, setHeaders }) => {
+	setHeaders({
+		'Cache-Control': 'public, max-age=300, s-maxage=3600'
+	});
+
 	const name = unslugify(params.id);
 	try {
 		const releaseInfoUrl = `${API_URL}/release/${encodeURIComponent(name)}/?fields=name,release_date,beer_count,product_selections,product_stats,is_christmas_release`;

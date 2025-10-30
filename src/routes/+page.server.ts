@@ -3,7 +3,11 @@ import { API_URL } from '$env/static/private';
 import type { Release, ReleaseListResponse, ApiRelease } from '$lib/types';
 import { formatDate, getAssortmentDisplayName } from '$lib/utils/helpers';
 
-export const load: PageServerLoad = async ({ fetch, url }) => {
+export const load: PageServerLoad = async ({ fetch, url, setHeaders }) => {
+	setHeaders({
+		'Cache-Control': 'public, max-age=300, s-maxage=3600'
+	});
+
 	try {
 		const page = Number(url.searchParams.get('page')) || 1;
 		const page_size = 5;
