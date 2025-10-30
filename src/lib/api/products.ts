@@ -24,6 +24,7 @@ export async function fetchProducts(
 		'main_category',
 		'sub_category',
 		'style',
+		'is_christmas_beer',
 		'stock',
 		'abv',
 		'volume',
@@ -54,6 +55,7 @@ export async function fetchProducts(
 	if (filters.productSelection) params.append('product_selection', filters.productSelection);
 	if (filters.search) params.append('search', filters.search);
 	if (filters.release) params.append('release', filters.release);
+	if (filters.isChristmasBeer) params.append('is_christmas_beer', filters.isChristmasBeer);
 
 	if (filters.allergens) {
 		params.append('exclude_allergen', filters.allergens);

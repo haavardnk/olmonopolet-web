@@ -19,6 +19,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	const productSelection = url.searchParams.get('productSelection') || '';
 	const deliveryOptions = url.searchParams.get('deliveryOptions') || '';
 	const release = url.searchParams.get('release') || '';
+	const isChristmasBeer = url.searchParams.get('is_christmas_beer') || '';
 	const page = parseInt(url.searchParams.get('page') || '1');
 	const pageSize = 24;
 
@@ -37,7 +38,8 @@ export const GET: RequestHandler = async ({ url }) => {
 		allergens,
 		productSelection,
 		deliveryOptions,
-		release
+		release,
+		isChristmasBeer
 	};
 
 	try {
@@ -57,6 +59,7 @@ export const GET: RequestHandler = async ({ url }) => {
 			country: item.country,
 			countryCode: item.country_code,
 			assortment: getAssortmentDisplayName(item.product_selection),
+			isChristmasBeer: item.is_christmas_beer,
 			vmpUrl: item.vmp_url,
 			untappdUrl: item.untpd_url,
 			stores: []

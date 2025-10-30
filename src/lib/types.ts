@@ -83,6 +83,7 @@ export interface ProductFilters {
 	release?: string;
 	search?: string;
 	sortBy?: string;
+	isChristmasBeer?: string;
 }
 
 export interface ApiStore {

@@ -40,6 +40,9 @@ export function getAssortmentDisplayName(apiValue: string | null | undefined): s
 }
 
 export function isChristmasSeason(): boolean {
-	const currentMonth = new Date().getMonth();
-	return currentMonth === 10 || currentMonth === 11;
+	const now = new Date();
+	const currentYear = now.getFullYear();
+	const christmasStart = new Date(currentYear, 9, 30);
+	const christmasEnd = new Date(currentYear, 11, 31, 23, 59, 59);
+	return now >= christmasStart && now <= christmasEnd;
 }

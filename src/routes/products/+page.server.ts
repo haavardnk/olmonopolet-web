@@ -19,6 +19,7 @@ export const load = async ({ url }: { url: URL }) => {
 	const productSelection = searchParams.get('productSelection') || '';
 	const deliveryOptions = searchParams.get('deliveryOptions') || '';
 	const release = searchParams.get('release') || '';
+	const isChristmasBeer = searchParams.get('is_christmas_beer') || '';
 	const page = parseInt(searchParams.get('page') || '1');
 	const pageSize = 24;
 
@@ -37,7 +38,8 @@ export const load = async ({ url }: { url: URL }) => {
 		allergens,
 		productSelection,
 		deliveryOptions,
-		release
+		release,
+		isChristmasBeer
 	};
 
 	try {
@@ -57,6 +59,7 @@ export const load = async ({ url }: { url: URL }) => {
 			country: item.country,
 			countryCode: item.country_code,
 			assortment: getAssortmentDisplayName(item.product_selection),
+			isChristmasBeer: item.is_christmas_beer,
 			vmpUrl: item.vmp_url,
 			untappdUrl: item.untpd_url,
 			stores: []
