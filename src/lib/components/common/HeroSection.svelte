@@ -9,6 +9,16 @@
 	import { fly } from 'svelte/transition';
 	import { Play, Apple, Chromium, Beer } from '@lucide/svelte';
 	import hero from '$lib/assets/hero.svg';
+	import heroWinter from '$lib/assets/hero-winter.svg';
+	import heroChristmas from '$lib/assets/hero-christmas.svg';
+
+	const currentMonth = new Date().getMonth() + 1;
+	const heroImage =
+		currentMonth === 12
+			? heroChristmas
+			: currentMonth >= 11 || currentMonth <= 2
+				? heroWinter
+				: hero;
 </script>
 
 <div class="hero py-12 bg-base-200">
@@ -16,7 +26,7 @@
 		<div class="max-w-xl">
 			<div class="relative flex items-center justify-center" in:fly={{ y: 20, duration: 300 }}>
 				<img
-					src={hero}
+					src={heroImage}
 					alt="Ølmonopolet hero"
 					class="w-56 h-56 object-contain"
 					loading="eager"
