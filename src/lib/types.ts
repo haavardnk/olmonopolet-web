@@ -63,7 +63,7 @@ export type Release = {
 	beerCount: number;
 	assortments: string[];
 	isChristmasRelease: boolean;
-	products: Product[];
+	products?: Product[];
 	stats: ProductStats;
 };
 

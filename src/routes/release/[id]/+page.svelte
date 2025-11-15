@@ -72,7 +72,7 @@
 		<div class="container mx-auto px-4 py-8">
 			<div class="max-w-6xl mx-auto">
 				<ReleaseInfo {release} />
-				<ReleaseProductList {release} {retryFetch} />
+				<ReleaseProductList {release} productsPromise={data.products} {retryFetch} />
 			</div>
 		</div>
 	</main>

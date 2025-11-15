@@ -9,18 +9,39 @@
 		ArrowUpWideNarrow
 	} from '@lucide/svelte';
 	import ProductCard from '$lib/components/product/ProductCard.svelte';
+	import ProductCardSkeleton from '$lib/components/product/ProductCardSkeleton.svelte';
 	import orderBy from 'lodash/orderBy';
 	import { browser } from '$app/environment';
+	import { fade } from 'svelte/transition';
 
-	let { release, retryFetch }: { release: Release; retryFetch: () => void } = $props();
+	let {
+		release,
+		productsPromise,
+		retryFetch
+	}: { release: Release; productsPromise: Promise<Product[]>; retryFetch: () => void } = $props();
 
-	let products = $derived(release.products);
+	let products = $state<Product[]>([]);
+	let isLoading = $state(true);
+	let loadError = $state<string | null>(null);
+
 	let sortKey: keyof Product = $state('rating');
 	let sortOrder: 'desc' | 'asc' = $state('desc');
 	let selectedStyle = $state('alle');
 	let styleSearchTerm = $state('');
 	let showOnlyChristmasBeer = $state(false);
 	let isMobile = $state(browser ? window.innerWidth < 768 : false);
+
+	$effect(() => {
+		productsPromise
+			.then((loadedProducts) => {
+				products = loadedProducts;
+				isLoading = false;
+			})
+			.catch((error) => {
+				loadError = error.message;
+				isLoading = false;
+			});
+	});
 
 	const sortOptions: { key: keyof Product; label: string }[] = [
 		{ key: 'rating', label: 'Vurdering' },
@@ -234,7 +255,23 @@
 		{/if}
 	</div>
 
-	{#if filteredProducts.length === 0 && products.length > 0}
+	{#if loadError}
+		<div class="alert alert-error">
+			<div class="flex flex-col gap-2">
+				<p>Kunne ikke laste produkter: {loadError}</p>
+				<button class="btn btn-sm" onclick={retryFetch}>
+					<RefreshCw size={16} />
+					Prøv igjen
+				</button>
+			</div>
+		</div>
+	{:else if isLoading}
+		<div class="grid grid-cols-1 gap-4">
+			{#each Array(12) as _, i}
+				<ProductCardSkeleton />
+			{/each}
+		</div>
+	{:else if filteredProducts.length === 0 && products.length > 0}
 		<div class="card bg-base-200 p-8 text-center">
 			<div class="flex flex-col items-center gap-4">
 				<Funnel size={48} class="text-primary opacity-50" />
@@ -251,14 +288,10 @@
 				<Beer size={48} class="text-primary opacity-50" />
 				<h3 class="font-bold text-lg">Ingen produkter funnet</h3>
 				<p class="text-sm opacity-70">Det er ingen produkter tilgjengelig for denne lanseringen.</p>
-				<button class="btn btn-sm btn-outline mt-2" onclick={retryFetch}>
-					<RefreshCw size={16} />
-					Last inn på nytt
-				</button>
 			</div>
 		</div>
 	{:else}
-		<div class="grid grid-cols-1 gap-4">
+		<div class="grid grid-cols-1 gap-4" in:fade={{ duration: 300 }}>
 			{#each sortedProducts as product, index}
 				<ProductCard {product} {index} noTransition={isMobile || index >= 10} />
 			{/each}

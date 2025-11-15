@@ -30,42 +30,6 @@ export const load: PageServerLoad = async ({ params, fetch, setHeaders }) => {
 		}
 		const releaseInfo: ApiRelease = await releaseInfoRes.json();
 
-		const fields =
-			'vmp_id,vmp_name,price,rating,checkins,label_sm_url,main_category,sub_category,style,is_christmas_beer,stock,abv,user_checked_in,user_wishlisted,volume,price_per_volume,vmp_url,untpd_url,untpd_id,country,country_code,product_selection';
-		const productsUrl = `${API_URL}/beers/?fields=${fields}&release=${encodeURIComponent(name)}&ordering=-rating&page_size=1000`;
-		const productsRes = await fetch(productsUrl);
-		if (!productsRes.ok) {
-			if (productsRes.status === 404) {
-				throw error(404, { message: 'Øl ikke funnet' });
-			}
-			throw error(productsRes.status, {
-				message: `API returnerte ${productsRes.status}: ${productsRes.statusText}`
-			});
-		}
-		const productsData: ProductListResponse = await productsRes.json();
-
-		const products: Product[] = (productsData.results || []).map((p: ApiProduct) => ({
-			id: p.vmp_id,
-			name: p.vmp_name,
-			image: p.label_sm_url,
-			price: p.price,
-			volume: p.volume,
-			pricePerLiter: p.price_per_volume,
-			style: p.style || p.sub_category || p.main_category,
-			isChristmasBeer: p.is_christmas_beer,
-			rating: p.rating,
-			checkins: p.checkins,
-			strength: p.abv,
-			ibu: p.ibu,
-			alcoholUnits: p.alcohol_units,
-			country: p.country,
-			countryCode: p.country_code,
-			assortment: getAssortmentDisplayName(p.product_selection),
-			vmpUrl: p.vmp_url,
-			untappdUrl: p.untpd_url,
-			stores: []
-		}));
-
 		const stats: ProductStats = {
 			productCount: releaseInfo.product_stats.product_count,
 			beerCount: releaseInfo.product_stats.beer_count,
@@ -73,7 +37,7 @@ export const load: PageServerLoad = async ({ params, fetch, setHeaders }) => {
 			meadCount: releaseInfo.product_stats.mead_count
 		};
 
-		const release: Release = {
+		const release = {
 			name: releaseInfo.name,
 			releaseDate: releaseInfo.release_date,
 			formattedDate: formatDate(releaseInfo.release_date),
@@ -82,13 +46,52 @@ export const load: PageServerLoad = async ({ params, fetch, setHeaders }) => {
 				.map((ps: string) => getAssortmentDisplayName(ps))
 				.filter((name: string | null): name is string => name !== null),
 			isChristmasRelease: releaseInfo.is_christmas_release,
-			products,
 			stats
 		};
 
+		// Stream products as a promise
+		const productsPromise = (async () => {
+			const fields =
+				'vmp_id,vmp_name,price,rating,checkins,label_sm_url,main_category,sub_category,style,is_christmas_beer,stock,abv,user_checked_in,user_wishlisted,volume,price_per_volume,vmp_url,untpd_url,untpd_id,country,country_code,product_selection';
+			const productsUrl = `${API_URL}/beers/?fields=${fields}&release=${encodeURIComponent(name)}&ordering=-rating&page_size=1000`;
+			const productsRes = await fetch(productsUrl);
+			if (!productsRes.ok) {
+				if (productsRes.status === 404) {
+					throw error(404, { message: 'Øl ikke funnet' });
+				}
+				throw error(productsRes.status, {
+					message: `API returnerte ${productsRes.status}: ${productsRes.statusText}`
+				});
+			}
+			const productsData: ProductListResponse = await productsRes.json();
+
+			return (productsData.results || []).map((p: ApiProduct) => ({
+				id: p.vmp_id,
+				name: p.vmp_name,
+				image: p.label_sm_url,
+				price: p.price,
+				volume: p.volume,
+				pricePerLiter: p.price_per_volume,
+				style: p.style || p.sub_category || p.main_category,
+				isChristmasBeer: p.is_christmas_beer,
+				rating: p.rating,
+				checkins: p.checkins,
+				strength: p.abv,
+				ibu: p.ibu,
+				alcoholUnits: p.alcohol_units,
+				country: p.country,
+				countryCode: p.country_code,
+				assortment: getAssortmentDisplayName(p.product_selection),
+				vmpUrl: p.vmp_url,
+				untappdUrl: p.untpd_url,
+				stores: []
+			}));
+		})();
+
 		return {
 			release,
-			slug: slugify(releaseInfo.name)
+			slug: slugify(releaseInfo.name),
+			products: productsPromise
 		};
 	} catch (err) {
 		if (err && typeof err === 'object' && 'status' in err) {
