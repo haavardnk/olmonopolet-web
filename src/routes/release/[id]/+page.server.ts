@@ -13,7 +13,7 @@ import { formatDate, slugify, unslugify, getAssortmentDisplayName } from '$lib/u
 
 export const load: PageServerLoad = async ({ params, fetch, setHeaders }) => {
 	setHeaders({
-		'Cache-Control': 'public, max-age=300, s-maxage=3600'
+		'Cache-Control': 'public, max-age=3600, s-maxage=86400'
 	});
 
 	const name = unslugify(params.id);
