@@ -8,6 +8,7 @@
 	} from '$env/static/public';
 	import { HeartHandshake, Facebook, Menu, Github } from '@lucide/svelte';
 	import { isChristmasSeason } from '$lib/utils/helpers';
+	import ThemeSelector from './ThemeSelector.svelte';
 
 	let {
 		right,
@@ -70,7 +71,7 @@
 								rel="noopener noreferrer"
 								class="flex items-center gap-1 px-3 py-1 rounded-lg hover:bg-primary/10 transition-colors text-base font-medium"
 							>
-								<Facebook size={18} class="text-blue-600" />
+								<Facebook size={18} class="text-primary" />
 								Facebook
 							</a>
 						</li>
@@ -90,7 +91,7 @@
 					{@render center()}
 				{/if}
 			</div>
-			<div class="navbar-end">
+			<div class="navbar-end gap-1">
 				{#if showMenu}
 					<div class="relative md:hidden">
 						<button
@@ -142,6 +143,7 @@
 				{#if right}
 					{@render right()}
 				{/if}
+				<ThemeSelector />
 			</div>
 		</div>
 	</div>

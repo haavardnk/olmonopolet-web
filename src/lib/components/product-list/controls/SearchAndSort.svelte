@@ -85,7 +85,7 @@
 				</select>
 				<button
 					onclick={toggleSortDirection}
-					class="btn btn-sm btn-square join-item"
+					class="btn btn-sm btn-square join-item border-base-content/20"
 					aria-label={sortDescending ? 'Synkende' : 'Stigende'}
 					title={sortDescending ? 'Synkende' : 'Stigende'}
 				>
@@ -133,7 +133,7 @@
 				</select>
 				<button
 					onclick={toggleSortDirection}
-					class="btn btn-sm btn-square join-item"
+					class="btn btn-sm btn-square join-item border-base-content/20"
 					aria-label={sortDescending ? 'Synkende' : 'Stigende'}
 					title={sortDescending ? 'Synkende' : 'Stigende'}
 				>

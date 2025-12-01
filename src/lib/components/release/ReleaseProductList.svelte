@@ -143,7 +143,7 @@
 						</select>
 					</div>
 					<button
-						class="btn btn-sm join-item"
+						class="btn btn-sm join-item border-base-content/20"
 						onclick={toggleSortOrder}
 						aria-label={sortOrder === 'asc' ? 'Stigende' : 'Synkende'}
 						title={sortOrder === 'asc' ? 'Stigende' : 'Synkende'}

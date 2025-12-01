@@ -1,9 +1,17 @@
 <!doctype html>
-<html lang="no">
+<html lang="no" data-theme="caramellatte">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="theme-color" content="#dfd3c3" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+		<script>
+			try {
+				const theme = localStorage.getItem('theme');
+				if (theme) {
+					document.documentElement.setAttribute('data-theme', theme);
+				}
+			} catch (e) {}
+		</script>
 		%sveltekit.head%
 	</head>
 	<body>

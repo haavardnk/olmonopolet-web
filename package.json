@@ -36,6 +36,7 @@
 		"vite": "^7.1.4"
 	},
 	"dependencies": {
-		"flag-icons": "^7.5.0"
+		"flag-icons": "^7.5.0",
+		"theme-change": "^2.5.0"
 	}
 }

@@ -22,7 +22,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<meta charset="utf-8" />
 	<meta name="theme-color" content="#FFDEB6" media="(prefers-color-scheme: light)" />
-	<meta name="theme-color" content="#FFDEB6" media="(prefers-color-scheme: dark)" />
+	<meta name="theme-color" content="#20161F" media="(prefers-color-scheme: dark)" />
 	<meta property="og:locale" content="nb_NO" />
 	{@html `<script type="application/ld+json">${JSON.stringify(organizationJson)}</script>`}
 </svelte:head>

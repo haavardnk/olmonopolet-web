@@ -8,9 +8,9 @@
 	} from '$env/static/public';
 	import { fly } from 'svelte/transition';
 	import { Play, Apple, Chromium, Beer } from '@lucide/svelte';
-	import hero from '$lib/assets/hero.svg';
-	import heroWinter from '$lib/assets/hero-winter.svg';
-	import heroChristmas from '$lib/assets/hero-christmas.svg';
+	import hero from '$lib/assets/hero.svg?raw';
+	import heroWinter from '$lib/assets/hero-winter.svg?raw';
+	import heroChristmas from '$lib/assets/hero-christmas.svg?raw';
 
 	const currentMonth = new Date().getMonth() + 1;
 	const heroImage =
@@ -24,15 +24,11 @@
 <div class="hero py-12 bg-base-200">
 	<div class="text-center">
 		<div class="max-w-xl">
-			<div class="relative flex items-center justify-center" in:fly={{ y: 20, duration: 300 }}>
-				<img
-					src={heroImage}
-					alt="Ølmonopolet hero"
-					class="w-56 h-56 object-contain"
-					loading="eager"
-					decoding="async"
-					fetchpriority="high"
-				/>
+			<div
+				class="relative flex items-center justify-center hero-image"
+				in:fly={{ y: 20, duration: 300 }}
+			>
+				{@html heroImage}
 			</div>
 
 			<div in:fly={{ y: 20, duration: 300, delay: 100 }}>
@@ -105,3 +101,31 @@
 		</div>
 	</div>
 </div>
+
+<style>
+	.hero-image :global(svg) {
+		width: 14rem;
+		height: 14rem;
+	}
+
+	:global([data-theme='ølmonopolet-dark']) .hero-image :global(.st0) {
+		fill: #e0a870;
+	}
+
+	:global([data-theme='ølmonopolet-dark']) .hero-image :global(.st11) {
+		fill: #e0a870;
+	}
+
+	:global([data-theme='ølmonopolet-dark']) .hero-image :global(.st10),
+	:global([data-theme='ølmonopolet-dark']) .hero-image :global(.st15) {
+		fill: #ebe0d9;
+	}
+
+	:global([data-theme='ølmonopolet-dark']) .hero-image :global(.beer) {
+		fill: #c4841e;
+	}
+
+	:global([data-theme='ølmonopolet-dark']) .hero-image :global(.st16) {
+		fill: #e8b060;
+	}
+</style>

@@ -2,7 +2,53 @@
 @import 'tailwindcss';
 @import 'flag-icons/css/flag-icons.min.css';
 @plugin "daisyui" {
-	themes: caramellatte --default;
+	themes: caramellatte --default, ølmonopolet-dark --prefersdark;
+}
+@plugin "daisyui/theme" {
+	name: "ølmonopolet-dark";
+	default: false;
+	prefersdark: true;
+	color-scheme: dark;
+
+	--color-base-100: #201D1A;
+	--color-base-200: #1B1816;
+	--color-base-300: #121010;
+	--color-base-content: #EAE1D9;
+
+	--color-primary: #FFB951;
+	--color-primary-content: #462A00;
+
+	--color-secondary: #DDB892;
+	--color-secondary-content: #3E2A14;
+
+	--color-accent: #E0A870;
+	--color-accent-content: #422C08;
+
+	--color-neutral: #36322F;
+	--color-neutral-content: #D4C4B5;
+
+	--color-info: #7DD3FC;
+	--color-info-content: #0C4A6E;
+
+	--color-success: #86EFAC;
+	--color-success-content: #14532D;
+
+	--color-warning: #FCD34D;
+	--color-warning-content: #713F12;
+
+	--color-error: #FFB4AB;
+	--color-error-content: #690005;
+
+	--radius-selector: 2rem;
+	--radius-field: 0.5rem;
+	--radius-box: 1rem;
+
+	--size-selector: 0.25rem;
+	--size-field: 0.25rem;
+
+	--border: 1px;
+	--depth: 1;
+	--noise: 0;
 }
 
 :root {
