@@ -68,6 +68,8 @@ export const load: PageServerLoad = async ({ params, fetch, setHeaders }) => {
 			assortment: getAssortmentDisplayName(apiData.product_selection),
 			vmpUrl: apiData.vmp_url,
 			untappdUrl: apiData.untpd_url,
+			valueScore: apiData.value_score,
+			pricePerAlcoholUnit: apiData.price_per_alcohol_unit,
 			stores: (apiData.all_stock || [])
 				.map((s) => ({
 					name: s.store_name,

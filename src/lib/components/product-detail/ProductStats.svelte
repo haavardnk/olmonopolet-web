@@ -4,24 +4,12 @@
 
 	let { product }: { product: Product } = $props();
 
-	const pricePerAlcoholUnit = $derived(
-		product.price && product.alcoholUnits && product.alcoholUnits > 0
-			? product.price / product.alcoholUnits
-			: null
-	);
-
-	const valueScore = $derived(
-		product.rating && product.rating > 0 && product.pricePerLiter && product.pricePerLiter > 0
-			? (Math.pow(product.rating, 4.8) / Math.pow(product.pricePerLiter / 100, 0.32)) * 0.0176
-			: null
-	);
-
 	const valueScoreInfo = $derived.by(() => {
-		if (!valueScore) return null;
+		if (!product.valueScore) return null;
 
-		if (valueScore >= 15) return { color: 'text-success' };
-		if (valueScore >= 10) return { color: 'text-info' };
-		if (valueScore >= 5) return { color: 'text-warning' };
+		if (product.valueScore >= 15) return { color: 'text-success' };
+		if (product.valueScore >= 10) return { color: 'text-info' };
+		if (product.valueScore >= 5) return { color: 'text-warning' };
 		return { color: 'text-error' };
 	});
 
@@ -63,18 +51,18 @@
 		</div>
 	{/if}
 
-	{#if pricePerAlcoholUnit || valueScore}
+	{#if product.pricePerAlcoholUnit || product.valueScore}
 		<div class="stats stats-horizontal shadow w-full">
-			{#if pricePerAlcoholUnit}
+			{#if product.pricePerAlcoholUnit}
 				<div class="stat py-3">
 					<div class="stat-title text-xs">Pris per alkenhet</div>
 					<div class="stat-value text-accent text-xl sm:text-2xl">
-						{pricePerAlcoholUnit.toFixed(2)} kr
+						{product.pricePerAlcoholUnit.toFixed(2)} kr
 					</div>
 					<div class="stat-desc text-xs">{product.alcoholUnits?.toFixed(1)} enheter</div>
 				</div>
 			{/if}
-			{#if valueScore && valueScoreInfo}
+			{#if product.valueScore && valueScoreInfo}
 				<div class="stat py-3">
 					<div class="stat-title text-xs">Verdi for pengene</div>
 					<div class="w-full mt-2">
@@ -86,7 +74,7 @@
 									: valueScoreInfo.color === 'text-warning'
 										? 'progress-warning'
 										: 'progress-error'} h-3"
-							value={Math.min(valueScore, 20)}
+							value={Math.min(product.valueScore, 20)}
 							max="20"
 						></progress>
 					</div>

@@ -46,6 +46,8 @@ export type Product = {
 	assortment?: string | null;
 	vmpUrl?: string | null;
 	untappdUrl?: string | null;
+	valueScore?: number | null;
+	pricePerAlcoholUnit?: number | null;
 	stores: Store[];
 };
 
@@ -140,6 +142,8 @@ export interface ApiProduct {
 	sub_category?: string;
 	style?: string;
 	is_christmas_beer?: boolean;
+	value_score?: number | null;
+	price_per_alcohol_unit?: number | null;
 	stock?: number;
 	abv: number;
 	ibu?: number;
