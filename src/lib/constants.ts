@@ -5,6 +5,7 @@ export const SORT_FIELD_LABELS: { value: SortField; label: string }[] = [
 	{ value: SortField.CreatedAt, label: 'Dato' },
 	{ value: SortField.Price, label: 'Pris' },
 	{ value: SortField.PricePerVolume, label: 'Pris per liter' },
+	{ value: SortField.PricePerAlcoholUnit, label: 'Pris per alkoholenhet' },
 	{ value: SortField.ABV, label: 'Alkohol' },
 	{ value: SortField.Name, label: 'Navn' },
 	{ value: SortField.Brewery, label: 'Bryggeri' }
