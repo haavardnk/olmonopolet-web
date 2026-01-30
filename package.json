@@ -36,6 +36,8 @@
 		"vite": "^7.1.4"
 	},
 	"dependencies": {
+		"firebase": "^12.8.0",
+		"firebase-admin": "^13.6.0",
 		"flag-icons": "^7.5.0",
 		"theme-change": "^2.5.0"
 	}
