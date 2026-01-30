@@ -10,6 +10,7 @@
 	import DeliveryFilter from '$lib/components/product-list/filters/DeliveryFilter.svelte';
 	import ReleaseFilter from '$lib/components/product-list/filters/ReleaseFilter.svelte';
 	import { isChristmasSeason } from '$lib/utils/helpers';
+	import { authStore } from '$lib/stores/auth.svelte';
 
 	let {
 		filters = $bindable(),
@@ -31,6 +32,7 @@
 			store: string;
 			main_category: string;
 			style: string;
+			user_tasted: string;
 		};
 		onFilterChange: () => void;
 	} = $props();
@@ -101,6 +103,17 @@
 		filters.is_christmas_beer = filters.is_christmas_beer === 'True' ? '' : 'True';
 		onFilterChange();
 	}
+
+	function toggleTasted() {
+		if (filters.user_tasted === 'true') {
+			filters.user_tasted = 'false';
+		} else if (filters.user_tasted === 'false') {
+			filters.user_tasted = '';
+		} else {
+			filters.user_tasted = 'true';
+		}
+		onFilterChange();
+	}
 </script>
 
 <div class="space-y-1">
@@ -113,6 +126,27 @@
 					: 'btn-outline'}"
 			>
 				🎄 {filters.is_christmas_beer === 'True' ? 'Viser kun juleøl' : 'Vis kun juleøl'}
+			</button>
+		</div>
+	{/if}
+
+	{#if authStore.isAuthenticated}
+		<div class="px-2 py-1.5">
+			<button
+				onclick={toggleTasted}
+				class="btn btn-sm w-full {filters.user_tasted === 'true'
+					? 'btn-success'
+					: filters.user_tasted === 'false'
+						? 'btn-error'
+						: 'btn-outline'}"
+			>
+				{#if filters.user_tasted === 'true'}
+					Viser kun smakte
+				{:else if filters.user_tasted === 'false'}
+					Viser kun ikke smakte
+				{:else}
+					Vis kun smakte
+				{/if}
 			</button>
 		</div>
 	{/if}

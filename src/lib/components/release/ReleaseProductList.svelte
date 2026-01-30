@@ -13,6 +13,8 @@
 	import orderBy from 'lodash/orderBy';
 	import { browser } from '$app/environment';
 	import { fade } from 'svelte/transition';
+	import { tastedStore } from '$lib/stores/tasted.svelte';
+	import { toggleTastedStatus, updateProductTasted } from '$lib/utils/tasted';
 
 	let {
 		release,
@@ -30,6 +32,7 @@
 	let styleSearchTerm = $state('');
 	let showOnlyChristmasBeer = $state(false);
 	let isMobile = $state(browser ? window.innerWidth < 768 : false);
+	let tastedLoadingMap = $state<Map<string, boolean>>(new Map());
 
 	$effect(() => {
 		productsPromise
@@ -117,6 +120,18 @@
 		selectedStyle = style;
 		styleSearchTerm = '';
 	}
+
+	async function handleTastedToggle(productId: string, currentState: boolean) {
+		tastedLoadingMap.set(productId, true);
+		tastedLoadingMap = new Map(tastedLoadingMap);
+
+		const success = await toggleTastedStatus(productId, currentState, (newState) => {
+			products = updateProductTasted(products, productId, newState);
+		});
+
+		tastedLoadingMap.delete(productId);
+		tastedLoadingMap = new Map(tastedLoadingMap);
+	}
 </script>
 
 <section class="mb-6" aria-label="Produkter i lansering">
@@ -175,7 +190,7 @@
 					{selectedStyle === 'alle' ? 'Alle stiler' : selectedStyle}
 				</div>
 				<div
-					class="dropdown-content bg-base-100 rounded-box z-[1] w-64 p-2 shadow border border-base-300 mt-1"
+					class="dropdown-content bg-base-100 rounded-box z-1 w-64 p-2 shadow border border-base-300 mt-1"
 				>
 					<div class="p-2">
 						<input
@@ -293,7 +308,14 @@
 	{:else}
 		<div class="grid grid-cols-1 gap-4" in:fade={{ duration: 300 }}>
 			{#each sortedProducts as product, index}
-				<ProductCard {product} {index} noTransition={isMobile || index >= 10} />
+				<ProductCard
+					{product}
+					{index}
+					noTransition={isMobile || index >= 10}
+					onTastedToggle={handleTastedToggle}
+					isTogglingTasted={tastedLoadingMap.get(product.id) || false}
+					variant="release"
+				/>
 			{/each}
 		</div>
 	{/if}

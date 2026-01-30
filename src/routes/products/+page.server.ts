@@ -2,7 +2,7 @@ import { fetchProducts, type ProductFilters } from '$lib/api/products';
 import type { Product } from '$lib/types';
 import { getAssortmentDisplayName } from '$lib/utils/helpers';
 
-export const load = async ({ url }: { url: URL }) => {
+export const load = async ({ url, cookies }: { url: URL; cookies: any }) => {
 	const searchParams = new URLSearchParams(url.searchParams);
 	const search = searchParams.get('search') || '';
 	const sortBy = searchParams.get('sort') || '-rating';
@@ -21,6 +21,7 @@ export const load = async ({ url }: { url: URL }) => {
 	const deliveryOptions = searchParams.get('deliveryOptions') || '';
 	const release = searchParams.get('release') || '';
 	const isChristmasBeer = searchParams.get('is_christmas_beer') || '';
+	const user_tasted = searchParams.get('user_tasted') || '';
 	const page = parseInt(searchParams.get('page') || '1');
 	const pageSize = 24;
 
@@ -41,11 +42,14 @@ export const load = async ({ url }: { url: URL }) => {
 		productSelection,
 		deliveryOptions,
 		release,
-		isChristmasBeer
+		isChristmasBeer,
+		user_tasted
 	};
 
 	try {
-		const response = await fetchProducts(page, pageSize, filters);
+		const sessionCookie = cookies.get('session');
+		const cookieHeader = sessionCookie ? `session=${sessionCookie}` : undefined;
+		const response = await fetchProducts(page, pageSize, filters, cookieHeader);
 
 		const products: Product[] = response.results.map((item) => ({
 			id: item.vmp_id,
@@ -64,6 +68,7 @@ export const load = async ({ url }: { url: URL }) => {
 			isChristmasBeer: item.is_christmas_beer,
 			vmpUrl: item.vmp_url,
 			untappdUrl: item.untpd_url,
+			userTasted: (item as any).user_tasted,
 			stores: []
 		}));
 

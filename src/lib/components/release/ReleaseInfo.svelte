@@ -27,14 +27,14 @@
 			{/if}
 			<div class="flex flex-row flex-wrap gap-2 items-center">
 				<div
-					class="flex flex-col items-center bg-base-300 rounded-lg px-2 py-1 min-w-[65px] text-sm"
+					class="flex flex-col items-center bg-base-300 rounded-lg px-2 py-1 min-w-16.25 text-sm"
 				>
 					<div class="font-semibold opacity-70">Totalt</div>
 					<div class="font-bold text-base">{release.stats.productCount}</div>
 				</div>
 				{#if release.stats.beerCount}
 					<div
-						class="flex flex-col items-center bg-base-300 rounded-lg px-2 py-1 min-w-[65px] text-sm"
+						class="flex flex-col items-center bg-base-300 rounded-lg px-2 py-1 min-w-16.25 text-sm"
 					>
 						<div class="font-semibold opacity-70">Øl</div>
 						<div class="font-bold text-base">{release.stats.beerCount}</div>
@@ -42,16 +42,14 @@
 				{/if}
 				{#if release.stats.ciderCount}
 					<div
-						class="flex flex-col items-center bg-base-300 rounded-lg px-2 py-1 min-w-[65px] text-sm"
+						class="flex flex-col items-center bg-base-300 rounded-lg px-2 py-1 min-w-16.25 text-sm"
 					>
 						<div class="font-semibold opacity-70">Sider</div>
 						<div class="font-bold text-base">{release.stats.ciderCount}</div>
 					</div>
 				{/if}
 				{#if release.stats.meadCount}
-					<div
-						class="flex flex-col items-center bg-base-300 rounded-lg px-2 py-1 min-w-[60px] text-sm"
-					>
+					<div class="flex flex-col items-center bg-base-300 rounded-lg px-2 py-1 min-w-15 text-sm">
 						<div class="font-semibold opacity-70">Mjød</div>
 						<div class="font-bold text-base">{release.stats.meadCount}</div>
 					</div>
@@ -72,24 +70,24 @@
 					{release.formattedDate}
 				</h1>
 				<div class="flex flex-row gap-2 items-center">
-					<div class="flex flex-col items-center bg-base-300 rounded-lg px-4 py-2 min-w-[80px]">
+					<div class="flex flex-col items-center bg-base-300 rounded-lg px-4 py-2 min-w-20">
 						<div class="font-semibold opacity-70">Totalt</div>
 						<div class="font-bold text-2xl">{release.stats.productCount}</div>
 					</div>
 					{#if release.stats.beerCount}
-						<div class="flex flex-col items-center bg-base-300 rounded-lg px-4 py-2 min-w-[80px]">
+						<div class="flex flex-col items-center bg-base-300 rounded-lg px-4 py-2 min-w-20">
 							<div class="font-semibold opacity-70">Øl</div>
 							<div class="font-bold text-2xl">{release.stats.beerCount}</div>
 						</div>
 					{/if}
 					{#if release.stats.ciderCount}
-						<div class="flex flex-col items-center bg-base-300 rounded-lg px-4 py-2 min-w-[80px]">
+						<div class="flex flex-col items-center bg-base-300 rounded-lg px-4 py-2 min-w-20">
 							<div class="font-semibold opacity-70">Sider</div>
 							<div class="font-bold text-2xl">{release.stats.ciderCount}</div>
 						</div>
 					{/if}
 					{#if release.stats.meadCount}
-						<div class="flex flex-col items-center bg-base-300 rounded-lg px-4 py-2 min-w-[80px]">
+						<div class="flex flex-col items-center bg-base-300 rounded-lg px-4 py-2 min-w-20">
 							<div class="font-semibold opacity-70">Mjød</div>
 							<div class="font-bold text-2xl">{release.stats.meadCount}</div>
 						</div>

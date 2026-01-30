@@ -8,6 +8,7 @@
 	import ProductCard from '$lib/components/product/ProductCard.svelte';
 	import ProductFilters from '$lib/components/product-list/ProductFilters.svelte';
 	import SearchAndSort from '$lib/components/product-list/controls/SearchAndSort.svelte';
+	import { toggleTastedStatus, updateProductTasted } from '$lib/utils/tasted';
 
 	let {
 		hasMore,
@@ -51,8 +52,11 @@
 		release: '',
 		store: '',
 		main_category: '',
-		style: ''
+		style: '',
+		user_tasted: ''
 	});
+
+	let tastedLoadingMap = $state<Map<string, boolean>>(new Map());
 
 	$effect(() => {
 		searchQuery = searchParams.get('search') || '';
@@ -75,7 +79,8 @@
 			release: searchParams.get('release') || '',
 			store: searchParams.get('store') || '',
 			main_category: searchParams.get('main_category') || '',
-			style: searchParams.get('style') || ''
+			style: searchParams.get('style') || '',
+			user_tasted: searchParams.get('user_tasted') || ''
 		};
 	});
 
@@ -116,7 +121,13 @@
 	});
 
 	function compensateScrollForFilterButton(newCount: number) {
-		if (previousActiveFiltersCount === 0 && newCount > 0) {
+		const onlyTopFilters =
+			(filters.is_christmas_beer || filters.user_tasted) &&
+			Object.entries(filters)
+				.filter(([key]) => key !== 'is_christmas_beer' && key !== 'user_tasted')
+				.every(([, value]) => !value);
+
+		if (previousActiveFiltersCount === 0 && newCount > 0 && !onlyTopFilters) {
 			setTimeout(() => {
 				desktopFiltersScrollContainer?.scrollBy({
 					top: 32,
@@ -144,9 +155,22 @@
 			release: '',
 			store: '',
 			main_category: '',
-			style: ''
+			style: '',
+			user_tasted: ''
 		};
 		updateUrl();
+	}
+
+	async function handleTastedToggle(productId: string, currentState: boolean) {
+		tastedLoadingMap.set(productId, true);
+		tastedLoadingMap = new Map(tastedLoadingMap);
+
+		const success = await toggleTastedStatus(productId, currentState, (newState) => {
+			products = updateProductTasted(products, productId, newState);
+		});
+
+		tastedLoadingMap.delete(productId);
+		tastedLoadingMap = new Map(tastedLoadingMap);
 	}
 
 	function updateUrl() {
@@ -231,7 +255,7 @@
 
 	<main class="flex-1 flex flex-col xl:overflow-hidden bg-base-100">
 		<div
-			class="xl:hidden sticky top-[var(--header-offset,0px)] z-40 bg-base-100 border-b border-base-content/10 shadow-sm"
+			class="xl:hidden sticky top-(--header-offset,0px) z-40 bg-base-100 border-b border-base-content/10 shadow-sm"
 		>
 			<SearchAndSort
 				bind:searchQuery
@@ -258,7 +282,14 @@
 				{#if products.length > 0}
 					<div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4 mb-8">
 						{#each products as product, i (product.id)}
-							<ProductCard {product} index={i} noTransition={true} />
+							<ProductCard
+								{product}
+								index={i}
+								noTransition={true}
+								onTastedToggle={handleTastedToggle}
+								isTogglingTasted={tastedLoadingMap.get(product.id) || false}
+								variant="products"
+							/>
 						{/each}
 					</div>
 				{/if}

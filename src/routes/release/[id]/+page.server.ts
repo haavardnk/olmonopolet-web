@@ -11,7 +11,9 @@ import type {
 } from '$lib/types';
 import { formatDate, slugify, unslugify, getAssortmentDisplayName } from '$lib/utils/helpers';
 
-export const load: PageServerLoad = async ({ params, fetch, setHeaders }) => {
+export const load: PageServerLoad = async ({ params, fetch, setHeaders, cookies }) => {
+	const sessionCookie = cookies.get('session');
+
 	setHeaders({
 		'Cache-Control': 'public, max-age=3600, s-maxage=86400'
 	});
@@ -51,9 +53,15 @@ export const load: PageServerLoad = async ({ params, fetch, setHeaders }) => {
 
 		const productsPromise = (async () => {
 			const fields =
-				'vmp_id,vmp_name,price,rating,checkins,label_sm_url,main_category,sub_category,style,is_christmas_beer,stock,abv,user_checked_in,user_wishlisted,volume,price_per_volume,vmp_url,untpd_url,untpd_id,country,country_code,product_selection';
+				'vmp_id,vmp_name,price,rating,checkins,label_sm_url,main_category,sub_category,style,is_christmas_beer,stock,abv,user_checked_in,user_wishlisted,user_tasted,volume,price_per_volume,vmp_url,untpd_url,untpd_id,country,country_code,product_selection';
 			const productsUrl = `${API_URL}/beers/?fields=${fields}&release=${encodeURIComponent(name)}&ordering=-rating&page_size=1000`;
-			const productsRes = await fetch(productsUrl);
+
+			const headers: Record<string, string> = {};
+			if (sessionCookie) {
+				headers.Cookie = `session=${sessionCookie}`;
+			}
+
+			const productsRes = await fetch(productsUrl, { headers });
 			if (!productsRes.ok) {
 				if (productsRes.status === 404) {
 					throw error(404, { message: 'Øl ikke funnet' });
@@ -83,6 +91,7 @@ export const load: PageServerLoad = async ({ params, fetch, setHeaders }) => {
 				assortment: getAssortmentDisplayName(p.product_selection),
 				vmpUrl: p.vmp_url,
 				untappdUrl: p.untpd_url,
+				userTasted: p.user_tasted,
 				stores: []
 			}));
 		})();
