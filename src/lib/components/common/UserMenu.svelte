@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { authStore } from '$lib/stores/auth.svelte';
-	import { LogOut, LogIn, User } from '@lucide/svelte';
+	import { LogOut, LogIn, User, Upload } from '@lucide/svelte';
 
 	async function handleLogout() {
 		await authStore.signOut();
@@ -21,9 +21,15 @@
 		</div>
 		<ul
 			tabindex="-1"
-			class="dropdown-content menu bg-base-200 rounded-box z-50 w-52 p-2 shadow mt-3"
+			class="dropdown-content menu bg-base-200 rounded-box z-50 w-64 p-2 shadow mt-3"
 		>
 			<li class="menu-title text-xs truncate px-2">{authStore.user?.email}</li>
+			<li>
+				<a href="/import-tasted">
+					<Upload size={16} />
+					Importer fra Untappd
+				</a>
+			</li>
 			<li>
 				<button onclick={handleLogout} class="text-error">
 					<LogOut size={16} />
