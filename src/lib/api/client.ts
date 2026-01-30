@@ -1,6 +1,5 @@
 import { browser } from '$app/environment';
 import { auth } from '$lib/firebase/client';
-import { API_URL } from '$env/static/private';
 
 export async function getAuthToken(): Promise<string | null> {
 	if (!browser || !auth?.currentUser) return null;

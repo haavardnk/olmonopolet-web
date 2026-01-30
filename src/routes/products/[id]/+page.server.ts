@@ -5,16 +5,23 @@ import type { Product, Store, ProductListResponse, ApiProduct } from '$lib/types
 import { normalizeCharacteristic, getAssortmentDisplayName } from '$lib/utils/helpers';
 import logo from '$lib/assets/logo.png';
 
-export const load: PageServerLoad = async ({ params, fetch, setHeaders }) => {
+export const load: PageServerLoad = async ({ params, fetch, setHeaders, cookies }) => {
+	const { id } = params;
+	const sessionCookie = cookies.get('session');
+
 	setHeaders({
 		'Cache-Control': 'public, max-age=3600, s-maxage=86400'
 	});
 
-	const { id } = params;
-
 	try {
 		const apiUrl = `${API_URL}/beers/?beers=${id}&all_stock=true`;
-		const response = await fetch(apiUrl);
+
+		const headers: HeadersInit = {};
+		if (sessionCookie) {
+			headers['Cookie'] = `session=${sessionCookie}`;
+		}
+
+		const response = await fetch(apiUrl, { headers });
 
 		if (!response.ok) {
 			if (response.status === 404) {
@@ -70,6 +77,7 @@ export const load: PageServerLoad = async ({ params, fetch, setHeaders }) => {
 			untappdUrl: apiData.untpd_url,
 			valueScore: apiData.value_score,
 			pricePerAlcoholUnit: apiData.price_per_alcohol_unit,
+			userTasted: (apiData as any).user_tasted,
 			stores: (apiData.all_stock || [])
 				.map((s) => ({
 					name: s.store_name,

@@ -106,7 +106,7 @@
 						</button>
 						{#if menuOpen}
 							<ul
-								class="absolute right-0 mt-3 z-[1] p-2 shadow bg-base-200 rounded-box w-52 menu menu-sm dropdown-content"
+								class="absolute right-0 mt-3 z-1 p-2 shadow bg-base-200 rounded-box w-52 menu menu-sm dropdown-content"
 								onmouseleave={closeMenu}
 							>
 								<li>

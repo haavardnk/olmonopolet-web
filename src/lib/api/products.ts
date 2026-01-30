@@ -12,7 +12,8 @@ export type { ProductFilters };
 export async function fetchProducts(
 	page: number = 1,
 	pageSize: number = 20,
-	filters: ProductFilters = {}
+	filters: ProductFilters = {},
+	cookies?: string
 ): Promise<ProductListResponse> {
 	const fields = [
 		'vmp_id',
@@ -34,7 +35,8 @@ export async function fetchProducts(
 		'untpd_id',
 		'country',
 		'country_code',
-		'product_selection'
+		'product_selection',
+		'user_tasted'
 	].join(',');
 
 	const params = new URLSearchParams({
@@ -62,6 +64,12 @@ export async function fetchProducts(
 		params.append('exclude_allergen', filters.allergens);
 	}
 
+	if (filters.user_tasted === 'true') {
+		params.append('user_tasted', 'True');
+	} else if (filters.user_tasted === 'false') {
+		params.append('user_tasted', 'false');
+	}
+
 	if (filters.sortBy) params.append('ordering', filters.sortBy);
 	if (filters.store) params.append('store', filters.store);
 
@@ -77,12 +85,16 @@ export async function fetchProducts(
 
 	const url = `${API_URL}/beers/?${params.toString()}`;
 
-	const response = await fetch(url);
+	const headers: HeadersInit = {};
+	if (cookies) {
+		headers['Cookie'] = cookies;
+	}
+
+	const response = await fetch(url, { headers });
 
 	if (!response.ok) {
 		throw new Error(`Failed to fetch products: ${response.status} ${response.statusText}`);
 	}
-
 	return response.json();
 }
 

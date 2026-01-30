@@ -48,6 +48,7 @@ export type Product = {
 	untappdUrl?: string | null;
 	valueScore?: number | null;
 	pricePerAlcoholUnit?: number | null;
+	userTasted?: boolean;
 	stores: Store[];
 };
 
@@ -87,6 +88,7 @@ export interface ProductFilters {
 	search?: string;
 	sortBy?: string;
 	isChristmasBeer?: string;
+	user_tasted?: string;
 }
 
 export interface ApiStore {
@@ -174,6 +176,7 @@ export interface ApiProduct {
 	method?: string;
 	allergens?: string;
 	brewery?: string;
+	user_tasted?: boolean;
 	all_stock?: Array<{
 		store_name: string;
 		quantity: number;
