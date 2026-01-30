@@ -49,7 +49,6 @@ export const load: PageServerLoad = async ({ params, fetch, setHeaders }) => {
 			stats
 		};
 
-		// Stream products as a promise
 		const productsPromise = (async () => {
 			const fields =
 				'vmp_id,vmp_name,price,rating,checkins,label_sm_url,main_category,sub_category,style,is_christmas_beer,stock,abv,user_checked_in,user_wishlisted,volume,price_per_volume,vmp_url,untpd_url,untpd_id,country,country_code,product_selection';

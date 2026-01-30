@@ -9,6 +9,7 @@
 	import { HeartHandshake, Facebook, Menu, Github } from '@lucide/svelte';
 	import { isChristmasSeason } from '$lib/utils/helpers';
 	import ThemeSelector from './ThemeSelector.svelte';
+	import UserMenu from './UserMenu.svelte';
 
 	let {
 		right,
@@ -16,7 +17,8 @@
 		center,
 		showSocialLinks = false,
 		showMenu = false,
-		fullWidth = false
+		fullWidth = false,
+		showUserMenu = true
 	}: {
 		right?: Snippet;
 		left?: Snippet;
@@ -24,6 +26,7 @@
 		showSocialLinks?: boolean;
 		showMenu?: boolean;
 		fullWidth?: boolean;
+		showUserMenu?: boolean;
 	} = $props();
 
 	let menuOpen = $state(false);
@@ -36,7 +39,7 @@
 </script>
 
 <header
-	class="sticky top-0 z-10 bg-base-300 border-b border-base-content/10 shadow-md"
+	class="sticky top-0 z-50 bg-base-300 border-b border-base-content/10 shadow-md"
 	style="padding-top: env(safe-area-inset-top);"
 >
 	<div class:container={!fullWidth} class:mx-auto={!fullWidth} class:lg:px-4={fullWidth}>
@@ -142,6 +145,9 @@
 				{/if}
 				{#if right}
 					{@render right()}
+				{/if}
+				{#if showUserMenu}
+					<UserMenu />
 				{/if}
 				<ThemeSelector />
 			</div>
