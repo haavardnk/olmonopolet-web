@@ -2,12 +2,12 @@
 @import 'tailwindcss';
 @import 'flag-icons/css/flag-icons.min.css';
 @plugin "daisyui" {
-	themes: caramellatte --default, ølmonopolet-dark --prefersdark;
+	themes: caramellatte, ølmonopolet-dark --default;
 }
 @plugin "daisyui/theme" {
 	name: "ølmonopolet-dark";
-	default: false;
-	prefersdark: true;
+	default: true;
+	prefersdark: false;
 	color-scheme: dark;
 
 	--color-base-100: #201D1A;
