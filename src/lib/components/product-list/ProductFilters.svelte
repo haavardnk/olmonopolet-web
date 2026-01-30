@@ -2,6 +2,7 @@
 	import { untrack } from 'svelte';
 	import RangeFilter from '$lib/components/product-list/controls/RangeFilter.svelte';
 	import StoreFilter from '$lib/components/product-list/filters/StoreFilter.svelte';
+	import CategoryFilter from '$lib/components/product-list/filters/CategoryFilter.svelte';
 	import StyleFilter from '$lib/components/product-list/filters/StyleFilter.svelte';
 	import CountryFilter from '$lib/components/product-list/filters/CountryFilter.svelte';
 	import ProductSelectionFilter from '$lib/components/product-list/filters/ProductSelectionFilter.svelte';
@@ -28,11 +29,13 @@
 			productSelection: string;
 			release: string;
 			store: string;
+			main_category: string;
 			style: string;
 		};
 		onFilterChange: () => void;
 	} = $props();
 
+	let selectedCategories = $state<string[]>([]);
 	let selectedCountries = $state<string[]>([]);
 	let selectedDeliveryOptions = $state<string[]>([]);
 	let selectedProductSelections = $state<string[]>([]);
@@ -47,10 +50,12 @@
 		productSelection: false,
 		release: false,
 		store: false,
+		category: false,
 		style: false
 	});
 
 	$effect(() => {
+		selectedCategories = filters.main_category ? filters.main_category.split(',') : [];
 		selectedCountries = filters.country ? filters.country.split(',') : [];
 		selectedDeliveryOptions = filters.deliveryOptions ? filters.deliveryOptions.split(',') : [];
 		selectedProductSelections = filters.productSelection ? filters.productSelection.split(',') : [];
@@ -83,6 +88,7 @@
 	$effect(() => syncArrayToFilter(selectedProductSelections, 'productSelection'));
 	$effect(() => syncArrayToFilter(selectedReleases, 'release'));
 	$effect(() => syncArrayToFilter(selectedStores, 'store'));
+	$effect(() => syncArrayToFilter(selectedCategories, 'main_category'));
 	$effect(() => syncArrayToFilter(selectedStyles, 'style'));
 
 	function resetRangeFilter(fromKey: keyof typeof filters, toKey: keyof typeof filters) {
@@ -142,6 +148,8 @@
 	/>
 
 	<StoreFilter bind:selectedStores bind:isOpen={openSections.store} {onFilterChange} />
+
+	<CategoryFilter bind:selectedCategories bind:isOpen={openSections.category} {onFilterChange} />
 
 	<StyleFilter bind:selectedStyles bind:isOpen={openSections.style} {onFilterChange} />
 

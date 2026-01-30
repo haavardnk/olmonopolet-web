@@ -11,6 +11,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	const priceTo = url.searchParams.get('priceTo') || '';
 	const pricePerLiterFrom = url.searchParams.get('pricePerLiterFrom') || '';
 	const pricePerLiterTo = url.searchParams.get('pricePerLiterTo') || '';
+	const main_category = url.searchParams.get('main_category') || '';
 	const style = url.searchParams.get('style') || '';
 	const country = url.searchParams.get('country') || '';
 	const abvFrom = url.searchParams.get('abvFrom') || '';
@@ -31,6 +32,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		priceTo,
 		pricePerLiterFrom,
 		pricePerLiterTo,
+		main_category,
 		style,
 		country,
 		abvFrom,

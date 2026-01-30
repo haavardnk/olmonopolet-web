@@ -75,6 +75,7 @@ export interface ProductFilters {
 	priceTo?: string;
 	pricePerLiterFrom?: string;
 	pricePerLiterTo?: string;
+	main_category?: string;
 	style?: string;
 	country?: string;
 	abvFrom?: string;

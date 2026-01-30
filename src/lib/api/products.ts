@@ -50,6 +50,7 @@ export async function fetchProducts(
 	if (filters.pricePerLiterTo) params.append('ppv_high', filters.pricePerLiterTo);
 	if (filters.abvFrom) params.append('abv_low', filters.abvFrom);
 	if (filters.abvTo) params.append('abv_high', filters.abvTo);
+	if (filters.main_category) params.append('main_category', filters.main_category);
 	if (filters.style) params.append('style', filters.style);
 	if (filters.country) params.append('country', filters.country);
 	if (filters.productSelection) params.append('product_selection', filters.productSelection);

@@ -53,6 +53,7 @@
 		productSelection: searchParams.get('productSelection') || '',
 		release: searchParams.get('release') || '',
 		store: searchParams.get('store') || '',
+		main_category: searchParams.get('main_category') || '',
 		style: searchParams.get('style') || ''
 	});
 
@@ -120,6 +121,7 @@
 			productSelection: '',
 			release: '',
 			store: '',
+			main_category: '',
 			style: ''
 		};
 		updateUrl();
