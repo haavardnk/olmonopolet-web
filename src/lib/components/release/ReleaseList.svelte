@@ -19,7 +19,7 @@
 		page_size: number;
 	} = $props();
 
-	let totalPages = Math.ceil(total / page_size);
+	let totalPages = $derived(Math.ceil(total / page_size));
 
 	function retryFetch() {
 		location.reload();

@@ -32,29 +32,51 @@
 	let desktopFiltersScrollContainer: HTMLDivElement;
 	let mainScrollContainer = $state<HTMLDivElement>();
 
-	let searchQuery = $state(searchParams.get('search') || '');
-	const initialSort = searchParams.get('sort') || `-${SortField.Rating}`;
-	let sortBy = $state<SortField>(
-		(initialSort.startsWith('-') ? initialSort.slice(1) : initialSort) as SortField
-	);
-	let sortDescending = $state(initialSort.startsWith('-'));
+	let searchQuery = $state('');
+	let sortBy = $state<SortField>(SortField.Rating);
+	let sortDescending = $state(true);
 
 	let filters = $state({
-		abvFrom: searchParams.get('abvFrom') || '',
-		abvTo: searchParams.get('abvTo') || '',
-		allergens: searchParams.get('allergens') || '',
-		country: searchParams.get('country') || '',
-		deliveryOptions: searchParams.get('deliveryOptions') || '',
-		is_christmas_beer: searchParams.get('is_christmas_beer') || '',
-		priceFrom: searchParams.get('priceFrom') || '',
-		pricePerLiterFrom: searchParams.get('pricePerLiterFrom') || '',
-		pricePerLiterTo: searchParams.get('pricePerLiterTo') || '',
-		priceTo: searchParams.get('priceTo') || '',
-		productSelection: searchParams.get('productSelection') || '',
-		release: searchParams.get('release') || '',
-		store: searchParams.get('store') || '',
-		main_category: searchParams.get('main_category') || '',
-		style: searchParams.get('style') || ''
+		abvFrom: '',
+		abvTo: '',
+		allergens: '',
+		country: '',
+		deliveryOptions: '',
+		is_christmas_beer: '',
+		priceFrom: '',
+		pricePerLiterFrom: '',
+		pricePerLiterTo: '',
+		priceTo: '',
+		productSelection: '',
+		release: '',
+		store: '',
+		main_category: '',
+		style: ''
+	});
+
+	$effect(() => {
+		searchQuery = searchParams.get('search') || '';
+		const initialSort = searchParams.get('sort') || `-${SortField.Rating}`;
+		sortBy = (initialSort.startsWith('-') ? initialSort.slice(1) : initialSort) as SortField;
+		sortDescending = initialSort.startsWith('-');
+
+		filters = {
+			abvFrom: searchParams.get('abvFrom') || '',
+			abvTo: searchParams.get('abvTo') || '',
+			allergens: searchParams.get('allergens') || '',
+			country: searchParams.get('country') || '',
+			deliveryOptions: searchParams.get('deliveryOptions') || '',
+			is_christmas_beer: searchParams.get('is_christmas_beer') || '',
+			priceFrom: searchParams.get('priceFrom') || '',
+			pricePerLiterFrom: searchParams.get('pricePerLiterFrom') || '',
+			pricePerLiterTo: searchParams.get('pricePerLiterTo') || '',
+			priceTo: searchParams.get('priceTo') || '',
+			productSelection: searchParams.get('productSelection') || '',
+			release: searchParams.get('release') || '',
+			store: searchParams.get('store') || '',
+			main_category: searchParams.get('main_category') || '',
+			style: searchParams.get('style') || ''
+		};
 	});
 
 	let scrollThreshold = $derived(isWideScreen ? 600 : 1200);

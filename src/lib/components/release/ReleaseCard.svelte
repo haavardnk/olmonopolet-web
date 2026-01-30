@@ -5,7 +5,7 @@
 	import { slugify } from '$lib/utils/helpers';
 
 	let { release, index }: { release: Release; index: number } = $props();
-	const slug = slugify(release.name);
+	const slug = $derived(slugify(release.name));
 </script>
 
 <a

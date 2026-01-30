@@ -9,11 +9,17 @@
 
 	let { data } = $props();
 
-	let currentPage = $state(data.page || 1);
-	let hasMore = $state(data.hasMore || false);
+	let currentPage = $state(1);
+	let hasMore = $state(false);
 	let loading = $state(false);
-	let products = $state(data.products || []);
+	let products = $state<typeof data.products>([]);
 	let canGoBack = $state(false);
+
+	$effect(() => {
+		currentPage = data.page || 1;
+		hasMore = data.hasMore || false;
+		products = data.products || [];
+	});
 
 	afterNavigate(({ from }) => {
 		if (browser && from) {
@@ -134,9 +140,14 @@
 		}
 	}
 
-	let previousSearchParams = $state(data.searchParams.toString());
+	let previousSearchParams = $state('');
 
 	$effect(() => {
+		if (!previousSearchParams) {
+			previousSearchParams = data.searchParams.toString();
+			return;
+		}
+
 		const newProducts = data.products || [];
 		const newPage = data.page || 1;
 		const newHasMore = data.hasMore || false;
@@ -145,6 +156,7 @@
 		if (currentSearchParams !== previousSearchParams) {
 			products = newProducts;
 			currentPage = newPage;
+			hasMore = newHasMore;
 			previousSearchParams = currentSearchParams;
 		}
 
