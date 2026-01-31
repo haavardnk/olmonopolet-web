@@ -1,8 +1,9 @@
 <script lang="ts">
 	import type { Product } from '$lib/types';
 	import { fly } from 'svelte/transition';
-	import { DollarSign, Droplets, Percent, Tag, CircleCheck, Circle } from '@lucide/svelte';
+	import { DollarSign, Droplets, Percent, Tag } from '@lucide/svelte';
 	import StarRating from '$lib/components/common/StarRating.svelte';
+	import ProductActions from '$lib/components/product/ProductActions.svelte';
 	import defaultLabel from '$lib/assets/default-label.png';
 	import { authStore } from '$lib/stores/auth.svelte';
 	import { tastedStore } from '$lib/stores/tasted.svelte';
@@ -27,14 +28,6 @@
 		const storeState = tastedStore.getTasted(product.id);
 		return storeState !== undefined ? storeState : product.userTasted || false;
 	});
-
-	function handleTastedClick(e: MouseEvent) {
-		e.preventDefault();
-		e.stopPropagation();
-		if (onTastedToggle && !isTogglingTasted) {
-			onTastedToggle(product.id, displayTasted());
-		}
-	}
 </script>
 
 <div
@@ -51,55 +44,37 @@
 				? 'sm:hidden'
 				: ''}"
 		>
-			<button
-				onclick={handleTastedClick}
-				disabled={isTogglingTasted}
-				class="btn btn-sm btn-circle shadow-lg {displayTasted()
-					? 'btn-success'
-					: 'btn-ghost bg-base-100 border-2 border-base-300'}"
-				aria-label={displayTasted() ? 'Marker som ikke smakt' : 'Marker som smakt'}
-			>
-				{#if isTogglingTasted}
-					<span class="loading loading-spinner loading-sm"></span>
-				{:else if displayTasted()}
-					<CircleCheck size={18} />
-				{:else}
-					<Circle size={18} />
-				{/if}
-			</button>
+			<ProductActions
+				productId={product.id}
+				isTasted={displayTasted()}
+				{isTogglingTasted}
+				{onTastedToggle}
+				variant="compact"
+			/>
 		</div>
 	{/if}
 
 	<div class="card-body p-4 sm:p-6 relative z-1 pointer-events-none">
 		<div class="flex flex-col sm:flex-row gap-4 sm:gap-6">
-			<div class="flex flex-col gap-2 items-center sm:items-start shrink-0">
+			<div class="flex flex-col gap-2 items-center sm:items-start shrink-0 sm:w-32">
 				<img
 					src={product.image || defaultLabel}
 					alt={product.name + ' etikett'}
-					class="w-24 h-24 sm:w-32 sm:h-32 object-contain rounded-lg"
+					class="w-24 h-24 sm:w-full sm:h-32 object-contain rounded-lg"
 					loading={index < 6 ? 'eager' : 'lazy'}
 					decoding="async"
 				/>
 
 				{#if authStore.isAuthenticated && variant === 'products'}
-					<button
-						onclick={handleTastedClick}
-						disabled={isTogglingTasted}
-						class="hidden sm:flex btn btn-xs w-32 h-6 min-h-6 pointer-events-auto {displayTasted()
-							? 'btn-success'
-							: 'btn-ghost'}"
-						aria-label={displayTasted() ? 'Marker som ikke smakt' : 'Marker som smakt'}
-					>
-						{#if isTogglingTasted}
-							<span class="loading loading-spinner loading-xs"></span>
-						{:else if displayTasted()}
-							<CircleCheck size={14} />
-							<span>Smakt</span>
-						{:else}
-							<Circle size={14} />
-							<span>Ikke smakt</span>
-						{/if}
-					</button>
+					<div class="hidden sm:block pointer-events-auto w-full">
+						<ProductActions
+							productId={product.id}
+							isTasted={displayTasted()}
+							{isTogglingTasted}
+							{onTastedToggle}
+							variant="full"
+						/>
+					</div>
 				{/if}
 			</div>
 

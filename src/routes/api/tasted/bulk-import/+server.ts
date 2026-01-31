@@ -1,13 +1,10 @@
 import type { RequestHandler } from './$types';
 import { API_URL } from '$env/static/private';
 import { json, error } from '@sveltejs/kit';
+import { getSession } from '$lib/server/auth';
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
-	const sessionCookie = cookies.get('session');
-
-	if (!sessionCookie) {
-		throw error(401, 'Not authenticated');
-	}
+	const session = getSession(cookies);
 
 	try {
 		const formData = await request.formData();
@@ -24,7 +21,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		const response = await fetch(apiUrl, {
 			method: 'POST',
 			headers: {
-				Cookie: `session=${sessionCookie}`
+				Cookie: `session=${session}`
 			},
 			body: apiFormData
 		});

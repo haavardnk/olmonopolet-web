@@ -4,25 +4,14 @@ import { json, error } from '@sveltejs/kit';
 import { getSession } from '$lib/server/auth';
 
 export const POST: RequestHandler = async ({ params, cookies }) => {
-	const { id } = params;
 	const session = getSession(cookies);
-
 	try {
-		const apiUrl = `${API_URL}/beers/${id}/mark_tasted/`;
-		const response = await fetch(apiUrl, {
+		const res = await fetch(`${API_URL}/lists/${params.id}/products/${params.productId}/`, {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				Cookie: `session=${session}`
-			}
+			headers: { Cookie: `session=${session}` }
 		});
-
-		if (!response.ok) {
-			throw error(response.status, `Failed to mark as tasted: ${response.statusText}`);
-		}
-
-		const data = await response.json();
-		return json(data, { status: response.status });
+		if (!res.ok) throw error(res.status, await res.text());
+		return json(await res.json(), { status: 201 });
 	} catch (err: any) {
 		if (err.status) throw err;
 		throw error(500, 'Internal server error');
@@ -30,22 +19,13 @@ export const POST: RequestHandler = async ({ params, cookies }) => {
 };
 
 export const DELETE: RequestHandler = async ({ params, cookies }) => {
-	const { id } = params;
 	const session = getSession(cookies);
-
 	try {
-		const apiUrl = `${API_URL}/beers/${id}/mark_tasted/`;
-		const response = await fetch(apiUrl, {
+		const res = await fetch(`${API_URL}/lists/${params.id}/products/${params.productId}/`, {
 			method: 'DELETE',
-			headers: {
-				Cookie: `session=${session}`
-			}
+			headers: { Cookie: `session=${session}` }
 		});
-
-		if (!response.ok) {
-			throw error(response.status, `Failed to unmark as tasted: ${response.statusText}`);
-		}
-
+		if (!res.ok) throw error(res.status, await res.text());
 		return new Response(null, { status: 204 });
 	} catch (err: any) {
 		if (err.status) throw err;
