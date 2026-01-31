@@ -21,8 +21,9 @@ export const GET: RequestHandler = async ({ url }) => {
 	const deliveryOptions = url.searchParams.get('deliveryOptions') || '';
 	const release = url.searchParams.get('release') || '';
 	const isChristmasBeer = url.searchParams.get('is_christmas_beer') || '';
+	const ids = url.searchParams.get('ids') || '';
 	const page = parseInt(url.searchParams.get('page') || '1');
-	const pageSize = 24;
+	const pageSize = ids ? 100 : 24; // Larger page size when fetching by IDs
 
 	const filters: ProductFilters = {
 		search,
@@ -41,7 +42,8 @@ export const GET: RequestHandler = async ({ url }) => {
 		productSelection,
 		deliveryOptions,
 		release,
-		isChristmasBeer
+		isChristmasBeer,
+		ids
 	};
 
 	try {

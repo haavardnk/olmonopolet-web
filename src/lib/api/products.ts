@@ -41,10 +41,13 @@ export async function fetchProducts(
 
 	const params = new URLSearchParams({
 		fields,
-		active: 'True',
 		page: page.toString(),
 		page_size: pageSize.toString()
 	});
+
+	if (!filters.ids) {
+		params.append('active', 'True');
+	}
 
 	if (filters.priceFrom) params.append('price_low', filters.priceFrom);
 	if (filters.priceTo) params.append('price_high', filters.priceTo);
@@ -72,6 +75,7 @@ export async function fetchProducts(
 
 	if (filters.sortBy) params.append('ordering', filters.sortBy);
 	if (filters.store) params.append('store', filters.store);
+	if (filters.ids) params.append('beers', filters.ids);
 
 	if (filters.deliveryOptions) {
 		const deliveryOpts = filters.deliveryOptions.split(',');

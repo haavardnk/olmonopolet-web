@@ -89,6 +89,7 @@ export interface ProductFilters {
 	sortBy?: string;
 	isChristmasBeer?: string;
 	user_tasted?: string;
+	ids?: string;
 }
 
 export interface ApiStore {
@@ -213,3 +214,35 @@ export type FilterItem<T extends string | number = string> = {
 	label: string;
 	meta?: string;
 };
+
+export type UserList = {
+	id: string;
+	name: string;
+	description?: string | null;
+	productIds: string[];
+	sortOrder: number;
+	shareToken: string;
+	createdAt: string;
+	updatedAt: string;
+};
+
+export interface UserListResponse {
+	count: number;
+	results: UserList[];
+}
+
+export interface ApiUserList {
+	id: string;
+	name: string;
+	description: string | null;
+	product_ids: string[];
+	sort_order: number;
+	share_token: string;
+	created_at: string;
+	updated_at: string;
+}
+
+export interface ApiUserListResponse {
+	count: number;
+	results: ApiUserList[];
+}

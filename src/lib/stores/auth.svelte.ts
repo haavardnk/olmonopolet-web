@@ -9,6 +9,8 @@ import {
 	type User
 } from 'firebase/auth';
 import { auth } from '$lib/firebase/client';
+import { listsStore } from '$lib/stores/lists.svelte';
+import { tastedStore } from '$lib/stores/tasted.svelte';
 
 export interface AuthUser {
 	uid: string;
@@ -16,20 +18,46 @@ export interface AuthUser {
 	emailVerified: boolean;
 }
 
+const AUTH_HINT_KEY = 'auth_hint';
+
+function getAuthHint(): AuthUser | null {
+	if (!browser) return null;
+	try {
+		const hint = localStorage.getItem(AUTH_HINT_KEY);
+		return hint ? JSON.parse(hint) : null;
+	} catch {
+		return null;
+	}
+}
+
+function setAuthHint(user: AuthUser | null) {
+	if (!browser) return;
+	try {
+		if (user) {
+			localStorage.setItem(AUTH_HINT_KEY, JSON.stringify(user));
+		} else {
+			localStorage.removeItem(AUTH_HINT_KEY);
+		}
+	} catch {}
+}
+
 function createAuthStore() {
-	let user = $state<AuthUser | null>(null);
-	let loading = $state(true);
+	const initialHint = getAuthHint();
+	let user = $state<AuthUser | null>(initialHint);
+	let loading = $state(!initialHint);
 	let error = $state<string | null>(null);
 
 	if (browser && auth) {
 		setTimeout(() => {
 			onAuthStateChanged(auth, async (firebaseUser: User | null) => {
 				if (firebaseUser) {
-					user = {
+					const newUser = {
 						uid: firebaseUser.uid,
 						email: firebaseUser.email,
 						emailVerified: firebaseUser.emailVerified
 					};
+					user = newUser;
+					setAuthHint(newUser);
 
 					try {
 						const idToken = await firebaseUser.getIdToken();
@@ -43,6 +71,7 @@ function createAuthStore() {
 					}
 				} else {
 					user = null;
+					setAuthHint(null);
 				}
 				loading = false;
 			});
@@ -140,6 +169,8 @@ function createAuthStore() {
 			await firebaseSignOut(auth);
 			await fetch('/api/auth/logout', { method: 'POST' });
 			user = null;
+			listsStore.clear();
+			tastedStore.clear();
 		} catch (e) {
 			error = getErrorMessage(e);
 			throw e;

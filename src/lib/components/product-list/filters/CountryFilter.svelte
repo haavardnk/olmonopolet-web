@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import type { Country } from '$lib/api/products';
+	import type { Country } from '$lib/types';
 	import FilterCollapse from '$lib/components/product-list/controls/CollapseFilter.svelte';
 
 	let {

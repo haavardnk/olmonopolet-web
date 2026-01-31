@@ -206,7 +206,7 @@
 		bind:checked={showMobileFilters}
 	/>
 	<div class="drawer-content"></div>
-	<div class="drawer-side z-50">
+	<div class="drawer-side z-40">
 		<label for="filter-drawer" class="drawer-overlay"></label>
 		<div class="bg-base-100 w-80 min-h-full flex flex-col">
 			<div
@@ -255,7 +255,7 @@
 
 	<main class="flex-1 flex flex-col xl:overflow-hidden bg-base-100">
 		<div
-			class="xl:hidden sticky top-(--header-offset,0px) z-40 bg-base-100 border-b border-base-content/10 shadow-sm"
+			class="xl:hidden sticky top-(--header-offset,0px) z-30 bg-base-100 border-b border-base-content/10 shadow-sm"
 		>
 			<SearchAndSort
 				bind:searchQuery
@@ -288,7 +288,6 @@
 								noTransition={true}
 								onTastedToggle={handleTastedToggle}
 								isTogglingTasted={tastedLoadingMap.get(product.id) || false}
-								variant="products"
 							/>
 						{/each}
 					</div>
