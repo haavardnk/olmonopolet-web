@@ -112,11 +112,10 @@
 		fill: #e0a870;
 	}
 
-	:global([data-theme='ølmonopolet-dark']) .hero-image :global(.st11) {
-		fill: #e0a870;
+	:global([data-theme='ølmonopolet-dark']) .hero-image :global(.st10) {
+		fill: #d9a86e;
 	}
 
-	:global([data-theme='ølmonopolet-dark']) .hero-image :global(.st10),
 	:global([data-theme='ølmonopolet-dark']) .hero-image :global(.st15) {
 		fill: #ebe0d9;
 	}
