@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types';
 import { fetchProducts, type ProductFilters } from '$lib/api/products';
 import { getAssortmentDisplayName } from '$lib/utils/helpers';
 
-export const GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url, cookies }) => {
 	const search = url.searchParams.get('search') || '';
 	const sortBy = url.searchParams.get('sort') || '-rating';
 	const store = url.searchParams.get('store') || '';
@@ -21,6 +21,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	const deliveryOptions = url.searchParams.get('deliveryOptions') || '';
 	const release = url.searchParams.get('release') || '';
 	const isChristmasBeer = url.searchParams.get('is_christmas_beer') || '';
+	const user_tasted = url.searchParams.get('user_tasted') || '';
 	const ids = url.searchParams.get('ids') || '';
 	const page = parseInt(url.searchParams.get('page') || '1');
 	const pageSize = ids ? 100 : 24; // Larger page size when fetching by IDs
@@ -43,11 +44,14 @@ export const GET: RequestHandler = async ({ url }) => {
 		deliveryOptions,
 		release,
 		isChristmasBeer,
+		user_tasted,
 		ids
 	};
 
 	try {
-		const response = await fetchProducts(page, pageSize, filters);
+		const sessionCookie = cookies.get('session');
+		const cookieHeader = sessionCookie ? `session=${sessionCookie}` : undefined;
+		const response = await fetchProducts(page, pageSize, filters, cookieHeader);
 
 		const products = response.results.map((item) => ({
 			id: item.vmp_id,
@@ -66,6 +70,7 @@ export const GET: RequestHandler = async ({ url }) => {
 			isChristmasBeer: item.is_christmas_beer,
 			vmpUrl: item.vmp_url,
 			untappdUrl: item.untpd_url,
+			userTasted: (item as any).user_tasted,
 			stores: []
 		}));
 

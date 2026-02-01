@@ -6,7 +6,6 @@
 	import ProductActions from '$lib/components/product/ProductActions.svelte';
 	import defaultLabel from '$lib/assets/default-label.png';
 	import { authStore } from '$lib/stores/auth.svelte';
-	import { tastedStore } from '$lib/stores/tasted.svelte';
 
 	let {
 		product,
@@ -23,11 +22,6 @@
 		isTogglingTasted?: boolean;
 		variant?: 'products' | 'release';
 	} = $props();
-
-	const displayTasted = $derived(() => {
-		const storeState = tastedStore.getTasted(product.id);
-		return storeState !== undefined ? storeState : product.userTasted || false;
-	});
 </script>
 
 <div
@@ -46,7 +40,7 @@
 		>
 			<ProductActions
 				productId={product.id}
-				isTasted={displayTasted()}
+				userTasted={product.userTasted}
 				{isTogglingTasted}
 				{onTastedToggle}
 				variant="compact"
@@ -69,7 +63,7 @@
 					<div class="hidden sm:block pointer-events-auto w-full">
 						<ProductActions
 							productId={product.id}
-							isTasted={displayTasted()}
+							userTasted={product.userTasted}
 							{isTogglingTasted}
 							{onTastedToggle}
 							variant="full"
