@@ -12,7 +12,7 @@ export async function toggleTastedStatus(
 
 		if (response.ok) {
 			const newState = !currentState;
-			tastedStore.setTasted(productId, newState);
+			tastedStore.setTasted(String(productId), newState);
 			onSuccess?.(newState);
 			return true;
 		} else {

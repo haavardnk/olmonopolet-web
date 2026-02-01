@@ -2,6 +2,7 @@
 	import { browser } from '$app/environment';
 	import { listsStore } from '$lib/stores/lists.svelte';
 	import { authStore } from '$lib/stores/auth.svelte';
+	import { tastedStore } from '$lib/stores/tasted.svelte';
 	import { ListPlus, Check, Plus, Loader2, CircleCheck, Circle } from '@lucide/svelte';
 	import type { UserList } from '$lib/types';
 	import Portal from '$lib/components/common/Portal.svelte';
@@ -15,7 +16,7 @@
 
 	type Props = {
 		productId: string;
-		isTasted: boolean;
+		userTasted?: boolean;
 		isTogglingTasted?: boolean;
 		onTastedToggle?: (productId: string, currentState: boolean) => void;
 		variant?: 'compact' | 'full';
@@ -23,7 +24,7 @@
 
 	let {
 		productId,
-		isTasted,
+		userTasted = false,
 		isTogglingTasted = false,
 		onTastedToggle,
 		variant = 'compact'
@@ -36,6 +37,11 @@
 
 	const lists = $derived(listsStore.sortedLists);
 	const listCount = $derived(getListCountForProduct(lists, productId));
+
+	const isTasted = $derived.by(() => {
+		const storeState = tastedStore.getTasted(String(productId));
+		return storeState !== undefined ? storeState : userTasted;
+	});
 
 	$effect(() => {
 		if (browser && authStore.isAuthenticated) fetchAndSetLists();
