@@ -40,7 +40,7 @@
 		>
 			<ProductActions
 				productId={product.id}
-				userTasted={product.userTasted}
+				isTasted={product.userTasted || false}
 				{isTogglingTasted}
 				{onTastedToggle}
 				variant="compact"
@@ -63,7 +63,7 @@
 					<div class="hidden sm:block pointer-events-auto w-full">
 						<ProductActions
 							productId={product.id}
-							userTasted={product.userTasted}
+							isTasted={product.userTasted || false}
 							{isTogglingTasted}
 							{onTastedToggle}
 							variant="full"

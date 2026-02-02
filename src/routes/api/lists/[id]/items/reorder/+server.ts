@@ -3,12 +3,11 @@ import { API_URL } from '$env/static/private';
 import { json, error } from '@sveltejs/kit';
 import { getSession } from '$lib/server/auth';
 
-export const PATCH: RequestHandler = async ({ request, cookies }) => {
+export const PATCH: RequestHandler = async ({ params, request, cookies }) => {
 	const session = getSession(cookies);
-
 	try {
 		const body = await request.json();
-		const res = await fetch(`${API_URL}/lists/reorder/`, {
+		const res = await fetch(`${API_URL}/lists/${params.id}/items/reorder/`, {
 			method: 'PATCH',
 			headers: { 'Content-Type': 'application/json', Cookie: `session=${session}` },
 			body: JSON.stringify(body)

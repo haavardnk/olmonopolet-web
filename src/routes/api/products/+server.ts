@@ -7,6 +7,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 	const search = url.searchParams.get('search') || '';
 	const sortBy = url.searchParams.get('sort') || '-rating';
 	const store = url.searchParams.get('store') || '';
+	const checkStore = url.searchParams.get('check_store') || '';
 	const priceFrom = url.searchParams.get('priceFrom') || '';
 	const priceTo = url.searchParams.get('priceTo') || '';
 	const pricePerLiterFrom = url.searchParams.get('pricePerLiterFrom') || '';
@@ -24,12 +25,13 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 	const user_tasted = url.searchParams.get('user_tasted') || '';
 	const ids = url.searchParams.get('ids') || '';
 	const page = parseInt(url.searchParams.get('page') || '1');
-	const pageSize = ids ? 100 : 24; // Larger page size when fetching by IDs
+	const pageSize = ids ? 100 : 24;
 
 	const filters: ProductFilters = {
 		search,
 		sortBy,
 		store,
+		checkStore,
 		priceFrom,
 		priceTo,
 		pricePerLiterFrom,
@@ -66,6 +68,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 			strength: item.abv,
 			country: item.country,
 			countryCode: item.country_code,
+			stock: item.stock,
 			assortment: getAssortmentDisplayName(item.product_selection),
 			isChristmasBeer: item.is_christmas_beer,
 			vmpUrl: item.vmp_url,

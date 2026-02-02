@@ -39,7 +39,7 @@
 	const listCount = $derived(getListCountForProduct(lists, product.id));
 
 	$effect(() => {
-		const storeState = tastedStore.getTasted(String(product.id));
+		const storeState = tastedStore.getTasted(product.id);
 		localUserTasted = storeState !== undefined ? storeState : product.userTasted || false;
 	});
 
