@@ -48,3 +48,20 @@ export const DELETE: RequestHandler = async ({ params, cookies }) => {
 		throw error(500, 'Internal server error');
 	}
 };
+
+export const PATCH: RequestHandler = async ({ params, request, cookies }) => {
+	const session = getSession(cookies);
+	try {
+		const body = await request.json();
+		const res = await fetch(`${API_URL}/lists/${params.id}/`, {
+			method: 'PATCH',
+			headers: { 'Content-Type': 'application/json', Cookie: `session=${session}` },
+			body: JSON.stringify(body)
+		});
+		if (!res.ok) throw error(res.status, await res.text());
+		return json(await res.json());
+	} catch (err: any) {
+		if (err.status) throw err;
+		throw error(500, 'Internal server error');
+	}
+};

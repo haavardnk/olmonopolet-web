@@ -48,7 +48,8 @@ export const listsStore = {
 		if (list && !currentProducts.includes(productId)) {
 			userLists = new Map(userLists).set(listId, {
 				...list,
-				productIds: [...currentProducts, productId]
+				productIds: [...currentProducts, productId],
+				itemCount: (list.itemCount || 0) + 1
 			});
 		}
 	},
@@ -57,7 +58,8 @@ export const listsStore = {
 		if (list) {
 			userLists = new Map(userLists).set(listId, {
 				...list,
-				productIds: (list.productIds || []).filter((id) => id !== productId)
+				productIds: (list.productIds || []).filter((id) => id !== productId),
+				itemCount: Math.max(0, (list.itemCount || 0) - 1)
 			});
 		}
 	},

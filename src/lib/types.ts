@@ -21,6 +21,7 @@ export type Product = {
 	isChristmasBeer?: boolean;
 	rating?: number | null;
 	checkins?: number | null;
+	stock?: number | null;
 	strength?: number | null;
 	ibu?: number | null;
 	alcoholUnits?: number | null;
@@ -72,6 +73,7 @@ export type Release = {
 
 export interface ProductFilters {
 	store?: string;
+	checkStore?: string;
 	priceFrom?: string;
 	priceTo?: string;
 	pricePerLiterFrom?: string;
@@ -215,10 +217,42 @@ export type FilterItem<T extends string | number = string> = {
 	meta?: string;
 };
 
+// List types
+export type ListType = 'standard' | 'shopping' | 'cellar' | 'event';
+
+export type ListStats = {
+	totalBottles: number;
+	totalValue: number;
+	oldestYear: number | null;
+	newestYear: number | null;
+};
+
+export type ListItem = {
+	id: string;
+	productId: string;
+	quantity: number;
+	year: number | null;
+	notes: string | null;
+	sortOrder: number;
+	createdAt: string;
+};
+
+export type ListItemWithProduct = ListItem & {
+	product: Product | null;
+};
+
 export type UserList = {
 	id: string;
 	name: string;
 	description?: string | null;
+	listType: ListType;
+	selectedStoreId: number | null;
+	eventDate: string | null;
+	itemCount: number;
+	isPast?: boolean;
+	totalPrice?: number;
+	stats?: ListStats;
+	items?: ListItemWithProduct[];
 	productIds: string[];
 	sortOrder: number;
 	shareToken: string;
@@ -231,11 +265,35 @@ export interface UserListResponse {
 	results: UserList[];
 }
 
+export interface ApiListItem {
+	id: number | string;
+	product_id: number | string;
+	quantity: number;
+	year: number | null;
+	notes: string | null;
+	sort_order: number;
+	created_at: string;
+	product?: ApiProduct;
+}
+
 export interface ApiUserList {
-	id: string;
+	id: number | string;
 	name: string;
 	description: string | null;
-	product_ids: string[];
+	list_type: string;
+	selected_store_id: number | null;
+	event_date: string | null;
+	item_count: number;
+	is_past?: boolean;
+	total_price?: number;
+	stats?: {
+		total_bottles: number;
+		total_value: number;
+		oldest_year: number | null;
+		newest_year: number | null;
+	};
+	items?: ApiListItem[];
+	product_ids?: (number | string)[];
 	sort_order: number;
 	share_token: string;
 	created_at: string;

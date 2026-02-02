@@ -75,6 +75,7 @@ export async function fetchProducts(
 
 	if (filters.sortBy) params.append('ordering', filters.sortBy);
 	if (filters.store) params.append('store', filters.store);
+	if (filters.checkStore) params.append('check_store', filters.checkStore);
 	if (filters.ids) params.append('beers', filters.ids);
 
 	if (filters.deliveryOptions) {

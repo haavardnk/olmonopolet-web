@@ -3,13 +3,14 @@
 	import { goto } from '$app/navigation';
 	import { authStore } from '$lib/stores/auth.svelte';
 	import { listsStore } from '$lib/stores/lists.svelte';
-	import type { UserList } from '$lib/types';
+	import type { UserList, ListType } from '$lib/types';
 	import Header from '$lib/components/common/Header.svelte';
 	import ListCard from '$lib/components/lists/ListCard.svelte';
 	import ListFormModal from '$lib/components/lists/ListFormModal.svelte';
-	import ShareListButton from '$lib/components/lists/ShareListButton.svelte';
+	import ShareModal from '$lib/components/lists/ShareModal.svelte';
+	import ConfirmModal from '$lib/components/common/ConfirmModal.svelte';
 	import EmptyListsState from '$lib/components/lists/EmptyListsState.svelte';
-	import { Plus, ArrowLeft, CircleAlert } from '@lucide/svelte';
+	import { Plus, ArrowLeft, CircleAlert, EyeOff } from '@lucide/svelte';
 	import { flip } from 'svelte/animate';
 	import { dragHandleZone, type DndEvent } from 'svelte-dnd-action';
 	import { fetchAndSetLists, transformApiList } from '$lib/utils/lists';
@@ -24,11 +25,16 @@
 	let deletingList = $state<UserList | null>(null);
 	let isDeleting = $state(false);
 	let dragItems = $state<UserList[] | null>(null);
+	let hidePastEvents = $state(false);
 
 	const flipDurationMs = 200;
 	const isLoading = $derived(listsStore.isLoading);
 	const storeItems = $derived(listsStore.sortedLists);
-	const items = $derived(dragItems ?? storeItems);
+	const filteredItems = $derived(
+		hidePastEvents ? storeItems.filter((item) => !item.isPast) : storeItems
+	);
+	const items = $derived(dragItems ?? filteredItems);
+	const hasPastEvents = $derived(storeItems.some((item) => item.isPast));
 
 	$effect(() => {
 		if (browser && authStore.isAuthenticated) fetchAndSetLists();
@@ -44,27 +50,44 @@
 		editingList = null;
 	}
 
-	async function handleSave(data: { name: string; description: string }) {
+	async function handleSave(data: {
+		name: string;
+		description: string;
+		listType: ListType;
+		eventDate: string | null;
+	}) {
 		isSaving = true;
 		try {
 			if (editingList) {
 				const res = await fetch(`/api/lists/${editingList.id}`, {
 					method: 'PUT',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify(data)
+					body: JSON.stringify({
+						name: data.name,
+						description: data.description,
+						list_type: data.listType,
+						event_date: data.eventDate
+					})
 				});
 				if (!res.ok) throw new Error('Failed to update list');
 				const updated = await res.json();
 				listsStore.updateList(editingList.id, {
 					name: updated.name,
 					description: updated.description,
+					listType: updated.list_type,
+					eventDate: updated.event_date,
 					updatedAt: updated.updated_at
 				});
 			} else {
 				const res = await fetch('/api/lists', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify(data)
+					body: JSON.stringify({
+						name: data.name,
+						description: data.description,
+						list_type: data.listType,
+						event_date: data.eventDate
+					})
 				});
 				if (!res.ok) throw new Error('Failed to create list');
 				listsStore.addList(transformApiList(await res.json()));
@@ -101,12 +124,12 @@
 		dragItems = e.detail.items;
 		const orderedIds = dragItems.map((item) => item.id);
 		listsStore.reorderLists(orderedIds);
-		dragItems = null; // Reset to use store items
+		dragItems = null;
 		try {
 			await fetch('/api/lists/reorder', {
 				method: 'PATCH',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ order: storeItems.map((item, i) => ({ id: item.id, sort_order: i })) })
+				body: JSON.stringify({ list_ids: orderedIds.map((id) => parseInt(id)) })
 			});
 		} catch {
 			fetchAndSetLists();
@@ -155,10 +178,26 @@
 				<CircleAlert size={20} />
 				<span>{error}</span>
 			</div>
-		{:else if items.length === 0}
+		{:else if items.length === 0 && !hidePastEvents}
 			<EmptyListsState onCreate={openCreateModal} />
+		{:else if items.length === 0 && hidePastEvents}
+			<div class="text-center py-12">
+				<p class="text-base-content/70 mb-4">Ingen aktive arrangementer</p>
+				<button class="btn btn-ghost btn-sm" onclick={() => (hidePastEvents = false)}>
+					Vis passerte arrangementer
+				</button>
+			</div>
 		{:else}
-			<p class="text-sm text-base-content/60 mb-4">Dra i håndtaket for å endre rekkefølge</p>
+			<div class="flex items-center justify-between mb-4">
+				<p class="text-sm text-base-content/60">Dra i håndtaket for å endre rekkefølge</p>
+				{#if hasPastEvents}
+					<label class="label cursor-pointer gap-2">
+						<EyeOff size={16} class="text-base-content/60" />
+						<span class="label-text text-sm">Skjul passerte</span>
+						<input type="checkbox" class="toggle toggle-sm" bind:checked={hidePastEvents} />
+					</label>
+				{/if}
+			</div>
 			<div
 				class="space-y-3"
 				use:dragHandleZone={{ items, flipDurationMs }}
@@ -197,64 +236,30 @@
 	{isSaving}
 />
 
-<dialog class="modal" class:modal-open={showShareModal}>
-	<div class="modal-box">
-		<h3 class="font-bold text-lg mb-4">Del liste</h3>
-		{#if sharingList}
-			<p class="text-sm text-base-content/70 mb-4">
-				Alle med lenken kan se listen "{sharingList.name}".
-			</p>
-			<ShareListButton shareToken={sharingList.shareToken} />
-		{/if}
-		<div class="modal-action">
-			<button
-				class="btn"
-				onclick={() => {
-					showShareModal = false;
-					sharingList = null;
-				}}>Lukk</button
-			>
-		</div>
-	</div>
-	<form method="dialog" class="modal-backdrop">
-		<button
-			onclick={() => {
-				showShareModal = false;
-				sharingList = null;
-			}}>close</button
-		>
-	</form>
-</dialog>
+{#if sharingList}
+	<ShareModal
+		open={showShareModal}
+		listName={sharingList.name}
+		shareToken={sharingList.shareToken}
+		onClose={() => {
+			showShareModal = false;
+			sharingList = null;
+		}}
+	/>
+{/if}
 
-<dialog class="modal" class:modal-open={showDeleteConfirm}>
-	<div class="modal-box">
-		<h3 class="font-bold text-lg mb-4">Slett liste</h3>
-		{#if deletingList}
-			<p class="text-base-content/70">
-				Er du sikker på at du vil slette "{deletingList.name}"? Dette kan ikke angres.
-			</p>
-		{/if}
-		<div class="modal-action">
-			<button
-				class="btn btn-ghost"
-				onclick={() => {
-					showDeleteConfirm = false;
-					deletingList = null;
-				}}
-				disabled={isDeleting}>Avbryt</button
-			>
-			<button class="btn btn-error" onclick={handleDelete} disabled={isDeleting}>
-				{#if isDeleting}<span class="loading loading-spinner loading-sm"></span>{/if}
-				Slett
-			</button>
-		</div>
-	</div>
-	<form method="dialog" class="modal-backdrop">
-		<button
-			onclick={() => {
-				showDeleteConfirm = false;
-				deletingList = null;
-			}}>close</button
-		>
-	</form>
-</dialog>
+{#if deletingList}
+	<ConfirmModal
+		open={showDeleteConfirm}
+		title="Slett liste"
+		message={`Er du sikker på at du vil slette "${deletingList.name}"? Dette kan ikke angres.`}
+		confirmLabel="Slett"
+		confirmClass="btn-error"
+		isLoading={isDeleting}
+		onConfirm={handleDelete}
+		onCancel={() => {
+			showDeleteConfirm = false;
+			deletingList = null;
+		}}
+	/>
+{/if}
