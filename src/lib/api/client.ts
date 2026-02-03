@@ -1,8 +1,10 @@
 import { browser } from '$app/environment';
 import { auth } from '$lib/firebase/client';
 
+let isSigningOut = false;
+
 export async function getAuthToken(): Promise<string | null> {
-	if (!browser || !auth?.currentUser) return null;
+	if (!browser || !auth?.currentUser || isSigningOut) return null;
 
 	try {
 		return await auth.currentUser.getIdToken();
@@ -33,9 +35,11 @@ export async function authenticatedFetch(
 		headers
 	});
 
-	if (response.status === 401 && browser && auth) {
+	if (response.status === 401 && browser && auth && !isSigningOut) {
+		isSigningOut = true;
 		const { signOut } = await import('firebase/auth');
 		await signOut(auth);
+		isSigningOut = false;
 	}
 
 	return response;

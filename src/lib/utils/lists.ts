@@ -1,5 +1,7 @@
 import type { UserList, ApiUserList, ListType } from '$lib/types';
 import { listsStore } from '$lib/stores/lists.svelte';
+import { browser } from '$app/environment';
+import { auth } from '$lib/firebase/client';
 
 const MENU_WIDTH = 224;
 
@@ -43,9 +45,19 @@ export function transformApiList(data: ApiUserList | Record<string, unknown>): U
 
 export async function fetchAndSetLists(forceRefresh = false): Promise<void> {
 	if (!forceRefresh && (listsStore.isLoaded || listsStore.isLoading)) return;
+	if (browser && !auth?.currentUser) return;
+	
 	listsStore.setLoading(true);
 	try {
 		const response = await fetch('/api/lists');
+		if (response.status === 401) {
+			listsStore.clear();
+			if (browser && auth) {
+				const { signOut } = await import('firebase/auth');
+				await signOut(auth);
+			}
+			return;
+		}
 		if (!response.ok) return;
 		const data = await response.json();
 		const results = data.results || data || [];

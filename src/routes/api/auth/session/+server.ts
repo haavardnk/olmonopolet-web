@@ -37,8 +37,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 				email: decodedToken.email
 			}
 		});
-	} catch (error) {
-		console.error('Session creation error:', error);
+	} catch {
 		return json({ error: 'Failed to create session' }, { status: 500 });
 	}
 };
