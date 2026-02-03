@@ -5,6 +5,9 @@ import { getSession } from '$lib/server/auth';
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
 	const session = getSession(cookies);
+	if (!API_URL) {
+		throw error(500, 'Missing API_URL configuration');
+	}
 
 	try {
 		const formData = await request.formData();
@@ -15,7 +18,11 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		}
 
 		const apiFormData = new FormData();
-		apiFormData.append('file', file);
+		const fileBuffer = await file.arrayBuffer();
+		const blob = new Blob([fileBuffer], {
+			type: file.type || 'application/octet-stream'
+		});
+		apiFormData.append('file', blob, file.name || 'untappd-export');
 
 		const apiUrl = `${API_URL}/beers/bulk_mark_tasted/`;
 		const response = await fetch(apiUrl, {
