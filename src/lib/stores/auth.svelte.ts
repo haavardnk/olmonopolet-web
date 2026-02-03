@@ -72,6 +72,8 @@ function createAuthStore() {
 				} else {
 					user = null;
 					setAuthHint(null);
+					listsStore.clear();
+					tastedStore.clear();
 				}
 				loading = false;
 			});
