@@ -33,7 +33,7 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/beermonopoly-web:${{ env.TAG }}
             ${{ secrets.DOCKERHUB_USERNAME }}/beermonopoly-web:latest
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           build-args: |
             PUBLIC_SITE_TITLE=${{ vars.PUBLIC_SITE_TITLE }}
             PUBLIC_SITE_URL=${{ vars.PUBLIC_SITE_URL }}
@@ -46,3 +46,9 @@ jobs:
             PUBLIC_CHROME_EXTENSION_URL=${{ vars.PUBLIC_CHROME_EXTENSION_URL }}
             PUBLIC_INFORMATION_REMOVAL_FORMSPREE_URL=${{ vars.PUBLIC_INFORMATION_REMOVAL_FORMSPREE_URL }}
             API_URL=${{ vars.API_URL }}
+            PUBLIC_FIREBASE_API_KEY=${{ vars.PUBLIC_FIREBASE_API_KEY }}
+            PUBLIC_FIREBASE_AUTH_DOMAIN=${{ vars.PUBLIC_FIREBASE_AUTH_DOMAIN }}
+            PUBLIC_FIREBASE_PROJECT_ID=${{ vars.PUBLIC_FIREBASE_PROJECT_ID }}
+            FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}
+            FIREBASE_CLIENT_EMAIL=${{ secrets.FIREBASE_CLIENT_EMAIL }}
+            FIREBASE_PRIVATE_KEY=${{ secrets.FIREBASE_PRIVATE_KEY }}

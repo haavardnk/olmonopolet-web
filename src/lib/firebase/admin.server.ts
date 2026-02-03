@@ -1,13 +1,17 @@
 import { initializeApp, getApps, cert, type App } from 'firebase-admin/app';
 import { getAuth, type Auth } from 'firebase-admin/auth';
-import { env } from '$env/dynamic/private';
+import {
+	FIREBASE_PROJECT_ID,
+	FIREBASE_CLIENT_EMAIL,
+	FIREBASE_PRIVATE_KEY
+} from '$env/static/private';
 
 let app: App;
 let adminAuth: Auth;
 
-const projectId = env.FIREBASE_PROJECT_ID;
-const clientEmail = env.FIREBASE_CLIENT_EMAIL;
-const privateKey = env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+const projectId = FIREBASE_PROJECT_ID;
+const clientEmail = FIREBASE_CLIENT_EMAIL;
+const privateKey = FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
 
 if (projectId && clientEmail && privateKey) {
 	if (getApps().length === 0) {
