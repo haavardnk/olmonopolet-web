@@ -2,6 +2,7 @@ import type { RequestHandler } from './$types';
 import { API_URL } from '$env/static/private';
 import { json, error } from '@sveltejs/kit';
 import { getSession } from '$lib/server/auth';
+import { NO_CACHE_HEADERS } from '$lib/server/cache';
 
 export const POST: RequestHandler = async ({ params, request, cookies }) => {
 	const session = getSession(cookies);
@@ -13,7 +14,7 @@ export const POST: RequestHandler = async ({ params, request, cookies }) => {
 			body: JSON.stringify(body)
 		});
 		if (!res.ok) throw error(res.status, await res.text());
-		return json(await res.json(), { status: 201 });
+		return json(await res.json(), { status: 201, headers: NO_CACHE_HEADERS });
 	} catch (err: any) {
 		if (err.status) throw err;
 		throw error(500, 'Internal server error');

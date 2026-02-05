@@ -4,14 +4,13 @@ import { API_URL } from '$env/static/private';
 import type { Product, Store, ProductListResponse, ApiProduct } from '$lib/types';
 import { normalizeCharacteristic, getAssortmentDisplayName } from '$lib/utils/helpers';
 import logo from '$lib/assets/logo.png';
+import { LONG_CACHE_HEADERS, NO_CACHE_HEADERS } from '$lib/server/cache';
 
 export const load: PageServerLoad = async ({ params, fetch, setHeaders, cookies }) => {
 	const { id } = params;
 	const sessionCookie = cookies.get('session');
 
-	setHeaders({
-		'Cache-Control': 'public, max-age=3600, s-maxage=86400'
-	});
+	setHeaders(sessionCookie ? NO_CACHE_HEADERS : LONG_CACHE_HEADERS);
 
 	try {
 		const apiUrl = `${API_URL}/beers/?beers=${id}&all_stock=true`;

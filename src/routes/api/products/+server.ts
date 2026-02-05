@@ -2,6 +2,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { fetchProducts, type ProductFilters } from '$lib/api/products';
 import { getAssortmentDisplayName } from '$lib/utils/helpers';
+import { SHORT_CACHE_HEADERS, NO_CACHE_HEADERS } from '$lib/server/cache';
 
 export const GET: RequestHandler = async ({ url, cookies }) => {
 	const search = url.searchParams.get('search') || '';
@@ -27,6 +28,9 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 	const page = parseInt(url.searchParams.get('page') || '1');
 	const pageSize = ids ? 100 : 24;
 
+	const sessionCookie = cookies.get('session');
+	const cacheHeaders = sessionCookie ? NO_CACHE_HEADERS : SHORT_CACHE_HEADERS;
+
 	const filters: ProductFilters = {
 		search,
 		sortBy,
@@ -51,7 +55,6 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 	};
 
 	try {
-		const sessionCookie = cookies.get('session');
 		const cookieHeader = sessionCookie ? `session=${sessionCookie}` : undefined;
 		const response = await fetchProducts(page, pageSize, filters, cookieHeader);
 
@@ -77,13 +80,16 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 			stores: []
 		}));
 
-		return json({
-			products,
-			total: response.count,
-			page,
-			pageSize,
-			hasMore: products.length === pageSize && response.count > page * pageSize
-		});
+		return json(
+			{
+				products,
+				total: response.count,
+				page,
+				pageSize,
+				hasMore: products.length === pageSize && response.count > page * pageSize
+			},
+			{ headers: cacheHeaders }
+		);
 	} catch (error) {
 		console.error('Error loading products:', error);
 		return json(
