@@ -10,13 +10,12 @@ import type {
 	ProductListResponse
 } from '$lib/types';
 import { formatDate, slugify, unslugify, getAssortmentDisplayName } from '$lib/utils/helpers';
+import { LONG_CACHE_HEADERS, NO_CACHE_HEADERS } from '$lib/server/cache';
 
 export const load: PageServerLoad = async ({ params, fetch, setHeaders, cookies }) => {
 	const sessionCookie = cookies.get('session');
 
-	setHeaders({
-		'Cache-Control': 'public, max-age=3600, s-maxage=86400'
-	});
+	setHeaders(sessionCookie ? NO_CACHE_HEADERS : LONG_CACHE_HEADERS);
 
 	const name = unslugify(params.id);
 	try {

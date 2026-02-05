@@ -1,5 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { fetchStyles } from '$lib/api/products';
+import { LONG_CACHE_HEADERS } from '$lib/server/cache';
 
 export async function GET() {
 	try {
@@ -8,7 +9,7 @@ export async function GET() {
 		return json({
 			styles,
 			total: styles.length
-		});
+		}, { headers: LONG_CACHE_HEADERS });
 	} catch (error) {
 		console.error('Error loading styles:', error);
 		return json(

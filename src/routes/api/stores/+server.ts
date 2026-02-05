@@ -1,5 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { fetchStores } from '$lib/api/products';
+import { LONG_CACHE_HEADERS } from '$lib/server/cache';
 
 export async function GET() {
 	try {
@@ -13,7 +14,7 @@ export async function GET() {
 				lng: store.gps_long
 			})),
 			total: response.count
-		});
+		}, { headers: LONG_CACHE_HEADERS });
 	} catch (error) {
 		console.error('Error loading stores:', error);
 		return json(

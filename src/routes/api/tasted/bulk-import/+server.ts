@@ -2,6 +2,7 @@ import type { RequestHandler } from './$types';
 import { API_URL } from '$env/static/private';
 import { json, error } from '@sveltejs/kit';
 import { getSession } from '$lib/server/auth';
+import { NO_CACHE_HEADERS } from '$lib/server/cache';
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
 	const session = getSession(cookies);
@@ -39,8 +40,9 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		}
 
 		const data = await response.json();
-		return json(data, { status: response.status });
+		return json(data, { status: response.status, headers: NO_CACHE_HEADERS });
 	} catch (err: any) {
+		console.error('Bulk tasted import failed:', err);
 		if (err.status) throw err;
 		throw error(500, 'Internal server error');
 	}

@@ -2,11 +2,10 @@ import type { PageServerLoad } from './$types';
 import { API_URL } from '$env/static/private';
 import type { Release, ReleaseListResponse, ApiRelease } from '$lib/types';
 import { formatDate, getAssortmentDisplayName } from '$lib/utils/helpers';
+import { LONG_CACHE_HEADERS } from '$lib/server/cache';
 
 export const load: PageServerLoad = async ({ fetch, url, setHeaders }) => {
-	setHeaders({
-		'Cache-Control': 'public, max-age=3600, s-maxage=86400'
-	});
+	setHeaders(LONG_CACHE_HEADERS);
 
 	try {
 		const page = Number(url.searchParams.get('page')) || 1;
