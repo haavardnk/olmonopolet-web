@@ -5,6 +5,7 @@
 	import { authStore } from '$lib/stores/auth.svelte';
 	import { Mail, Lock, CircleAlert, ArrowLeft } from '@lucide/svelte';
 	import Header from '$lib/components/common/Header.svelte';
+	import SocialSignInButtons from '$lib/components/common/SocialSignInButtons.svelte';
 
 	let email = $state('');
 	let password = $state('');
@@ -71,6 +72,10 @@
 				</div>
 			{/if}
 
+			<SocialSignInButtons {redirectTo} disabled={submitting} />
+
+			<div class="divider">eller</div>
+
 			<form onsubmit={handleSubmit} class="space-y-5">
 				<label class="form-control w-full">
 					<div class="label">
@@ -122,9 +127,7 @@
 				</button>
 			</form>
 
-			<div class="divider">eller</div>
-
-			<p class="text-center text-sm">
+			<p class="text-center text-sm mt-4">
 				Har du ikke en konto?
 				<a href="/signup" class="link link-primary">Registrer deg</a>
 			</p>

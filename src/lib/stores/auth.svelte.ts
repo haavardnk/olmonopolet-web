@@ -6,6 +6,11 @@ import {
 	sendEmailVerification,
 	signOut as firebaseSignOut,
 	onAuthStateChanged,
+	GoogleAuthProvider,
+	OAuthProvider,
+	signInWithPopup,
+	reauthenticateWithPopup,
+	deleteUser,
 	type User
 } from 'firebase/auth';
 import { auth } from '$lib/firebase/client';
@@ -16,6 +21,9 @@ export interface AuthUser {
 	uid: string;
 	email: string | null;
 	emailVerified: boolean;
+	displayName: string | null;
+	photoURL: string | null;
+	providers: string[];
 }
 
 const AUTH_HINT_KEY = 'auth_hint';
@@ -51,10 +59,13 @@ function createAuthStore() {
 		setTimeout(() => {
 			onAuthStateChanged(auth, async (firebaseUser: User | null) => {
 				if (firebaseUser) {
-					const newUser = {
+					const newUser: AuthUser = {
 						uid: firebaseUser.uid,
 						email: firebaseUser.email,
-						emailVerified: firebaseUser.emailVerified
+						emailVerified: firebaseUser.emailVerified,
+						displayName: firebaseUser.displayName,
+						photoURL: firebaseUser.photoURL,
+						providers: firebaseUser.providerData.map((p) => p.providerId)
 					};
 					user = newUser;
 					setAuthHint(newUser);
@@ -141,7 +152,10 @@ function createAuthStore() {
 			user = {
 				uid: auth.currentUser.uid,
 				email: auth.currentUser.email,
-				emailVerified: auth.currentUser.emailVerified
+				emailVerified: auth.currentUser.emailVerified,
+				displayName: auth.currentUser.displayName,
+				photoURL: auth.currentUser.photoURL,
+				providers: auth.currentUser.providerData.map((p) => p.providerId)
 			};
 		} catch (e) {
 			console.error('Failed to reload user:', e);
@@ -193,6 +207,65 @@ function createAuthStore() {
 		error = null;
 	}
 
+	async function signInWithGoogle() {
+		if (!auth) throw new Error('Auth not initialized');
+
+		loading = true;
+		error = null;
+
+		try {
+			const provider = new GoogleAuthProvider();
+			await signInWithPopup(auth, provider);
+		} catch (e) {
+			error = getErrorMessage(e);
+			throw e;
+		} finally {
+			loading = false;
+		}
+	}
+
+	async function signInWithApple() {
+		if (!auth) throw new Error('Auth not initialized');
+
+		loading = true;
+		error = null;
+
+		try {
+			const provider = new OAuthProvider('apple.com');
+			provider.addScope('email');
+			provider.addScope('name');
+			await signInWithPopup(auth, provider);
+		} catch (e) {
+			error = getErrorMessage(e);
+			throw e;
+		} finally {
+			loading = false;
+		}
+	}
+
+	async function reauthWithGoogle() {
+		if (!auth?.currentUser) throw new Error('No user signed in');
+		const provider = new GoogleAuthProvider();
+		await reauthenticateWithPopup(auth.currentUser, provider);
+	}
+
+	async function reauthWithApple() {
+		if (!auth?.currentUser) throw new Error('No user signed in');
+		const provider = new OAuthProvider('apple.com');
+		await reauthenticateWithPopup(auth.currentUser, provider);
+	}
+
+	async function deleteAccount() {
+		if (!auth?.currentUser) throw new Error('No user signed in');
+
+		await deleteUser(auth.currentUser);
+		await fetch('/api/auth/logout', { method: 'POST' });
+		user = null;
+		setAuthHint(null);
+		listsStore.clear();
+		tastedStore.clear();
+	}
+
 	return {
 		get user() {
 			return user;
@@ -206,14 +279,34 @@ function createAuthStore() {
 		get isAuthenticated() {
 			return !!user;
 		},
+		get displayName(): string {
+			return user?.displayName || user?.email?.split('@')[0] || '';
+		},
+		get photoURL(): string | null {
+			return user?.photoURL ?? null;
+		},
+		get hasGoogleProvider(): boolean {
+			return user?.providers.includes('google.com') ?? false;
+		},
+		get hasAppleProvider(): boolean {
+			return user?.providers.includes('apple.com') ?? false;
+		},
+		get hasEmailProvider(): boolean {
+			return user?.providers.includes('password') ?? false;
+		},
 		signIn,
 		signUp,
+		signInWithGoogle,
+		signInWithApple,
 		resetPassword,
 		resendVerificationEmail,
 		reloadUser,
 		signOut,
 		getIdToken,
 		clearError,
+		deleteAccount,
+		reauthWithGoogle,
+		reauthWithApple,
 		setUser(newUser: AuthUser | null) {
 			user = newUser;
 			loading = false;
@@ -241,6 +334,19 @@ function getErrorMessage(e: unknown): string {
 				return 'Passordet må være minst 6 tegn';
 			case 'auth/too-many-requests':
 				return 'For mange forsøk. Prøv igjen senere';
+			case 'auth/popup-closed-by-user':
+			case 'auth/cancelled-popup-request':
+				return 'Innlogging ble avbrutt';
+			case 'auth/account-exists-with-different-credential':
+				return 'En konto eksisterer allerede med en annen innloggingsmetode';
+			case 'auth/popup-blocked':
+				return 'Popup ble blokkert av nettleseren. Tillat popups og prøv igjen';
+			case 'auth/unauthorized-domain':
+				return 'Dette domenet er ikke autorisert for innlogging';
+			case 'auth/operation-not-allowed':
+				return 'Denne innloggingsmetoden er ikke aktivert';
+			case 'auth/internal-error':
+				return 'En intern feil oppstod. Prøv igjen';
 			default:
 				return 'En feil oppstod. Prøv igjen';
 		}
