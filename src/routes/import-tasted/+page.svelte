@@ -5,6 +5,10 @@
 	import { Upload, CircleCheck, CircleAlert, FileText, Info, ArrowLeft } from '@lucide/svelte';
 	import Header from '$lib/components/common/Header.svelte';
 
+	let { data } = $props();
+
+	const isAuthenticated = $derived(authStore.isAuthenticated || !!data.user);
+
 	let files = $state<FileList | null>(null);
 	let isUploading = $state(false);
 	let error = $state<string | null>(null);
@@ -88,7 +92,7 @@
 	{/snippet}
 </Header>
 
-{#if !authStore.isAuthenticated}
+{#if !isAuthenticated}
 	<div class="container mx-auto px-4 py-8 max-w-2xl">
 		<div class="alert alert-warning">
 			<CircleAlert size={20} />
