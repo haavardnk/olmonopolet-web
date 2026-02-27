@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { authStore } from '$lib/stores/auth.svelte';
-	import { LogOut, LogIn, User, Upload, List, UserCircle } from '@lucide/svelte';
+	import { LogOut, LogIn, User, List, UserCircle } from '@lucide/svelte';
 
 	async function handleLogout() {
 		await authStore.signOut();
@@ -44,12 +44,6 @@
 				<a href="/lists">
 					<List size={16} />
 					Mine lister
-				</a>
-			</li>
-			<li>
-				<a href="/import-tasted">
-					<Upload size={16} />
-					Importer fra Untappd
 				</a>
 			</li>
 			<li>

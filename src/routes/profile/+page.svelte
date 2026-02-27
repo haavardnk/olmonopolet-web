@@ -86,8 +86,8 @@
 	<title>Profil | Ølmonopolet</title>
 </svelte:head>
 
-<Header>
-	{#snippet left()}
+<Header showUserMenu={true}>
+	{#snippet right()}
 		{#if canGoBack}
 			<button onclick={goBack} class="btn btn-ghost btn-sm" aria-label="Gå tilbake">
 				<ArrowLeft size={16} />
@@ -195,7 +195,7 @@
 				<div class="divider text-xs uppercase tracking-wider text-base-content/50">Handlinger</div>
 
 				<div class="w-full space-y-2">
-					<a href="/import-tasted/" class="btn btn-ghost btn-block justify-start gap-3">
+<a href="/profile/import-tasted/" class="btn btn-ghost btn-block justify-start gap-3">
 						<Upload size={18} />
 						Importer Untappd-innsjekkinger
 					</a>

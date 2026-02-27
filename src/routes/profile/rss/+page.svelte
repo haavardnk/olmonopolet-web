@@ -157,15 +157,15 @@
 	<title>Untappd RSS | Ølmonopolet</title>
 </svelte:head>
 
-<Header>
-	{#snippet left()}
+<Header showUserMenu={true}>
+	{#snippet right()}
 		{#if canGoBack}
 			<button onclick={() => history.back()} class="btn btn-ghost btn-sm" aria-label="Gå tilbake">
 				<ArrowLeft size={16} />
 				Tilbake
 			</button>
 		{:else}
-			<a href="/profile" class="btn btn-ghost btn-sm">
+			<a href="/profile/" class="btn btn-ghost btn-sm">
 				<ArrowLeft size={16} />
 				Profil
 			</a>

@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { goto, invalidateAll } from '$app/navigation';
+	import { goto, afterNavigate, invalidateAll } from '$app/navigation';
+	import { browser } from '$app/environment';
 	import { authStore } from '$lib/stores/auth.svelte';
 	import { tastedStore } from '$lib/stores/tasted.svelte';
 	import { Upload, CircleCheck, CircleAlert, FileText, Info, ArrowLeft } from '@lucide/svelte';
@@ -9,6 +10,7 @@
 
 	const isAuthenticated = $derived(authStore.isAuthenticated || !!data.user);
 
+	let canGoBack = $state(false);
 	let files = $state<FileList | null>(null);
 	let isUploading = $state(false);
 	let error = $state<string | null>(null);
@@ -20,6 +22,16 @@
 
 	const selectedFile = $derived(files?.[0]);
 	const fileSize = $derived(selectedFile ? (selectedFile.size / 1024).toFixed(2) + ' KB' : null);
+
+	afterNavigate(({ from }) => {
+		if (browser && from) canGoBack = true;
+	});
+
+	$effect(() => {
+		if (browser && !authStore.loading && !isAuthenticated) {
+			goto('/login?redirect=/profile/import-tasted/');
+		}
+	});
 
 	async function handleSubmit(e: Event) {
 		e.preventDefault();
@@ -65,8 +77,8 @@
 			await invalidateAll();
 
 			files = null;
-		} catch (err: any) {
-			error = err.message || 'En feil oppstod under import';
+		} catch (err: unknown) {
+			error = err instanceof Error ? err.message : 'En feil oppstod under import';
 		} finally {
 			isUploading = false;
 		}
@@ -79,7 +91,11 @@
 	}
 
 	function goBack() {
-		goto('/products');
+		if (canGoBack) {
+			history.back();
+		} else {
+			goto('/profile/');
+		}
 	}
 </script>
 
