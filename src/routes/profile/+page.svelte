@@ -2,7 +2,7 @@
 	import { goto, afterNavigate } from '$app/navigation';
 	import { browser } from '$app/environment';
 	import { authStore } from '$lib/stores/auth.svelte';
-	import { ArrowLeft, Mail, Upload, LogOut, Trash2, CircleAlert } from '@lucide/svelte';
+	import { ArrowLeft, Mail, Upload, Rss, LogOut, Trash2, CircleAlert } from '@lucide/svelte';
 	import Header from '$lib/components/common/Header.svelte';
 
 	let canGoBack = $state(false);
@@ -198,6 +198,11 @@
 					<a href="/import-tasted/" class="btn btn-ghost btn-block justify-start gap-3">
 						<Upload size={18} />
 						Importer Untappd-innsjekkinger
+					</a>
+
+					<a href="/profile/rss/" class="btn btn-ghost btn-block justify-start gap-3">
+						<Rss size={18} />
+						Untappd RSS-synkronisering
 					</a>
 
 					<button
