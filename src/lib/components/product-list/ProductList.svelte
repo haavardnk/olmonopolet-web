@@ -206,7 +206,10 @@
 		bind:checked={showMobileFilters}
 	/>
 	<div class="drawer-content"></div>
-	<div class="drawer-side z-40">
+	<div
+		class="drawer-side z-40"
+		style="top: var(--header-offset, 64px); height: calc(100dvh - var(--header-offset, 64px));"
+	>
 		<label for="filter-drawer" class="drawer-overlay"></label>
 		<div class="bg-base-100 w-80 min-h-full flex flex-col">
 			<div
