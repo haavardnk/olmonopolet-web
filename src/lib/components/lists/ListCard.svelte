@@ -66,7 +66,7 @@
 							<Wine size={14} />
 							<span>{getBottleCountLabel(list.stats.totalBottles)}</span>
 							{#if list.stats.oldestYear && list.stats.newestYear}
-								<span>({list.stats.oldestYear}-{list.stats.newestYear})</span>
+								<span class="hidden sm:inline">({list.stats.oldestYear}-{list.stats.newestYear})</span>
 							{/if}
 						</div>
 					{/if}
