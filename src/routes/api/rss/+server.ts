@@ -29,8 +29,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 			body: JSON.stringify(body)
 		});
 		if (!res.ok) {
-			const text = await res.text();
-			throw error(res.status, text);
+			const data = await res.json().catch(() => null);
+			return json(data ?? { error: 'Unknown error' }, { status: res.status, headers: NO_CACHE_HEADERS });
 		}
 		return json(await res.json(), { status: 201, headers: NO_CACHE_HEADERS });
 	} catch (err: any) {
@@ -48,7 +48,10 @@ export const PUT: RequestHandler = async ({ request, cookies }) => {
 			headers: { 'Content-Type': 'application/json', Cookie: `session=${session}` },
 			body: JSON.stringify(body)
 		});
-		if (!res.ok) throw error(res.status, await res.text());
+		if (!res.ok) {
+			const data = await res.json().catch(() => null);
+			return json(data ?? { error: 'Unknown error' }, { status: res.status, headers: NO_CACHE_HEADERS });
+		}
 		return json(await res.json(), { headers: NO_CACHE_HEADERS });
 	} catch (err: any) {
 		if (err.status) throw err;

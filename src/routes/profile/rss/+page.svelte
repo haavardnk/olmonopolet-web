@@ -25,6 +25,7 @@
 	let deleting = $state(false);
 	let error = $state<string | null>(null);
 	let success = $state<string | null>(null);
+	let privateProfile = $state(false);
 	let feed = $state<RssFeed | null>(null);
 	let feedUrl = $state('');
 	let showDeleteModal = $state(false);
@@ -69,6 +70,7 @@
 		saving = true;
 		error = null;
 		success = null;
+		privateProfile = false;
 
 		try {
 			if (isConfigured) {
@@ -79,7 +81,12 @@
 			feedUrl = feed.feed_url;
 			success = isConfigured ? 'RSS-feed oppdatert.' : 'RSS-feed lagt til.';
 		} catch (err: any) {
-			error = err.message || 'Kunne ikke lagre RSS-feed.';
+			const msg: string = err.message || '';
+			if (msg.includes('profile is private')) {
+				privateProfile = true;
+			} else {
+				error = msg || 'Kunne ikke lagre RSS-feed.';
+			}
 		} finally {
 			saving = false;
 		}
@@ -196,7 +203,18 @@
 				</h2>
 				<div class="space-y-3 text-sm">
 					<div>
-						<h3 class="font-semibold mb-1">Steg 1: Finn din RSS-URL</h3>
+						<h3 class="font-semibold mb-1">Steg 1: Sjekk personverninnstillinger</h3>
+						<p class="text-xs opacity-70 mb-1">
+							Kontoen din på Untappd kan ikke være satt til privat. Sjekk under <a
+								href="https://untappd.com/account/privacy"
+								target="_blank"
+								rel="noopener"
+								class="link">personverninnstillinger</a
+							> at profilen din er offentlig.
+						</p>
+					</div>
+					<div>
+						<h3 class="font-semibold mb-1">Steg 2: Finn din RSS-URL</h3>
 						<p class="text-xs opacity-70 mb-1">
 							Gå til <a
 								href="https://untappd.com/account/settings"
@@ -207,7 +225,7 @@
 						</p>
 					</div>
 					<div>
-						<h3 class="font-semibold mb-1">Steg 2: Lim inn URL-en</h3>
+						<h3 class="font-semibold mb-1">Steg 3: Lim inn URL-en</h3>
 						<p class="text-xs opacity-70">
 							Lim inn URL-en i feltet under. Innsjekkinger synkroniseres automatisk.
 						</p>
@@ -215,6 +233,22 @@
 				</div>
 			</div>
 		</div>
+
+		{#if privateProfile}
+			<div class="alert alert-warning mb-4">
+				<CircleAlert size={20} />
+				<span>
+					Untappd-profilen din er privat. Endre til offentlig under
+					<a
+						href="https://untappd.com/account/privacy"
+						target="_blank"
+						rel="noopener"
+						class="link"
+					>personverninnstillinger</a
+					> for å bruke RSS-synkronisering.
+				</span>
+			</div>
+		{/if}
 
 		{#if error}
 			<div class="alert alert-error mb-4">
