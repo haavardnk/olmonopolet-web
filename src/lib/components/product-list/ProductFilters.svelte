@@ -104,14 +104,8 @@
 		onFilterChange();
 	}
 
-	function toggleTasted() {
-		if (filters.user_tasted === 'true') {
-			filters.user_tasted = 'false';
-		} else if (filters.user_tasted === 'false') {
-			filters.user_tasted = '';
-		} else {
-			filters.user_tasted = 'true';
-		}
+	function setTasted(value: string) {
+		filters.user_tasted = value;
 		onFilterChange();
 	}
 </script>
@@ -132,22 +126,32 @@
 
 	{#if authStore.isAuthenticated}
 		<div class="px-2 py-1.5">
-			<button
-				onclick={toggleTasted}
-				class="btn btn-sm w-full {filters.user_tasted === 'true'
-					? 'btn-success'
-					: filters.user_tasted === 'false'
+			<div class="flex h-8 rounded-lg border border-base-content/20 overflow-hidden">
+				<button
+					onclick={() => setTasted('')}
+					class="btn btn-xs flex-1 rounded-none border-none h-full {filters.user_tasted === ''
+						? 'btn-neutral'
+						: 'btn-ghost'}"
+				>
+					Alle
+				</button>
+				<button
+					onclick={() => setTasted('true')}
+					class="btn btn-xs flex-1 rounded-none border-none h-full {filters.user_tasted === 'true'
+						? 'btn-success'
+						: 'btn-ghost'}"
+				>
+					Smakte
+				</button>
+				<button
+					onclick={() => setTasted('false')}
+					class="btn btn-xs flex-1 rounded-none border-none h-full whitespace-nowrap {filters.user_tasted === 'false'
 						? 'btn-error'
-						: 'btn-outline'}"
-			>
-				{#if filters.user_tasted === 'true'}
-					Viser kun smakte
-				{:else if filters.user_tasted === 'false'}
-					Viser kun ikke smakte
-				{:else}
-					Vis kun smakte
-				{/if}
-			</button>
+						: 'btn-ghost'}"
+				>
+					Ikke smakte
+				</button>
+			</div>
 		</div>
 	{/if}
 
