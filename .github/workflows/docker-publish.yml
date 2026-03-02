@@ -53,3 +53,5 @@ jobs:
             FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}
             FIREBASE_CLIENT_EMAIL=${{ secrets.FIREBASE_CLIENT_EMAIL }}
             FIREBASE_PRIVATE_KEY=${{ secrets.FIREBASE_PRIVATE_KEY }}
+            PATREON_ACCESS_TOKEN=${{ secrets.PATREON_ACCESS_TOKEN }}
+            PATREON_CAMPAIGN_ID=${{ secrets.PATREON_CAMPAIGN_ID }}
