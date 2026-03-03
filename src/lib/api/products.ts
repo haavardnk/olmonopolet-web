@@ -123,7 +123,7 @@ export async function fetchStores(): Promise<StoreListResponse> {
 }
 
 export async function fetchReleases(): Promise<ReleaseListResponse> {
-	const fields = ['name', 'release_date', 'beer_count', 'product_selections'].join(',');
+	const fields = ['name', 'release_date', 'product_selections'].join(',');
 
 	const params = new URLSearchParams({
 		fields

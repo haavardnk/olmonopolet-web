@@ -64,7 +64,6 @@ export type Release = {
 	name: string;
 	releaseDate: string;
 	formattedDate: string;
-	beerCount: number;
 	assortments: string[];
 	isChristmasRelease: boolean;
 	products?: Product[];
@@ -118,7 +117,6 @@ export interface StoreListResponse {
 export interface ApiRelease {
 	name: string;
 	release_date: string;
-	beer_count: number;
 	product_selections: string[];
 	is_christmas_release: boolean;
 	product_stats: {

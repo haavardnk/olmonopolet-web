@@ -19,7 +19,7 @@ export const load: PageServerLoad = async ({ params, fetch, setHeaders, cookies 
 
 	const name = unslugify(params.id);
 	try {
-		const releaseInfoUrl = `${API_URL}/release/${encodeURIComponent(name)}/?fields=name,release_date,beer_count,product_selections,product_stats,is_christmas_release`;
+		const releaseInfoUrl = `${API_URL}/release/${encodeURIComponent(name)}/?fields=name,release_date,product_selections,product_stats,is_christmas_release`;
 		const releaseInfoRes = await fetch(releaseInfoUrl);
 		if (!releaseInfoRes.ok) {
 			if (releaseInfoRes.status === 404) {
@@ -42,7 +42,6 @@ export const load: PageServerLoad = async ({ params, fetch, setHeaders, cookies 
 			name: releaseInfo.name,
 			releaseDate: releaseInfo.release_date,
 			formattedDate: formatDate(releaseInfo.release_date),
-			beerCount: releaseInfo.beer_count,
 			assortments: (releaseInfo.product_selections || [])
 				.map((ps: string) => getAssortmentDisplayName(ps))
 				.filter((name: string | null): name is string => name !== null),

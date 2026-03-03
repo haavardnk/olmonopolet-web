@@ -10,7 +10,7 @@ export const load: PageServerLoad = async ({ fetch, url, setHeaders }) => {
 	try {
 		const page = Number(url.searchParams.get('page')) || 1;
 		const page_size = 5;
-		const apiUrl = `${API_URL}/release/?fields=name,release_date,beer_count,product_selections,product_stats,is_christmas_release&page_size=${page_size}&page=${page}`;
+		const apiUrl = `${API_URL}/release/?fields=name,release_date,product_selections,product_stats,is_christmas_release&page_size=${page_size}&page=${page}`;
 		const response = await fetch(apiUrl);
 
 		if (!response.ok) {
@@ -24,7 +24,6 @@ export const load: PageServerLoad = async ({ fetch, url, setHeaders }) => {
 				name: release.name,
 				releaseDate: release.release_date,
 				formattedDate: formatDate(release.release_date),
-				beerCount: release.beer_count,
 				assortments: (release.product_selections || [])
 					.map((ps: string) => getAssortmentDisplayName(ps))
 					.filter((name: string | null): name is string => name !== null),
