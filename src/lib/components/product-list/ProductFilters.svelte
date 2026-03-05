@@ -145,7 +145,8 @@
 				</button>
 				<button
 					onclick={() => setTasted('false')}
-					class="btn btn-xs flex-1 rounded-none border-none h-full whitespace-nowrap {filters.user_tasted === 'false'
+					class="btn btn-xs flex-1 rounded-none border-none h-full whitespace-nowrap {filters.user_tasted ===
+					'false'
 						? 'btn-error'
 						: 'btn-ghost'}"
 				>
@@ -189,7 +190,12 @@
 
 	<CategoryFilter bind:selectedCategories bind:isOpen={openSections.category} {onFilterChange} />
 
-	<StyleFilter bind:selectedStyles bind:isOpen={openSections.style} {onFilterChange} />
+	<StyleFilter
+		bind:selectedStyles
+		bind:isOpen={openSections.style}
+		{selectedCategories}
+		{onFilterChange}
+	/>
 
 	<CountryFilter bind:selectedCountries bind:isOpen={openSections.country} {onFilterChange} />
 

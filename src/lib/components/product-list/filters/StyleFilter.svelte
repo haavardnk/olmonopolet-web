@@ -6,10 +6,12 @@
 	let {
 		selectedStyles = $bindable(),
 		isOpen = $bindable(false),
+		selectedCategories = [],
 		onFilterChange
 	}: {
 		selectedStyles: string[];
 		isOpen: boolean;
+		selectedCategories: string[];
 		onFilterChange: () => void;
 	} = $props();
 
@@ -17,11 +19,42 @@
 	let stylesLoading = $state(true);
 	let styleSearchQuery = $state('');
 
+	function filterByCategory(allStyles: string[], categories: string[]): string[] {
+		if (categories.length === 0) return allStyles;
+
+		const result: string[] = [];
+		for (const cat of categories) {
+			if (cat === 'sider') {
+				result.push(...allStyles.filter((s) => s.startsWith('Cider')));
+			} else if (cat === 'mjød') {
+				result.push(...allStyles.filter((s) => s.startsWith('Mead')));
+			} else if (cat === 'øl') {
+				result.push(...allStyles.filter((s) => !s.startsWith('Cider') && !s.startsWith('Mead')));
+			}
+		}
+		return [...new Set(result)].sort((a, b) => a.localeCompare(b));
+	}
+
+	const categoryFilteredStyles = $derived(filterByCategory(styles, selectedCategories));
+
 	const filteredStyles = $derived(
-		styles.filter((style) => style.toLowerCase().includes(styleSearchQuery.toLowerCase()))
+		categoryFilteredStyles.filter((style) =>
+			style.toLowerCase().includes(styleSearchQuery.toLowerCase())
+		)
 	);
 
 	const styleItems = $derived(filteredStyles.map((style) => ({ value: style, label: style })));
+
+	$effect(() => {
+		if (selectedCategories.length > 0 && selectedStyles.length > 0) {
+			const valid = new Set(categoryFilteredStyles);
+			const cleaned = selectedStyles.filter((s) => valid.has(s));
+			if (cleaned.length !== selectedStyles.length) {
+				selectedStyles = cleaned;
+				onFilterChange();
+			}
+		}
+	});
 
 	onMount(async () => {
 		try {
