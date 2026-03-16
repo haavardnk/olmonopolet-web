@@ -125,7 +125,7 @@
 					{/if}
 				</div>
 
-				<div class="mt-auto">
+				<div class="flex items-center">
 					<StarRating rating={product.rating} size={20} showValue={true} />
 				</div>
 			</div>
