@@ -20,7 +20,10 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		const sessionCookie = await createSessionCookie(idToken, expiresIn);
 
 		if (!sessionCookie) {
-			return json({ error: 'Failed to create session' }, { status: 500, headers: NO_CACHE_HEADERS });
+			return json(
+				{ error: 'Failed to create session' },
+				{ status: 500, headers: NO_CACHE_HEADERS }
+			);
 		}
 
 		cookies.set('session', sessionCookie, {
@@ -31,13 +34,16 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 			maxAge: 60 * 60 * 24 * 5
 		});
 
-		return json({
-			success: true,
-			user: {
-				uid: decodedToken.uid,
-				email: decodedToken.email
-			}
-		}, { headers: NO_CACHE_HEADERS });
+		return json(
+			{
+				success: true,
+				user: {
+					uid: decodedToken.uid,
+					email: decodedToken.email
+				}
+			},
+			{ headers: NO_CACHE_HEADERS }
+		);
 	} catch {
 		return json({ error: 'Failed to create session' }, { status: 500, headers: NO_CACHE_HEADERS });
 	}

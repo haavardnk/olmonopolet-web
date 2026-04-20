@@ -2,41 +2,43 @@
 @import 'tailwindcss';
 @import 'flag-icons/css/flag-icons.min.css';
 @plugin "daisyui" {
-	themes: caramellatte, ølmonopolet-dark --default;
+	themes:
+		caramellatte,
+		ølmonopolet-dark --default;
 }
 @plugin "daisyui/theme" {
-	name: "ølmonopolet-dark";
+	name: 'ølmonopolet-dark';
 	default: true;
 	prefersdark: false;
 	color-scheme: dark;
 
-	--color-base-100: #201D1A;
-	--color-base-200: #1B1816;
+	--color-base-100: #201d1a;
+	--color-base-200: #1b1816;
 	--color-base-300: #121010;
-	--color-base-content: #EAE1D9;
+	--color-base-content: #eae1d9;
 
-	--color-primary: #FFB951;
-	--color-primary-content: #462A00;
+	--color-primary: #ffb951;
+	--color-primary-content: #462a00;
 
-	--color-secondary: #DDB892;
-	--color-secondary-content: #3E2A14;
+	--color-secondary: #ddb892;
+	--color-secondary-content: #3e2a14;
 
-	--color-accent: #E0A870;
-	--color-accent-content: #422C08;
+	--color-accent: #e0a870;
+	--color-accent-content: #422c08;
 
-	--color-neutral: #36322F;
-	--color-neutral-content: #D4C4B5;
+	--color-neutral: #36322f;
+	--color-neutral-content: #d4c4b5;
 
-	--color-info: #7DD3FC;
-	--color-info-content: #0C4A6E;
+	--color-info: #7dd3fc;
+	--color-info-content: #0c4a6e;
 
-	--color-success: #86EFAC;
-	--color-success-content: #14532D;
+	--color-success: #86efac;
+	--color-success-content: #14532d;
 
-	--color-warning: #FCD34D;
-	--color-warning-content: #713F12;
+	--color-warning: #fcd34d;
+	--color-warning-content: #713f12;
 
-	--color-error: #FFB4AB;
+	--color-error: #ffb4ab;
 	--color-error-content: #690005;
 
 	--radius-selector: 2rem;

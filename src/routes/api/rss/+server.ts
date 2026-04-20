@@ -30,7 +30,10 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		});
 		if (!res.ok) {
 			const data = await res.json().catch(() => null);
-			return json(data ?? { error: 'Unknown error' }, { status: res.status, headers: NO_CACHE_HEADERS });
+			return json(data ?? { error: 'Unknown error' }, {
+				status: res.status,
+				headers: NO_CACHE_HEADERS
+			});
 		}
 		return json(await res.json(), { status: 201, headers: NO_CACHE_HEADERS });
 	} catch (err: any) {
@@ -50,7 +53,10 @@ export const PUT: RequestHandler = async ({ request, cookies }) => {
 		});
 		if (!res.ok) {
 			const data = await res.json().catch(() => null);
-			return json(data ?? { error: 'Unknown error' }, { status: res.status, headers: NO_CACHE_HEADERS });
+			return json(data ?? { error: 'Unknown error' }, {
+				status: res.status,
+				headers: NO_CACHE_HEADERS
+			});
 		}
 		return json(await res.json(), { headers: NO_CACHE_HEADERS });
 	} catch (err: any) {

@@ -239,12 +239,8 @@
 				<CircleAlert size={20} />
 				<span>
 					Untappd-profilen din er privat. Endre til offentlig under
-					<a
-						href="https://untappd.com/account/privacy"
-						target="_blank"
-						rel="noopener"
-						class="link"
-					>personverninnstillinger</a
+					<a href="https://untappd.com/account/privacy" target="_blank" rel="noopener" class="link"
+						>personverninnstillinger</a
 					> for å bruke RSS-synkronisering.
 				</span>
 			</div>

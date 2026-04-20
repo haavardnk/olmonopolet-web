@@ -100,7 +100,8 @@
 				</a>
 			</nav>
 			<p class="text-xs text-base-content/40">
-				&copy; {new Date().getFullYear()} {PUBLIC_SITE_TITLE}
+				&copy; {new Date().getFullYear()}
+				{PUBLIC_SITE_TITLE}
 			</p>
 		</div>
 	</div>
