@@ -27,7 +27,7 @@
 	const title = $derived(isEditing ? 'Rediger liste' : 'Ny liste');
 	const submitLabel = $derived(isEditing ? 'Lagre' : 'Opprett');
 	const showEventDate = $derived(listType === 'event');
-	const listTypes = getListTypesArray();
+	const listTypes = getListTypesArray().filter((t) => t.value !== 'untappd');
 
 	$effect(() => {
 		if (open) {

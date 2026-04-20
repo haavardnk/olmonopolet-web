@@ -169,23 +169,26 @@
 			{:else}
 				{#each lists as list (list.id)}
 					{@const inList = isProductInList(list, productId)}
-					<li>
-						<button
-							onclick={(e) => {
-								e.stopPropagation();
-								handleToggleInList(list);
-							}}
-							disabled={loadingListId === list.id}
-							class="flex justify-between"
-						>
-							<span class="truncate">{list.name}</span>
-							{#if loadingListId === list.id}
-								<Loader2 size={16} class="animate-spin" />
-							{:else if inList}
-								<Check size={16} class="text-success" />
-							{/if}
-						</button>
-					</li>
+					{@const isUntappd = list.listType === 'untappd'}
+					{#if !isUntappd || inList}
+						<li>
+							<button
+								onclick={(e) => {
+									e.stopPropagation();
+									handleToggleInList(list);
+								}}
+								disabled={isUntappd || loadingListId === list.id}
+								class="flex justify-between"
+							>
+								<span class="truncate">{list.name}</span>
+								{#if loadingListId === list.id}
+									<Loader2 size={16} class="animate-spin" />
+								{:else if inList}
+									<Check size={16} class="text-success" />
+								{/if}
+							</button>
+						</li>
+					{/if}
 				{/each}
 				<li class="border-t border-base-300 mt-1 pt-1">
 					<a href="/lists" class="text-sm text-base-content/70">Administrer lister</a>

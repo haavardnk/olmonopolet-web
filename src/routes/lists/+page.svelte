@@ -10,7 +10,7 @@
 	import ShareModal from '$lib/components/lists/ShareModal.svelte';
 	import ConfirmModal from '$lib/components/common/ConfirmModal.svelte';
 	import EmptyListsState from '$lib/components/lists/EmptyListsState.svelte';
-	import { Plus, ArrowLeft, CircleAlert, EyeOff } from '@lucide/svelte';
+	import { Plus, ArrowLeft, CircleAlert, EyeOff, ExternalLink } from '@lucide/svelte';
 	import { flip } from 'svelte/animate';
 	import { dragHandleZone, type DndEvent } from 'svelte-dnd-action';
 	import { fetchAndSetLists, transformApiList } from '$lib/utils/lists';
@@ -165,12 +165,18 @@
 	<div class="container mx-auto px-4 py-8 max-w-4xl">
 		<div class="flex items-center justify-between mb-6">
 			<h1 class="text-3xl font-bold">Mine lister</h1>
-			{#if listsStore.sortedLists.length > 0}
-				<button class="btn btn-primary btn-sm" onclick={openCreateModal}>
-					<Plus size={18} />
-					Ny liste
-				</button>
-			{/if}
+			<div class="flex items-center gap-2">
+				<a href="/lists/import" class="btn btn-ghost btn-sm">
+					<ExternalLink size={18} />
+					Importer fra Untappd
+				</a>
+				{#if listsStore.sortedLists.length > 0}
+					<button class="btn btn-primary btn-sm" onclick={openCreateModal}>
+						<Plus size={18} />
+						Ny liste
+					</button>
+				{/if}
+			</div>
 		</div>
 
 		{#if error}

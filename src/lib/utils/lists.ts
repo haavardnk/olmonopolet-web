@@ -39,14 +39,19 @@ export function transformApiList(data: ApiUserList | Record<string, unknown>): U
 		sortOrder: (apiData.sort_order as number) ?? 0,
 		shareToken: apiData.share_token as string,
 		createdAt: apiData.created_at as string,
-		updatedAt: apiData.updated_at as string
+		updatedAt: apiData.updated_at as string,
+		untappdListId: apiData.untappd_list_id,
+		untappdUsername: apiData.untappd_username,
+		isReadOnly: apiData.is_read_only,
+		lastSynced: apiData.last_synced,
+		syncStatus: apiData.sync_status ?? null
 	};
 }
 
 export async function fetchAndSetLists(forceRefresh = false): Promise<void> {
 	if (!forceRefresh && (listsStore.isLoaded || listsStore.isLoading)) return;
 	if (browser && !auth?.currentUser) return;
-	
+
 	listsStore.setLoading(true);
 	try {
 		const response = await fetch('/api/lists');
@@ -85,18 +90,7 @@ export async function addProductToList(listId: string, productId: string): Promi
 
 export async function removeProductFromList(listId: string, productId: string): Promise<boolean> {
 	try {
-		const listResponse = await fetch(`/api/lists/${listId}`);
-		if (!listResponse.ok) return false;
-
-		const listData = await listResponse.json();
-		const items = listData.items || [];
-		const item = items.find(
-			(i: { product_id: number | string }) => String(i.product_id) === String(productId)
-		);
-
-		if (!item) return false;
-
-		const response = await fetch(`/api/lists/${listId}/items/${item.id}`, {
+		const response = await fetch(`/api/lists/${listId}/products/${productId}`, {
 			method: 'DELETE'
 		});
 		if (response.ok || response.status === 204) {

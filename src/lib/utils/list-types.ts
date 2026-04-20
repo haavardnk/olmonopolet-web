@@ -1,4 +1,4 @@
-import { List, ShoppingCart, Archive, Calendar } from '@lucide/svelte';
+import { List, ShoppingCart, Archive, Calendar, CloudDownload } from '@lucide/svelte';
 import type { ListType } from '$lib/types';
 import type { Component } from 'svelte';
 
@@ -12,7 +12,8 @@ export const LIST_TYPE_CONFIG: Record<ListType, ListTypeConfig> = {
 	standard: { icon: List, label: 'Standard', description: 'En enkel liste' },
 	shopping: { icon: ShoppingCart, label: 'Handleliste', description: 'Med antall og priser' },
 	cellar: { icon: Archive, label: 'Kjeller', description: 'Lageroversikt med årgang' },
-	event: { icon: Calendar, label: 'Arrangement', description: 'Meny uten priser' }
+	event: { icon: Calendar, label: 'Arrangement', description: 'Meny uten priser' },
+	untappd: { icon: CloudDownload, label: 'Untappd', description: 'Importert liste fra Untappd' }
 };
 
 export function getListTypeConfig(listType: ListType | null | undefined): ListTypeConfig {

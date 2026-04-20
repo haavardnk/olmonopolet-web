@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { UserList } from '$lib/types';
-	import { GripVertical, Pencil, Trash2, Share2, Beer, Calendar, Wine } from '@lucide/svelte';
+	import { GripVertical, Pencil, Trash2, Share2, Beer, Calendar, Wine, User } from '@lucide/svelte';
 	import { dragHandle } from 'svelte-dnd-action';
 	import ListTypeBadge from './ListTypeBadge.svelte';
 	import { formatShortDate, formatCurrency, getBottleCountLabel } from '$lib/utils/formatters';
@@ -15,6 +15,7 @@
 
 	let { list, isDragging = false, onEdit, onDelete, onShare }: Props = $props();
 
+	const isUntappd = $derived(list.listType === 'untappd');
 	const productCount = $derived(list.itemCount ?? list.productIds.length);
 </script>
 
@@ -50,6 +51,13 @@
 					<p class="text-sm text-base-content/70 line-clamp-2 mt-1">{list.description}</p>
 				{/if}
 
+				{#if isUntappd && list.untappdUsername}
+					<p class="text-sm text-base-content/60 mt-1 flex items-center gap-1">
+						<User size={12} />
+						Fra @{list.untappdUsername}
+					</p>
+				{/if}
+
 				<div class="flex items-center gap-3 text-sm text-base-content/60 flex-wrap mt-2">
 					<div class="flex items-center gap-1">
 						<Beer size={14} />
@@ -66,7 +74,9 @@
 							<Wine size={14} />
 							<span>{getBottleCountLabel(list.stats.totalBottles)}</span>
 							{#if list.stats.oldestYear && list.stats.newestYear}
-								<span class="hidden sm:inline">({list.stats.oldestYear}-{list.stats.newestYear})</span>
+								<span class="hidden sm:inline"
+									>({list.stats.oldestYear}-{list.stats.newestYear})</span
+								>
 							{/if}
 						</div>
 					{/if}
@@ -79,7 +89,7 @@
 			</div>
 
 			<div class="flex items-center gap-1 pointer-events-auto">
-				{#if onShare}
+				{#if onShare && !isUntappd}
 					<button
 						class="btn btn-ghost btn-sm btn-square"
 						onclick={(e) => {
@@ -92,7 +102,7 @@
 						<Share2 size={16} />
 					</button>
 				{/if}
-				{#if onEdit}
+				{#if onEdit && !isUntappd}
 					<button
 						class="btn btn-ghost btn-sm btn-square"
 						onclick={(e) => {

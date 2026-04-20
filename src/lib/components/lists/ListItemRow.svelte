@@ -20,6 +20,7 @@
 	type Props = {
 		item: ListItemWithProduct;
 		listType: ListType;
+		isReadOnly?: boolean;
 		selectedStoreId?: number | null;
 		index?: number;
 		expandedNotes: boolean;
@@ -39,6 +40,7 @@
 	let {
 		item,
 		listType,
+		isReadOnly = false,
 		selectedStoreId = null,
 		index = 0,
 		expandedNotes,
@@ -65,37 +67,41 @@
 
 {#if product}
 	<div class="card bg-base-200 hover:shadow-md transition-shadow relative">
-		<div
-			use:dragHandle
-			aria-label="Dra for å endre rekkefølge"
-			class="sm:hidden absolute top-2 left-2 z-10 flex items-center justify-center w-8 h-8 rounded-lg bg-base-300/80 text-base-content/50 cursor-grab active:cursor-grabbing"
-		>
-			<GripVertical size={18} />
-		</div>
+		{#if !isReadOnly}
+			<div
+				use:dragHandle
+				aria-label="Dra for å endre rekkefølge"
+				class="sm:hidden absolute top-2 left-2 z-10 flex items-center justify-center w-8 h-8 rounded-lg bg-base-300/80 text-base-content/50 cursor-grab active:cursor-grabbing"
+			>
+				<GripVertical size={18} />
+			</div>
 
-		<button
-			class="sm:hidden absolute top-2 right-2 z-10 btn btn-ghost btn-sm btn-square bg-base-300/80 text-error"
-			onclick={(e) => {
-				e.preventDefault();
-				e.stopPropagation();
-				onRemove(item.id, product.id);
-			}}
-			aria-label="Fjern fra liste"
-		>
-			<Trash2 size={16} />
-		</button>
+			<button
+				class="sm:hidden absolute top-2 right-2 z-10 btn btn-ghost btn-sm btn-square bg-base-300/80 text-error"
+				onclick={(e) => {
+					e.preventDefault();
+					e.stopPropagation();
+					onRemove(item.id, product.id);
+				}}
+				aria-label="Fjern fra liste"
+			>
+				<Trash2 size={16} />
+			</button>
+		{/if}
 
 		<div class="card-body p-4 sm:p-3">
 			<div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-3">
-				<div class="hidden sm:block">
-					<div
-						use:dragHandle
-						aria-label="Dra for å endre rekkefølge"
-						class="text-base-content/40 cursor-grab active:cursor-grabbing hover:text-base-content/60 transition-colors"
-					>
-						<GripVertical size={20} />
+				{#if !isReadOnly}
+					<div class="hidden sm:block">
+						<div
+							use:dragHandle
+							aria-label="Dra for å endre rekkefølge"
+							class="text-base-content/40 cursor-grab active:cursor-grabbing hover:text-base-content/60 transition-colors"
+						>
+							<GripVertical size={20} />
+						</div>
 					</div>
-				</div>
+				{/if}
 
 				<a href="/products/{product.id}" class="flex justify-center sm:justify-start shrink-0">
 					<img
@@ -148,7 +154,7 @@
 							<span class="badge badge-sm badge-ghost">{product.assortment}</span>
 						{/if}
 					</div>
-					{#if isCellar}
+					{#if isCellar && !isReadOnly}
 						<div class="flex items-center gap-3 text-xs text-base-content/50 mt-1 flex-wrap">
 							<div class="flex items-center gap-1">
 								<Wine size={10} />
@@ -201,7 +207,7 @@
 					</div>
 				{/if}
 
-				{#if showQuantity}
+				{#if showQuantity && !isReadOnly}
 					<div class="hidden sm:flex items-center gap-1">
 						<button
 							class="btn btn-xs btn-ghost btn-square"
@@ -220,20 +226,22 @@
 					</div>
 				{/if}
 
-				<button
-					class="hidden sm:flex btn btn-ghost btn-sm btn-square text-error opacity-50 hover:opacity-100 transition-opacity"
-					onclick={(e) => {
-						e.preventDefault();
-						e.stopPropagation();
-						onRemove(item.id, product.id);
-					}}
-					aria-label="Fjern fra liste"
-				>
-					<Trash2 size={16} />
-				</button>
+				{#if !isReadOnly}
+					<button
+						class="hidden sm:flex btn btn-ghost btn-sm btn-square text-error opacity-50 hover:opacity-100 transition-opacity"
+						onclick={(e) => {
+							e.preventDefault();
+							e.stopPropagation();
+							onRemove(item.id, product.id);
+						}}
+						aria-label="Fjern fra liste"
+					>
+						<Trash2 size={16} />
+					</button>
+				{/if}
 			</div>
 
-			{#if showPrice || showQuantity}
+			{#if (showPrice || showQuantity) && !isReadOnly}
 				<div
 					class="flex sm:hidden flex-row items-center justify-between gap-2 pt-3 border-t border-base-300"
 				>
@@ -273,53 +281,55 @@
 				</div>
 			{/if}
 
-			<div class="mt-2 sm:pl-9">
-				<button
-					class="flex items-center gap-1 text-xs text-base-content/60 hover:text-base-content transition-colors"
-					onclick={() => onToggleNotes(item.id)}
-				>
-					<StickyNote size={12} />
-					<span>Notater</span>
-					{#if item.notes}
-						<span class="badge badge-xs badge-primary">1</span>
-					{/if}
+			{#if !isReadOnly}
+				<div class="mt-2 sm:pl-9">
+					<button
+						class="flex items-center gap-1 text-xs text-base-content/60 hover:text-base-content transition-colors"
+						onclick={() => onToggleNotes(item.id)}
+					>
+						<StickyNote size={12} />
+						<span>Notater</span>
+						{#if item.notes}
+							<span class="badge badge-xs badge-primary">1</span>
+						{/if}
+						{#if expandedNotes}
+							<ChevronUp size={12} />
+						{:else}
+							<ChevronDown size={12} />
+						{/if}
+					</button>
 					{#if expandedNotes}
-						<ChevronUp size={12} />
-					{:else}
-						<ChevronDown size={12} />
-					{/if}
-				</button>
-				{#if expandedNotes}
-					{#if editingNotes}
-						<div class="flex flex-col gap-2 mt-2">
-							<textarea
-								class="textarea textarea-bordered textarea-sm w-full"
-								rows="2"
-								value={notesValue}
-								oninput={(e) => onNotesChange?.(e.currentTarget.value)}
-								placeholder="Legg til notater..."
-							></textarea>
-							<div class="flex gap-2 justify-end">
-								<button class="btn btn-xs btn-ghost" onclick={onCancelEditNotes}>Avbryt</button>
-								<button
-									class="btn btn-xs btn-primary"
-									onclick={() => onSaveNotes(item.id, notesValue)}
-								>
-									Lagre
-								</button>
+						{#if editingNotes}
+							<div class="flex flex-col gap-2 mt-2">
+								<textarea
+									class="textarea textarea-bordered textarea-sm w-full"
+									rows="2"
+									value={notesValue}
+									oninput={(e) => onNotesChange?.(e.currentTarget.value)}
+									placeholder="Legg til notater..."
+								></textarea>
+								<div class="flex gap-2 justify-end">
+									<button class="btn btn-xs btn-ghost" onclick={onCancelEditNotes}>Avbryt</button>
+									<button
+										class="btn btn-xs btn-primary"
+										onclick={() => onSaveNotes(item.id, notesValue)}
+									>
+										Lagre
+									</button>
+								</div>
 							</div>
-						</div>
-					{:else}
-						<button
-							type="button"
-							class="text-xs text-base-content/70 bg-base-300 rounded p-2 w-full text-left hover:bg-base-content/10 transition-colors mt-2"
-							onclick={() => onStartEditNotes(item.id, item.notes)}
-						>
-							{item.notes || 'Klikk for å legge til notater...'}
-						</button>
+						{:else}
+							<button
+								type="button"
+								class="text-xs text-base-content/70 bg-base-300 rounded p-2 w-full text-left hover:bg-base-content/10 transition-colors mt-2"
+								onclick={() => onStartEditNotes(item.id, item.notes)}
+							>
+								{item.notes || 'Klikk for å legge til notater...'}
+							</button>
+						{/if}
 					{/if}
-				{/if}
-			</div>
+				</div>
+			{/if}
 		</div>
 	</div>
 {/if}

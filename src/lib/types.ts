@@ -216,7 +216,13 @@ export type FilterItem<T extends string | number = string> = {
 };
 
 // List types
-export type ListType = 'standard' | 'shopping' | 'cellar' | 'event';
+export type ListType = 'standard' | 'shopping' | 'cellar' | 'event' | 'untappd';
+
+export type UntappdListSearchResult = {
+	list_id: number;
+	name: string;
+	item_count: number;
+};
 
 export type ListStats = {
 	totalBottles: number;
@@ -256,6 +262,11 @@ export type UserList = {
 	shareToken: string;
 	createdAt: string;
 	updatedAt: string;
+	untappdListId?: number;
+	untappdUsername?: string;
+	isReadOnly?: boolean;
+	lastSynced?: string;
+	syncStatus?: 'queued' | 'running' | 'success' | 'failed' | null;
 };
 
 export interface UserListResponse {
@@ -296,6 +307,11 @@ export interface ApiUserList {
 	share_token: string;
 	created_at: string;
 	updated_at: string;
+	untappd_list_id?: number;
+	untappd_username?: string;
+	is_read_only?: boolean;
+	last_synced?: string;
+	sync_status?: 'queued' | 'running' | 'success' | 'failed' | null;
 }
 
 export interface ApiUserListResponse {

@@ -13,7 +13,18 @@
 	import CellarStats from '$lib/components/lists/CellarStats.svelte';
 	import ShoppingTotalBar from '$lib/components/lists/ShoppingTotalBar.svelte';
 	import ConfirmModal from '$lib/components/common/ConfirmModal.svelte';
-	import { ArrowLeft, Pencil, Share2, Trash2, CircleAlert, Beer, Calendar } from '@lucide/svelte';
+	import {
+		ArrowLeft,
+		Pencil,
+		Share2,
+		Trash2,
+		CircleAlert,
+		Beer,
+		Calendar,
+		Info,
+		RefreshCw,
+		ExternalLink
+	} from '@lucide/svelte';
 	import { flip } from 'svelte/animate';
 	import { dragHandleZone, type DndEvent } from 'svelte-dnd-action';
 	import { transformApiList } from '$lib/utils/lists';
@@ -47,6 +58,15 @@
 	const isShopping = $derived(list?.listType === 'shopping');
 	const isCellar = $derived(list?.listType === 'cellar');
 	const isEvent = $derived(list?.listType === 'event');
+	const isUntappd = $derived(list?.listType === 'untappd');
+
+	let isSyncing = $state(false);
+	let syncPollTimer: ReturnType<typeof setInterval> | null = null;
+	const POLL_INTERVAL = 5000;
+	const POLL_TIMEOUT = 300_000;
+	const canSync = $derived(
+		!list?.lastSynced || Date.now() - new Date(list.lastSynced).getTime() > 3600000
+	);
 
 	const calculatedTotalPrice = $derived.by(() => {
 		if (!isShopping) return 0;
@@ -63,6 +83,21 @@
 			fetchListAndProducts();
 		} else if (!authStore.loading) {
 			isLoading = false;
+		}
+		return () => stopPolling();
+	});
+
+	const needsSync = $derived(
+		list?.listType === 'untappd' &&
+			(list.syncStatus === 'queued' ||
+				list.syncStatus === 'running' ||
+				(!list.lastSynced && list.syncStatus !== 'failed'))
+	);
+
+	$effect(() => {
+		if (needsSync && !isSyncing) {
+			isSyncing = true;
+			pollForSyncCompletion();
 		}
 	});
 
@@ -113,7 +148,31 @@
 				selectedStoreId = apiData.selected_store_id;
 			}
 
-			if (apiData.items?.length > 0) {
+			if (list.listType === 'untappd' && apiData.product_ids?.length > 0) {
+				const productIds = apiData.product_ids.map((id: number | string) => String(id));
+				const storeParam = selectedStoreId ? `&check_store=${selectedStoreId}` : '';
+				const prodRes = await fetch(`/api/products?ids=${productIds.join(',')}${storeParam}`);
+
+				const productMap = new Map<string, Product>();
+				if (prodRes.ok) {
+					const data = await prodRes.json();
+					(data.products || []).forEach((p: Product) => productMap.set(String(p.id), p));
+				}
+
+				listItems = productIds
+					.map((pid: string, i: number) => ({
+						id: pid,
+						productId: pid,
+						quantity: 1,
+						year: null,
+						notes: null,
+						sortOrder: i,
+						createdAt: new Date().toISOString(),
+						product: productMap.get(pid) ?? null
+					}))
+					.filter((item: ListItemWithProduct) => item.product !== null);
+				products = listItems.map((item) => item.product).filter((p): p is Product => !!p);
+			} else if (apiData.items?.length > 0) {
 				const productIds = [...new Set(apiData.items.map((item: any) => String(item.product_id)))];
 				const storeParam = selectedStoreId ? `&check_store=${selectedStoreId}` : '';
 				const prodRes = await fetch(`/api/products?ids=${productIds.join(',')}${storeParam}`);
@@ -225,6 +284,53 @@
 			error = err.message;
 		} finally {
 			isDeleting = false;
+		}
+	}
+
+	async function handleSync() {
+		if (!list?.untappdListId) return;
+		isSyncing = true;
+		try {
+			const res = await fetch(`/api/untappd-lists/${list.untappdListId}/sync`, { method: 'POST' });
+			if (!res.ok) throw new Error('Synkronisering feilet');
+			pollForSyncCompletion();
+		} catch (err: any) {
+			error = err.message;
+			isSyncing = false;
+		}
+	}
+
+	function pollForSyncCompletion() {
+		stopPolling();
+		const start = Date.now();
+		syncPollTimer = setInterval(async () => {
+			if (Date.now() - start > POLL_TIMEOUT) {
+				stopPolling();
+				isSyncing = false;
+				error = 'Synkronisering tok for lang tid. Prøv igjen senere.';
+				return;
+			}
+			try {
+				const res = await fetch(`/api/lists/${listId}`);
+				if (!res.ok) return;
+				const data = await res.json();
+				if (data.sync_status === 'success' || (data.last_synced && data.sync_status !== 'failed')) {
+					stopPolling();
+					isSyncing = false;
+					await fetchListAndProducts();
+				} else if (data.sync_status === 'failed') {
+					stopPolling();
+					isSyncing = false;
+					error = 'Synkronisering feilet. Prøv igjen senere.';
+				}
+			} catch {}
+		}, POLL_INTERVAL);
+	}
+
+	function stopPolling() {
+		if (syncPollTimer) {
+			clearInterval(syncPollTimer);
+			syncPollTimer = null;
 		}
 	}
 
@@ -387,24 +493,26 @@
 					{/if}
 				</div>
 				<div class="flex items-center gap-1 shrink-0">
-					<button
-						class="btn btn-ghost btn-sm btn-square"
-						onclick={() => (showShareModal = true)}
-						aria-label="Del liste"
-					>
-						<Share2 size={18} />
-					</button>
-					<button
-						class="btn btn-ghost btn-sm btn-square"
-						onclick={() => (showEditModal = true)}
-						aria-label="Rediger liste"
-					>
-						<Pencil size={18} />
-					</button>
+					{#if !isUntappd}
+						<button
+							class="btn btn-ghost btn-sm btn-square"
+							onclick={() => (showShareModal = true)}
+							aria-label="Del liste"
+						>
+							<Share2 size={18} />
+						</button>
+						<button
+							class="btn btn-ghost btn-sm btn-square"
+							onclick={() => (showEditModal = true)}
+							aria-label="Rediger liste"
+						>
+							<Pencil size={18} />
+						</button>
+					{/if}
 					<button
 						class="btn btn-ghost btn-sm btn-square text-error"
 						onclick={() => (showDeleteConfirm = true)}
-						aria-label="Slett liste"
+						aria-label={isUntappd ? 'Avslutt abonnement' : 'Slett liste'}
 					>
 						<Trash2 size={18} />
 					</button>
@@ -426,6 +534,55 @@
 				<CellarStats stats={list.stats} />
 			{/if}
 
+			{#if isUntappd}
+				<div class="alert alert-info mb-4">
+					<Info size={20} />
+					<span>Kun produkter som finnes på Vinmonopolet vises.</span>
+				</div>
+				<div class="flex items-center gap-4 text-sm text-base-content/60 mb-2 flex-wrap">
+					{#if list.untappdUsername}
+						<span>Importert fra Untappd-bruker: @{list.untappdUsername}</span>
+						<a
+							href="https://untappd.com/user/{list.untappdUsername}/lists/{list.untappdListId}"
+							target="_blank"
+							rel="noopener noreferrer"
+							class="flex items-center gap-1 link link-hover"
+						>
+							<ExternalLink size={14} />
+							Se original liste
+						</a>
+					{/if}
+					{#if list.lastSynced}
+						<span
+							>Sist synkronisert: {new Date(list.lastSynced).toLocaleString('nb-NO', {
+								day: 'numeric',
+								month: 'short',
+								year: 'numeric',
+								hour: '2-digit',
+								minute: '2-digit'
+							})}</span
+						>
+					{/if}
+					<div
+						class={!canSync ? 'tooltip' : ''}
+						data-tip={!canSync ? 'Kan synkroniseres igjen om én time' : undefined}
+					>
+						<button
+							class="btn btn-ghost btn-xs"
+							onclick={handleSync}
+							disabled={isSyncing || !canSync}
+						>
+							{#if isSyncing}
+								<span class="loading loading-spinner loading-xs"></span>
+							{:else}
+								<RefreshCw size={14} />
+							{/if}
+							Synkroniser nå
+						</button>
+					</div>
+				</div>
+			{/if}
+
 			<div class="flex items-center justify-between gap-4">
 				<div class="flex items-center gap-1 text-sm text-base-content/60">
 					<Beer size={16} />
@@ -438,20 +595,36 @@
 		</div>
 
 		<!-- Content -->
-		{#if listItems.length === 0}
+		{#if isUntappd && isSyncing && listItems.length === 0}
+			<div class="text-center py-16">
+				<span class="loading loading-spinner loading-lg text-primary mb-4"></span>
+				<h2 class="text-xl font-semibold mb-2">Synkroniserer Untappd-listen din...</h2>
+				<p class="text-base-content/70">
+					Dette kan ta noen minutter. Produkter som finnes på Vinmonopolet vil dukke opp automatisk.
+				</p>
+			</div>
+		{:else if listItems.length === 0}
 			<div class="text-center py-16">
 				<div class="text-5xl mb-4">🍺</div>
 				<h2 class="text-xl font-semibold mb-2">Ingen produkter i listen</h2>
-				<p class="text-base-content/70 mb-4">
-					Legg til produkter fra produktsiden ved å klikke på liste-ikonet.
-				</p>
-				<a href="/products" class="btn btn-primary">Utforsk produkter</a>
+				{#if isUntappd}
+					<p class="text-base-content/70 mb-4">
+						Ingen produkter fra denne Untappd-listen finnes på Vinmonopolet.
+					</p>
+				{:else}
+					<p class="text-base-content/70 mb-4">
+						Legg til produkter fra produktsiden ved å klikke på liste-ikonet.
+					</p>
+					<a href="/products" class="btn btn-primary">Utforsk produkter</a>
+				{/if}
 			</div>
 		{:else}
-			<p class="text-sm text-base-content/60 mb-4">Dra i håndtaket for å endre rekkefølge</p>
+			{#if !isUntappd}
+				<p class="text-sm text-base-content/60 mb-4">Dra i håndtaket for å endre rekkefølge</p>
+			{/if}
 			<div
 				class="space-y-2"
-				use:dragHandleZone={{ items, flipDurationMs }}
+				use:dragHandleZone={{ items, flipDurationMs, dragDisabled: isUntappd }}
 				onconsider={handleDndConsider}
 				onfinalize={handleDndFinalize}
 			>
@@ -460,6 +633,7 @@
 						<ListItemRow
 							{item}
 							listType={list.listType}
+							isReadOnly={isUntappd}
 							{selectedStoreId}
 							{index}
 							expandedNotes={expandedNotes.has(item.id)}
@@ -506,8 +680,10 @@
 	<ConfirmModal
 		open={showDeleteConfirm}
 		title="Slett liste"
-		message={`Er du sikker på at du vil slette "${list.name}"? Dette kan ikke angres.`}
-		confirmLabel="Slett"
+		message={isUntappd
+			? `Er du sikker på at du vil avslutte abonnementet på "${list.name}"?`
+			: `Er du sikker på at du vil slette "${list.name}"? Dette kan ikke angres.`}
+		confirmLabel={isUntappd ? 'Avslutt abonnement' : 'Slett'}
 		confirmClass="btn-error"
 		isLoading={isDeleting}
 		onConfirm={handleDelete}
