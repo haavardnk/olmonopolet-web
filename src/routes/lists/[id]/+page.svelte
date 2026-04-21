@@ -31,6 +31,10 @@
 	import { formatLongDate } from '$lib/utils/formatters';
 	import { getProductCountLabel } from '$lib/utils/formatters';
 
+	let { data } = $props();
+
+	const isAuthenticated = $derived(authStore.isAuthenticated || !!data.user);
+
 	let listId = $derived($page.params.id);
 
 	let list = $state<UserList | null>(null);
@@ -79,7 +83,7 @@
 	const totalQuantity = $derived(listItems.reduce((sum, item) => sum + (item.quantity ?? 1), 0));
 
 	$effect(() => {
-		if (authStore.isAuthenticated && listId) {
+		if (isAuthenticated && listId) {
 			fetchListAndProducts();
 		} else if (!authStore.loading) {
 			isLoading = false;
@@ -454,7 +458,7 @@
 	{/snippet}
 </Header>
 
-{#if !authStore.isAuthenticated && !authStore.loading}
+{#if !isAuthenticated && !authStore.loading}
 	<div class="container mx-auto px-4 py-8 max-w-4xl">
 		<div class="alert alert-warning">
 			<CircleAlert size={20} />

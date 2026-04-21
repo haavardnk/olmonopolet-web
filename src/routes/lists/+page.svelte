@@ -15,6 +15,10 @@
 	import { dragHandleZone, type DndEvent } from 'svelte-dnd-action';
 	import { fetchAndSetLists, transformApiList } from '$lib/utils/lists';
 
+	let { data } = $props();
+
+	const isAuthenticated = $derived(authStore.isAuthenticated || !!data.user);
+
 	let error = $state<string | null>(null);
 	let showFormModal = $state(false);
 	let editingList = $state<UserList | null>(null);
@@ -37,7 +41,7 @@
 	const hasPastEvents = $derived(storeItems.some((item) => item.isPast));
 
 	$effect(() => {
-		if (browser && authStore.isAuthenticated) fetchAndSetLists();
+		if (browser && isAuthenticated) fetchAndSetLists();
 	});
 
 	function openCreateModal() {
@@ -146,7 +150,7 @@
 	{/snippet}
 </Header>
 
-{#if !authStore.isAuthenticated && !authStore.loading}
+{#if !isAuthenticated && !authStore.loading}
 	<div class="container mx-auto px-4 py-16 max-w-md text-center">
 		<CircleAlert size={48} class="mx-auto mb-4 text-warning" />
 		<h1 class="text-2xl font-bold mb-2">Logg inn for å se dine lister</h1>

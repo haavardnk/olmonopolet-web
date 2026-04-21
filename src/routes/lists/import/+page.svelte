@@ -2,6 +2,10 @@
 	import { goto } from '$app/navigation';
 	import { authStore } from '$lib/stores/auth.svelte';
 	import type { UntappdListSearchResult, ApiUserList } from '$lib/types';
+
+	let { data } = $props();
+
+	const isAuthenticated = $derived(authStore.isAuthenticated || !!data.user);
 	import Header from '$lib/components/common/Header.svelte';
 	import { transformApiList } from '$lib/utils/lists';
 	import { listsStore } from '$lib/stores/lists.svelte';
@@ -80,7 +84,7 @@
 	{/snippet}
 </Header>
 
-{#if !authStore.isAuthenticated && !authStore.loading}
+{#if !isAuthenticated && !authStore.loading}
 	<div class="container mx-auto px-4 py-16 max-w-md text-center">
 		<CircleAlert size={48} class="mx-auto mb-4 text-warning" />
 		<h1 class="text-2xl font-bold mb-2">Logg inn for å importere lister</h1>
