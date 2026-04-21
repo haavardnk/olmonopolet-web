@@ -6,7 +6,6 @@
 	import { ArrowLeft } from '@lucide/svelte';
 	import { PUBLIC_SITE_URL, PUBLIC_SITE_TITLE } from '$env/static/public';
 	import Header from '$lib/components/common/Header.svelte';
-	import Footer from '$lib/components/common/Footer.svelte';
 	import ProductHero from '$lib/components/product-detail/ProductHero.svelte';
 	import ProductStats from '$lib/components/product-detail/ProductStats.svelte';
 	import ProductCharacteristics from '$lib/components/product-detail/ProductCharacteristics.svelte';
@@ -144,6 +143,4 @@
 			</div>
 		</div>
 	</main>
-
-	<Footer />
 </div>
