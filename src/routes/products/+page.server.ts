@@ -68,6 +68,7 @@ export const load = async ({ url, cookies }: { url: URL; cookies: any }) => {
 			isChristmasBeer: item.is_christmas_beer,
 			vmpUrl: item.vmp_url,
 			untappdUrl: item.untpd_url,
+			valueScore: item.value_score,
 			userTasted: (item as any).user_tasted,
 			stores: []
 		}));

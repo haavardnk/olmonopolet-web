@@ -206,7 +206,8 @@ export enum SortField {
 	Name = 'vmp_name',
 	Price = 'price',
 	PricePerVolume = 'price_per_volume',
-	PricePerAlcoholUnit = 'price_per_alcohol_unit'
+	PricePerAlcoholUnit = 'price_per_alcohol_unit',
+	ValueScore = 'value_score'
 }
 
 export type FilterItem<T extends string | number = string> = {

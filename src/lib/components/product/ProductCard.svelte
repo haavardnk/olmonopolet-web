@@ -22,6 +22,14 @@
 		isTogglingTasted?: boolean;
 		variant?: 'products' | 'release';
 	} = $props();
+
+	const valueProgressClass = $derived.by(() => {
+		if (!product.valueScore) return null;
+		if (product.valueScore >= 15) return 'progress-success';
+		if (product.valueScore >= 10) return 'progress-info';
+		if (product.valueScore >= 5) return 'progress-warning';
+		return 'progress-error';
+	});
 </script>
 
 <div
@@ -125,8 +133,17 @@
 					{/if}
 				</div>
 
-				<div class="flex items-center">
+				<div class="flex items-center gap-3">
 					<StarRating rating={product.rating} size={20} showValue={true} />
+					{#if product.valueScore && valueProgressClass}
+						<div class="tooltip tooltip-top pointer-events-auto z-50" data-tip="Verdi for pengene — basert på vurdering og literpris">
+							<progress
+								class="progress {valueProgressClass} w-16 h-1.5"
+								value={Math.min(product.valueScore, 20)}
+								max="20"
+							></progress>
+						</div>
+					{/if}
 				</div>
 			</div>
 		</div>

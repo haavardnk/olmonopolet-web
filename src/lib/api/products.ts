@@ -36,6 +36,7 @@ export async function fetchProducts(
 		'country',
 		'country_code',
 		'product_selection',
+		'value_score',
 		'user_tasted'
 	].join(',');
 
