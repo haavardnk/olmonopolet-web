@@ -20,7 +20,7 @@
 		if (normalizedRating === 0) {
 			return 'Ingen vurderinger';
 		}
-		const ratingText = normalizedRating.toFixed(1);
+		const ratingText = normalizedRating.toFixed(2);
 		return checkins !== null ? `${ratingText} (${checkins})` : ratingText;
 	});
 </script>

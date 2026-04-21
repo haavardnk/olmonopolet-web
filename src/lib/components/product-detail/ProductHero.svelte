@@ -81,7 +81,7 @@
 			<StarRating rating={product.rating} size={20} showValue={false} />
 		</div>
 		<span class="text-sm sm:text-lg ml-1 opacity-80">
-			{product.rating?.toFixed(1) || 'N/A'}
+			{product.rating?.toFixed(2) || 'N/A'}
 			{#if product.checkins}
 				<span class="opacity-60">({product.checkins.toLocaleString()} vurderinger)</span>
 			{/if}
