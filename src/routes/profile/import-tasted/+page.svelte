@@ -193,7 +193,7 @@
 					<CircleCheck size={20} />
 					<div class="flex flex-col">
 						<span class="font-semibold">
-							Vellykket importert {success.imported_count} øl fra {success.total_check_ins} check-ins!
+							Importert {success.total_check_ins} check-ins!
 						</span>
 						{#if success.message}
 							<span class="text-sm opacity-90">{success.message}</span>
