@@ -296,6 +296,11 @@
 		isSyncing = true;
 		try {
 			const res = await fetch(`/api/untappd-lists/${list.untappdListId}/sync`, { method: 'POST' });
+			if (res.status === 404) {
+				listsStore.deleteList(list.id);
+				goto('/lists?removed=unavailable');
+				return;
+			}
 			if (!res.ok) throw new Error('Synkronisering feilet');
 			pollForSyncCompletion();
 		} catch (err: any) {
@@ -316,6 +321,13 @@
 			}
 			try {
 				const res = await fetch(`/api/lists/${listId}`);
+				if (res.status === 404) {
+					stopPolling();
+					isSyncing = false;
+					if (list) listsStore.deleteList(list.id);
+					goto('/lists?removed=unavailable');
+					return;
+				}
 				if (!res.ok) return;
 				const data = await res.json();
 				if (data.sync_status === 'success' || (data.last_synced && data.sync_status !== 'failed')) {

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import { authStore } from '$lib/stores/auth.svelte';
 	import { listsStore } from '$lib/stores/lists.svelte';
 	import type { UserList, ListType } from '$lib/types';
@@ -30,6 +31,17 @@
 	let isDeleting = $state(false);
 	let dragItems = $state<UserList[] | null>(null);
 	let hidePastEvents = $state(false);
+	let deletedNotice = $state<string | null>(null);
+
+	$effect(() => {
+		if (browser && $page.url.searchParams.get('removed') === 'unavailable') {
+			deletedNotice =
+				'Untappd-listen ble fjernet fordi den ikke lenger er tilgjengelig eller har blitt gjort privat.';
+			const url = new URL($page.url);
+			url.searchParams.delete('removed');
+			goto(url.pathname, { replaceState: true });
+		}
+	});
 
 	const flipDurationMs = 200;
 	const isLoading = $derived(listsStore.isLoading);
@@ -182,6 +194,14 @@
 				{/if}
 			</div>
 		</div>
+
+		{#if deletedNotice}
+			<div class="alert alert-warning mb-4">
+				<CircleAlert size={20} />
+				<span>{deletedNotice}</span>
+				<button class="btn btn-ghost btn-xs" onclick={() => (deletedNotice = null)}>✕</button>
+			</div>
+		{/if}
 
 		{#if error}
 			<div class="alert alert-error mb-4">
