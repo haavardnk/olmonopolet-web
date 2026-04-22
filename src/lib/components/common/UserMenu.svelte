@@ -1,7 +1,13 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import { authStore } from '$lib/stores/auth.svelte';
 	import { LogOut, LogIn, User, List, UserCircle } from '@lucide/svelte';
+
+	const loginHref = $derived.by(() => {
+		const current = $page.url.pathname + $page.url.search;
+		return current && current !== '/' ? `/login?redirect=${encodeURIComponent(current)}` : '/login';
+	});
 
 	async function handleLogout() {
 		await authStore.signOut();
@@ -55,7 +61,7 @@
 		</ul>
 	</div>
 {:else}
-	<a href="/login" class="btn btn-ghost btn-sm gap-1">
+	<a href={loginHref} class="btn btn-ghost btn-sm gap-1">
 		<LogIn size={18} />
 		<span class="hidden sm:inline">Logg inn</span>
 	</a>

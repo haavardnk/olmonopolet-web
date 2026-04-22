@@ -477,7 +477,7 @@
 			<span>Du må være innlogget for å se denne listen.</span>
 		</div>
 		<div class="mt-4">
-			<a href="/login" class="btn btn-primary">Logg inn</a>
+			<a href="/login?redirect={encodeURIComponent($page.url.pathname)}" class="btn btn-primary">Logg inn</a>
 		</div>
 	</div>
 {:else if isLoading}

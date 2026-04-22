@@ -91,7 +91,7 @@
 		<p class="text-base-content/70 mb-6">
 			Du må være logget inn for å importere lister fra Untappd.
 		</p>
-		<a href="/login" class="btn btn-primary">Logg inn</a>
+		<a href="/login?redirect=/lists/import/" class="btn btn-primary">Logg inn</a>
 	</div>
 {:else}
 	<div class="container mx-auto px-4 py-8 max-w-2xl">

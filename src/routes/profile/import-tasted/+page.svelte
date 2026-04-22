@@ -115,7 +115,7 @@
 			<span>Du må være innlogget for å importere smakte øl.</span>
 		</div>
 		<div class="mt-4">
-			<a href="/login" class="btn btn-primary">Logg inn</a>
+			<a href="/login?redirect=/profile/import-tasted/" class="btn btn-primary">Logg inn</a>
 		</div>
 	</div>
 {:else}
