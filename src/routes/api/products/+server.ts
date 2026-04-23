@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 	const user_tasted = url.searchParams.get('user_tasted') || '';
 	const ids = url.searchParams.get('ids') || '';
 	const page = parseInt(url.searchParams.get('page') || '1');
-	const pageSize = ids ? 100 : 24;
+	const pageSize = ids ? 1000 : 24;
 
 	const sessionCookie = cookies.get('session');
 	const cacheHeaders = sessionCookie ? NO_CACHE_HEADERS : SHORT_CACHE_HEADERS;
