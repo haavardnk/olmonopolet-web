@@ -20,7 +20,7 @@ export async function getRssFeed(): Promise<RssFeed | null> {
 }
 
 export async function createRssFeed(feedUrl: string): Promise<RssFeed> {
-	const res = await api.post('/api/rss', { feed_url: feedUrl, active: true });
+	const res = await api.put('/api/rss', { feed_url: feedUrl, active: true });
 	if (!res.ok) {
 		const data = await res.json().catch(() => null);
 		const msg = data?.error || data?.feed_url?.[0] || 'Failed to create RSS feed';

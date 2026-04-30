@@ -53,7 +53,7 @@
 		error = null;
 		try {
 			feed = await getRssFeed();
-			if (feed) feedUrl = feed.feed_url;
+			if (feed?.feed_url) feedUrl = feed.feed_url;
 		} catch {
 			error = 'Kunne ikke laste RSS-innstillinger.';
 		} finally {
@@ -62,7 +62,7 @@
 	}
 
 	async function handleSave() {
-		if (!feedUrl.trim()) {
+		if (!feedUrl?.trim()) {
 			error = 'Vennligst skriv inn en RSS-URL.';
 			return;
 		}
@@ -277,7 +277,7 @@
 				</div>
 
 				<div class="flex gap-3 mt-4">
-					<button class="btn btn-primary" disabled={saving || !feedUrl.trim()} onclick={handleSave}>
+					<button class="btn btn-primary" disabled={saving || !feedUrl?.trim()} onclick={handleSave}>
 						{#if saving}
 							<span class="loading loading-spinner loading-sm"></span>
 						{/if}
