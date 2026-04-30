@@ -34,7 +34,7 @@
 
 <div
 	in:fly={noTransition ? { y: 0, duration: 0 } : { y: 20, duration: 300, delay: index * 50 }}
-	class="card bg-base-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative"
+	class="card bg-base-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-visible hover:z-20"
 >
 	<a href="/products/{product.id}" class="absolute inset-0 z-0">
 		<span class="sr-only">Se detaljer for {product.name}</span>
