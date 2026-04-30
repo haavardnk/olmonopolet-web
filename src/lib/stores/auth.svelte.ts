@@ -1,4 +1,5 @@
 import { browser } from '$app/environment';
+import { invalidateAll } from '$app/navigation';
 import {
 	signInWithEmailAndPassword,
 	createUserWithEmailAndPassword,
@@ -16,6 +17,7 @@ import {
 import { auth } from '$lib/firebase/client';
 import { listsStore } from '$lib/stores/lists.svelte';
 import { tastedStore } from '$lib/stores/tasted.svelte';
+import { fetchAndSetLists } from '$lib/utils/lists';
 
 export interface AuthUser {
 	uid: string;
@@ -49,42 +51,60 @@ function setAuthHint(user: AuthUser | null) {
 	} catch {}
 }
 
+function toAuthUser(firebaseUser: User): AuthUser {
+	return {
+		uid: firebaseUser.uid,
+		email: firebaseUser.email,
+		emailVerified: firebaseUser.emailVerified,
+		displayName: firebaseUser.displayName,
+		photoURL: firebaseUser.photoURL,
+		providers: firebaseUser.providerData.map((p) => p.providerId)
+	};
+}
+
 function createAuthStore() {
 	const initialHint = getAuthHint();
 	let user = $state<AuthUser | null>(initialHint);
 	let loading = $state(!initialHint);
 	let error = $state<string | null>(null);
+	let syncedUid: string | null = null;
+
+	async function syncSession(firebaseUser: User): Promise<void> {
+		const newUser = toAuthUser(firebaseUser);
+		user = newUser;
+		setAuthHint(newUser);
+		const idToken = await firebaseUser.getIdToken();
+		await fetch('/api/auth/session', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ idToken })
+		});
+		syncedUid = firebaseUser.uid;
+		fetchAndSetLists(true).catch((e) => console.error('Failed to load lists:', e));
+	}
 
 	if (browser && auth) {
 		setTimeout(() => {
 			onAuthStateChanged(auth, async (firebaseUser: User | null) => {
 				if (firebaseUser) {
-					const newUser: AuthUser = {
-						uid: firebaseUser.uid,
-						email: firebaseUser.email,
-						emailVerified: firebaseUser.emailVerified,
-						displayName: firebaseUser.displayName,
-						photoURL: firebaseUser.photoURL,
-						providers: firebaseUser.providerData.map((p) => p.providerId)
-					};
-					user = newUser;
-					setAuthHint(newUser);
-
-					try {
-						const idToken = await firebaseUser.getIdToken();
-						await fetch('/api/auth/session', {
-							method: 'POST',
-							headers: { 'Content-Type': 'application/json' },
-							body: JSON.stringify({ idToken })
-						});
-					} catch (e) {
-						console.error('Failed to sync session:', e);
+					if (syncedUid !== firebaseUser.uid) {
+						try {
+							await syncSession(firebaseUser);
+						} catch (e) {
+							console.error('Failed to sync session:', e);
+						}
+					} else {
+						user = toAuthUser(firebaseUser);
+						setAuthHint(user);
 					}
 				} else {
+					const wasSignedIn = syncedUid !== null;
 					user = null;
 					setAuthHint(null);
 					listsStore.clear();
 					tastedStore.clear();
+					syncedUid = null;
+					if (wasSignedIn) await invalidateAll();
 				}
 				loading = false;
 			});
@@ -101,6 +121,7 @@ function createAuthStore() {
 
 		try {
 			const result = await signInWithEmailAndPassword(auth, email, password);
+			await syncSession(result.user);
 			return result.user;
 		} catch (e) {
 			error = getErrorMessage(e);
@@ -119,6 +140,7 @@ function createAuthStore() {
 		try {
 			const result = await createUserWithEmailAndPassword(auth, email, password);
 			await sendEmailVerification(result.user);
+			await syncSession(result.user);
 			return result.user;
 		} catch (e) {
 			error = getErrorMessage(e);
@@ -215,7 +237,8 @@ function createAuthStore() {
 
 		try {
 			const provider = new GoogleAuthProvider();
-			await signInWithPopup(auth, provider);
+			const result = await signInWithPopup(auth, provider);
+			await syncSession(result.user);
 		} catch (e) {
 			error = getErrorMessage(e);
 			throw e;
@@ -234,7 +257,8 @@ function createAuthStore() {
 			const provider = new OAuthProvider('apple.com');
 			provider.addScope('email');
 			provider.addScope('name');
-			await signInWithPopup(auth, provider);
+			const result = await signInWithPopup(auth, provider);
+			await syncSession(result.user);
 		} catch (e) {
 			error = getErrorMessage(e);
 			throw e;
