@@ -69,7 +69,7 @@ export const load = async ({ url, cookies }: { url: URL; cookies: any }) => {
 			vmpUrl: item.vmp_url,
 			untappdUrl: item.untpd_url,
 			valueScore: item.value_score,
-			userTasted: (item as any).user_tasted,
+			userTasted: item.user_tasted,
 			stores: []
 		}));
 

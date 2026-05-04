@@ -76,7 +76,7 @@ export const load: PageServerLoad = async ({ params, fetch, setHeaders, cookies 
 			untappdUrl: apiData.untpd_url,
 			valueScore: apiData.value_score,
 			pricePerAlcoholUnit: apiData.price_per_alcohol_unit,
-			userTasted: (apiData as any).user_tasted,
+			userTasted: apiData.user_tasted,
 			stores: (apiData.all_stock || [])
 				.map((s) => ({
 					name: s.store_name,
