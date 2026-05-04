@@ -35,7 +35,7 @@ export async function authenticatedFetch(
 		headers
 	});
 
-	if (response.status === 401 && browser && auth && !isSigningOut) {
+	if (response.status === 401 && token && browser && auth && !isSigningOut) {
 		isSigningOut = true;
 		const { signOut } = await import('firebase/auth');
 		await signOut(auth);
