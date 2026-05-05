@@ -171,14 +171,7 @@ function createAuthStore() {
 
 		try {
 			await auth.currentUser.reload();
-			user = {
-				uid: auth.currentUser.uid,
-				email: auth.currentUser.email,
-				emailVerified: auth.currentUser.emailVerified,
-				displayName: auth.currentUser.displayName,
-				photoURL: auth.currentUser.photoURL,
-				providers: auth.currentUser.providerData.map((p) => p.providerId)
-			};
+			user = toAuthUser(auth.currentUser);
 		} catch (e) {
 			console.error('Failed to reload user:', e);
 		}
