@@ -16,6 +16,7 @@
 	let { list, isDragging = false, onEdit, onDelete, onShare }: Props = $props();
 
 	const isUntappd = $derived(!!list.untappdListId);
+	const isFollowed = $derived(!!list.isFollowed);
 	const productCount = $derived(list.productIds.length || list.itemCount);
 </script>
 
@@ -26,7 +27,11 @@
 	class:ring-primary={isDragging}
 	class:opacity-60={list.isPast}
 >
-	<a href="/lists/{list.id}" class="absolute inset-0 z-0" aria-label="Åpne {list.name}"></a>
+	<a
+		href={isFollowed ? `/lists/shared/${list.shareToken}` : `/lists/${list.id}`}
+		class="absolute inset-0 z-0"
+		aria-label="Åpne {list.name}"
+	></a>
 
 	<div class="card-body p-4 relative pointer-events-none">
 		<div class="flex items-start gap-3">
@@ -55,6 +60,13 @@
 					<p class="text-sm text-base-content/60 mt-1 flex items-center gap-1">
 						<User size={12} />
 						Fra @{list.untappdUsername}
+					</p>
+				{/if}
+
+				{#if isFollowed && list.userName}
+					<p class="text-sm text-base-content/60 mt-1 flex items-center gap-1">
+						<User size={12} />
+						Fra {list.userName}
 					</p>
 				{/if}
 
@@ -94,7 +106,7 @@
 			</div>
 
 			<div class="flex items-center gap-1 pointer-events-auto">
-				{#if onShare && !isUntappd}
+				{#if onShare && !isUntappd && !isFollowed}
 					<button
 						class="btn btn-ghost btn-sm btn-square"
 						onclick={(e) => {
@@ -107,7 +119,7 @@
 						<Share2 size={16} />
 					</button>
 				{/if}
-				{#if onEdit && !isUntappd}
+				{#if onEdit && !isUntappd && !isFollowed}
 					<button
 						class="btn btn-ghost btn-sm btn-square"
 						onclick={(e) => {

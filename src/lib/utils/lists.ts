@@ -48,6 +48,8 @@ export function transformApiList(data: ApiUserList | Record<string, unknown>): U
 		untappdListId: apiData.untappd_list_id,
 		untappdUsername: apiData.untappd_username,
 		isReadOnly: apiData.is_read_only,
+		isFollowed: apiData.is_followed,
+		userName: apiData.user_name,
 		lastSynced: apiData.last_synced,
 		syncStatus: apiData.sync_status ?? null
 	};

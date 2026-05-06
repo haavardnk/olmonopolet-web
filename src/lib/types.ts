@@ -271,6 +271,8 @@ export type UserList = {
 	untappdListId?: number;
 	untappdUsername?: string;
 	isReadOnly?: boolean;
+	isFollowed?: boolean;
+	userName?: string;
 	lastSynced?: string;
 	syncStatus?: 'queued' | 'running' | 'success' | 'failed' | null;
 };
@@ -321,6 +323,8 @@ export interface ApiUserList {
 	untappd_list_id?: number;
 	untappd_username?: string;
 	is_read_only?: boolean;
+	is_followed?: boolean;
+	user_name?: string;
 	last_synced?: string;
 	sync_status?: 'queued' | 'running' | 'success' | 'failed' | null;
 }

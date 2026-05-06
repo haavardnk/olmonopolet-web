@@ -6,9 +6,11 @@
 	import CellarStats from '$lib/components/lists/CellarStats.svelte';
 	import ShoppingTotalBar from '$lib/components/lists/ShoppingTotalBar.svelte';
 	import SharedListItem from '$lib/components/lists/SharedListItem.svelte';
-	import { CircleAlert, Beer, Share2, User, Calendar, MapPin } from '@lucide/svelte';
+	import { CircleAlert, Beer, Share2, User, Calendar, MapPin, Bookmark, ArrowLeft } from '@lucide/svelte';
 	import { formatLongDate, getProductCountLabel } from '$lib/utils/formatters';
 	import { transformApiList } from '$lib/utils/lists';
+	import { authStore } from '$lib/stores/auth.svelte';
+	import { listsStore } from '$lib/stores/lists.svelte';
 
 	let token = $derived($page.params.token);
 	let sharedList = $state<UserList | null>(null);
@@ -16,7 +18,22 @@
 	let storeName = $state<string | null>(null);
 	let listItems = $state<ListItemWithProduct[]>([]);
 	let isLoading = $state(true);
+	let isFollowLoading = $state(false);
 	let error = $state<string | null>(null);
+
+	const isAuthenticated = $derived(authStore.isAuthenticated);
+	const isOwnList = $derived(
+		!!token &&
+			Array.from(listsStore.lists.values()).some(
+				(l) => !l.isFollowed && l.shareToken === token
+			)
+	);
+	const isFollowing = $derived(
+		!!token &&
+			Array.from(listsStore.lists.values()).some(
+				(l) => l.isFollowed && l.shareToken === token
+			)
+	);
 
 	const totalItems = $derived(listItems.reduce((sum, item) => sum + (item.quantity ?? 1), 0));
 	const totalPrice = $derived(
@@ -91,9 +108,39 @@
 			isLoading = false;
 		}
 	}
+
+	async function toggleFollow() {
+		if (!isAuthenticated) return;
+		isFollowLoading = true;
+		try {
+			const method = isFollowing ? 'DELETE' : 'POST';
+			const url = `/api/lists/shared/${token}/${isFollowing ? 'unfollow' : 'follow'}/`;
+			await fetch(url, { method });
+			if (isFollowing) {
+				const existing = Array.from(listsStore.lists.values()).find(
+					(l) => l.isFollowed && l.shareToken === token
+				);
+				if (existing) listsStore.deleteList(existing.id);
+			} else {
+				const { fetchAndSetLists } = await import('$lib/utils/lists');
+				await fetchAndSetLists(true);
+			}
+		} catch {
+			// ignore
+		} finally {
+			isFollowLoading = false;
+		}
+	}
 </script>
 
-<Header showUserMenu={true} />
+<Header showUserMenu={true}>
+	{#snippet right()}
+		<button onclick={() => history.back()} class="btn btn-ghost btn-sm" aria-label="Gå tilbake">
+			<ArrowLeft size={16} />
+			Tilbake
+		</button>
+	{/snippet}
+</Header>
 
 <div class="container mx-auto px-4 py-8 max-w-6xl">
 	{#if isLoading}
@@ -114,6 +161,21 @@
 				<Share2 size={16} />
 				<span>Delt liste</span>
 				<ListTypeBadge list={sharedList} />
+				{#if isAuthenticated && !isOwnList}
+					<button
+						class="btn btn-sm btn-ghost gap-1 ml-auto"
+						class:btn-active={isFollowing}
+						onclick={toggleFollow}
+						disabled={isFollowLoading}
+					>
+						{#if isFollowLoading}
+							<span class="loading loading-spinner loading-xs"></span>
+						{:else}
+							<Bookmark size={14} fill={isFollowing ? 'currentColor' : 'none'} />
+						{/if}
+						{isFollowing ? 'Følger' : 'Følg'}
+					</button>
+				{/if}
 			</div>
 			<h1 class="text-3xl font-bold mb-2">{sharedList.name}</h1>
 			{#if sharedList.description}

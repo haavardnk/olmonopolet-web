@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { UserList } from '$lib/types';
-	import { ShoppingCart, Wine, Calendar, EyeOff, CloudDownload } from '@lucide/svelte';
+	import { ShoppingCart, Wine, Calendar, EyeOff, CloudDownload, Bookmark } from '@lucide/svelte';
 	import { matchPreset } from '$lib/utils/list-types';
 
 	type Props = {
@@ -11,6 +11,7 @@
 	let { list, size = 'sm' }: Props = $props();
 
 	const isUntappd = $derived(!!list.untappdListId);
+	const isFollowed = $derived(!!list.isFollowed);
 	const preset = $derived(
 		matchPreset({
 			showQuantity: list.showQuantity,
@@ -23,7 +24,12 @@
 	const iconSize = $derived(size === 'sm' ? 12 : 14);
 </script>
 
-{#if isUntappd}
+{#if isFollowed}
+	<span class="badge {size === 'sm' ? 'badge-sm' : ''} badge-ghost text-base-content/70 gap-1">
+		<Bookmark size={iconSize} />
+		Følger
+	</span>
+{:else if isUntappd}
 	<span class="badge {size === 'sm' ? 'badge-sm' : ''} badge-ghost text-base-content/70 gap-1">
 		<CloudDownload size={iconSize} />
 		Untappd

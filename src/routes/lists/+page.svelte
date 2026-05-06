@@ -137,8 +137,16 @@
 		if (!deletingList) return;
 		isDeleting = true;
 		try {
-			const res = await fetch(`/api/lists/${deletingList.id}`, { method: 'DELETE' });
-			if (!res.ok && res.status !== 204) throw new Error('Failed to delete list');
+			if (deletingList.isFollowed) {
+				const res = await fetch(`/api/lists/shared/${deletingList.shareToken}/unfollow`, {
+					method: 'DELETE'
+				});
+				if (!res.ok && res.status !== 204 && res.status !== 404)
+					throw new Error('Failed to unfollow list');
+			} else {
+				const res = await fetch(`/api/lists/${deletingList.id}`, { method: 'DELETE' });
+				if (!res.ok && res.status !== 204) throw new Error('Failed to delete list');
+			}
 			listsStore.deleteList(deletingList.id);
 			showDeleteConfirm = false;
 			deletingList = null;
@@ -298,9 +306,11 @@
 {#if deletingList}
 	<ConfirmModal
 		open={showDeleteConfirm}
-		title="Slett liste"
-		message={`Er du sikker på at du vil slette "${deletingList.name}"? Dette kan ikke angres.`}
-		confirmLabel="Slett"
+		title={deletingList.isFollowed ? 'Slutt å følge' : 'Slett liste'}
+		message={deletingList.isFollowed
+			? `Slutt å følge "${deletingList.name}"?`
+			: `Er du sikker på at du vil slette "${deletingList.name}"? Dette kan ikke angres.`}
+		confirmLabel={deletingList.isFollowed ? 'Slutt å følge' : 'Slett'}
 		confirmClass="btn-error"
 		isLoading={isDeleting}
 		onConfirm={handleDelete}
