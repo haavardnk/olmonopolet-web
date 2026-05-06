@@ -26,6 +26,7 @@
 		showStore?: boolean;
 		showVintage?: boolean;
 		showPrices?: boolean;
+		showNotes?: boolean;
 		isReadOnly?: boolean;
 		selectedStoreId?: number | null;
 		index?: number;
@@ -51,6 +52,7 @@
 		showStore = false,
 		showVintage = false,
 		showPrices = true,
+		showNotes = true,
 		isReadOnly = false,
 		selectedStoreId = null,
 		index = 0,
@@ -340,7 +342,7 @@
 				</div>
 			{/if}
 
-			{#if !isReadOnly}
+			{#if !isReadOnly && showNotes}
 				<div class="mt-2 sm:pl-9">
 					<button
 						class="flex items-center gap-1 text-xs text-base-content/60 hover:text-base-content transition-colors"

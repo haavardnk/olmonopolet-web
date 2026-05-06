@@ -73,6 +73,7 @@
 		showStore: boolean;
 		showVintage: boolean;
 		showPrices: boolean;
+		showNotes: boolean;
 		eventDate: string | null;
 	}) {
 		isSaving = true;
@@ -88,6 +89,7 @@
 						show_store: data.showStore,
 						show_vintage: data.showVintage,
 						show_prices: data.showPrices,
+						show_notes: data.showNotes,
 						event_date: data.eventDate
 					})
 				});
@@ -101,6 +103,7 @@
 					showStore: updated.show_store,
 					showVintage: updated.show_vintage,
 					showPrices: updated.show_prices,
+					showNotes: updated.show_notes ?? true,
 					eventDate: updated.event_date,
 					updatedAt: updated.updated_at
 				});
@@ -115,6 +118,7 @@
 						show_store: data.showStore,
 						show_vintage: data.showVintage,
 						show_prices: data.showPrices,
+						show_notes: data.showNotes,
 						event_date: data.eventDate
 					})
 				});

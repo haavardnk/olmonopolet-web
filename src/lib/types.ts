@@ -257,6 +257,7 @@ export type UserList = {
 	showStore: boolean;
 	showVintage: boolean;
 	showPrices: boolean;
+	showNotes: boolean;
 	itemCount: number;
 	isPast?: boolean;
 	totalPrice?: number;
@@ -301,6 +302,7 @@ export interface ApiUserList {
 	show_store?: boolean;
 	show_vintage?: boolean;
 	show_prices?: boolean;
+	show_notes?: boolean;
 	item_count: number;
 	is_past?: boolean;
 	total_price?: number;

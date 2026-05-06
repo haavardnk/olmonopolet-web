@@ -28,6 +28,7 @@ export function transformApiList(data: ApiUserList | Record<string, unknown>): U
 		showStore: apiData.show_store ?? false,
 		showVintage: apiData.show_vintage ?? false,
 		showPrices: apiData.show_prices ?? true,
+		showNotes: apiData.show_notes ?? true,
 		itemCount: apiData.item_count ?? 0,
 		isPast: apiData.is_past,
 		totalPrice: apiData.total_price,

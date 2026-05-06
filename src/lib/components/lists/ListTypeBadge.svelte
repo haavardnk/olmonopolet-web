@@ -16,7 +16,8 @@
 			showQuantity: list.showQuantity,
 			showStore: list.showStore,
 			showVintage: list.showVintage,
-			showPrices: list.showPrices
+			showPrices: list.showPrices,
+			showNotes: list.showNotes
 		})
 	);
 	const iconSize = $derived(size === 'sm' ? 12 : 14);

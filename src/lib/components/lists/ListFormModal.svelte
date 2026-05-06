@@ -14,6 +14,7 @@
 			showStore: boolean;
 			showVintage: boolean;
 			showPrices: boolean;
+			showNotes: boolean;
 			eventDate: string | null;
 		}) => void;
 		isSaving?: boolean;
@@ -27,6 +28,7 @@
 	let showStore = $state(false);
 	let showVintage = $state(false);
 	let showPrices = $state(true);
+	let showNotes = $state(false);
 	let eventDate = $state('');
 	let customizeOpen = $state(false);
 
@@ -38,7 +40,8 @@
 		showQuantity,
 		showStore,
 		showVintage,
-		showPrices
+		showPrices,
+		showNotes
 	});
 	const activePreset = $derived(matchPreset(currentFlags));
 	const isCustom = $derived(!activePreset);
@@ -51,12 +54,14 @@
 			showStore = list?.showStore ?? false;
 			showVintage = list?.showVintage ?? false;
 			showPrices = list?.showPrices ?? true;
+			showNotes = list?.showNotes ?? false;
 			eventDate = list?.eventDate ?? '';
 			customizeOpen = isEditing && !matchPreset({
 				showQuantity: list?.showQuantity ?? false,
 				showStore: list?.showStore ?? false,
 				showVintage: list?.showVintage ?? false,
-				showPrices: list?.showPrices ?? true
+				showPrices: list?.showPrices ?? true,
+				showNotes: list?.showNotes ?? false
 			});
 		}
 	});
@@ -66,6 +71,7 @@
 		showStore = flags.showStore;
 		showVintage = flags.showVintage;
 		showPrices = flags.showPrices;
+		showNotes = flags.showNotes;
 	}
 
 	function handleSubmit(e: Event) {
@@ -78,6 +84,7 @@
 			showStore,
 			showVintage,
 			showPrices,
+			showNotes,
 			eventDate: eventDate || null
 		});
 	}
@@ -209,6 +216,18 @@
 								type="checkbox"
 								class="toggle toggle-sm toggle-primary"
 								bind:checked={showPrices}
+								disabled={isSaving}
+							/>
+						</label>
+						<label class="flex items-center justify-between cursor-pointer">
+							<div>
+								<span class="label-text font-medium">Notater</span>
+								<span class="label-text-alt block text-xs opacity-70">Legg til notater på hvert produkt</span>
+							</div>
+							<input
+								type="checkbox"
+								class="toggle toggle-sm toggle-primary"
+								bind:checked={showNotes}
 								disabled={isSaving}
 							/>
 						</label>

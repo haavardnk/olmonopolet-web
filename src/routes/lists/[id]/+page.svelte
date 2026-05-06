@@ -251,6 +251,7 @@
 		showStore: boolean;
 		showVintage: boolean;
 		showPrices: boolean;
+		showNotes: boolean;
 		eventDate: string | null;
 	}) {
 		if (!list) return;
@@ -267,6 +268,7 @@
 					show_store: data.showStore,
 					show_vintage: data.showVintage,
 					show_prices: data.showPrices,
+					show_notes: data.showNotes,
 					event_date: data.eventDate
 				})
 			});
@@ -283,6 +285,7 @@
 				showStore: updated.show_store ?? list.showStore,
 				showVintage: updated.show_vintage ?? list.showVintage,
 				showPrices: updated.show_prices ?? list.showPrices,
+				showNotes: updated.show_notes ?? list.showNotes,
 				eventDate: updated.event_date,
 				updatedAt: updated.updated_at
 			};
@@ -681,6 +684,7 @@
 							showStore={list.showStore}
 							showVintage={list.showVintage}
 							showPrices={list.showPrices}
+							showNotes={list.showNotes}
 							isReadOnly={isUntappd}
 							{selectedStoreId}
 							{index}
