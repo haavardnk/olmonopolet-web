@@ -56,13 +56,7 @@
 			showPrices = list?.showPrices ?? true;
 			showNotes = list?.showNotes ?? false;
 			eventDate = list?.eventDate ?? '';
-			customizeOpen = isEditing && !matchPreset({
-				showQuantity: list?.showQuantity ?? false,
-				showStore: list?.showStore ?? false,
-				showVintage: list?.showVintage ?? false,
-				showPrices: list?.showPrices ?? true,
-				showNotes: list?.showNotes ?? false
-			});
+			customizeOpen = false;
 		}
 	});
 
@@ -161,7 +155,7 @@
 				</div>
 			</fieldset>
 
-			<div class="collapse collapse-arrow bg-base-200 rounded-lg" class:collapse-open={customizeOpen || isCustom}>
+			<div class="collapse collapse-arrow bg-base-200 rounded-lg" class:collapse-open={customizeOpen}>
 				<button
 					type="button"
 					class="collapse-title text-sm font-medium min-h-0 py-2 px-4"
@@ -169,8 +163,8 @@
 				>
 					Tilpass
 				</button>
-				<div class="collapse-content px-4 pb-3">
-					<div class="space-y-2">
+				<div class="collapse-content !p-0">
+					<div class="space-y-2 px-4 pb-3">
 						<label class="flex items-center justify-between cursor-pointer">
 							<div>
 								<span class="label-text font-medium">Antall</span>
