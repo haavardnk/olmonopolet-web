@@ -280,7 +280,6 @@
 				...list,
 				name: updated.name,
 				description: updated.description,
-				listType: updated.list_type,
 				showQuantity: updated.show_quantity ?? list.showQuantity,
 				showStore: updated.show_store ?? list.showStore,
 				showVintage: updated.show_vintage ?? list.showVintage,

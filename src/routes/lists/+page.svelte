@@ -98,7 +98,6 @@
 				listsStore.updateList(editingList.id, {
 					name: updated.name,
 					description: updated.description,
-					listType: updated.list_type,
 					showQuantity: updated.show_quantity,
 					showStore: updated.show_store,
 					showVintage: updated.show_vintage,

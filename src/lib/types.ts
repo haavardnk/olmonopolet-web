@@ -216,9 +216,6 @@ export type FilterItem<T extends string | number = string> = {
 	meta?: string;
 };
 
-// List types
-export type ListType = 'standard' | 'shopping' | 'cellar' | 'event' | 'untappd';
-
 export type UntappdListSearchResult = {
 	list_id: number;
 	name: string;
@@ -250,7 +247,6 @@ export type UserList = {
 	id: string;
 	name: string;
 	description?: string | null;
-	listType: ListType;
 	selectedStoreId: number | null;
 	eventDate: string | null;
 	showQuantity: boolean;

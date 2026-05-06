@@ -1,12 +1,5 @@
-import { List, ShoppingCart, Archive, CloudDownload } from '@lucide/svelte';
-import type { ListType } from '$lib/types';
+import { List, ShoppingCart, Archive } from '@lucide/svelte';
 import type { Component } from 'svelte';
-
-export type ListTypeConfig = {
-	icon: Component;
-	label: string;
-	description: string;
-};
 
 export type ListFlags = {
 	showQuantity: boolean;
@@ -59,20 +52,4 @@ export function matchPreset(flags: ListFlags): ListPreset | null {
 				p.flags.showNotes === flags.showNotes
 		) ?? null
 	);
-}
-
-export const LIST_TYPE_CONFIG: Record<ListType, ListTypeConfig> = {
-	standard: { icon: List, label: 'Standard', description: 'En enkel liste' },
-	shopping: { icon: ShoppingCart, label: 'Handleliste', description: 'Med antall og priser' },
-	cellar: { icon: Archive, label: 'Kjeller', description: 'Lageroversikt med årgang' },
-	event: { icon: List, label: 'Arrangement', description: 'Meny uten priser' },
-	untappd: { icon: CloudDownload, label: 'Untappd', description: 'Importert liste fra Untappd' }
-};
-
-export function getListTypeConfig(listType: ListType | null | undefined): ListTypeConfig {
-	return LIST_TYPE_CONFIG[listType ?? 'standard'];
-}
-
-export function getListTypeLabel(listType: ListType | null | undefined): string {
-	return getListTypeConfig(listType).label;
 }

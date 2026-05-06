@@ -1,4 +1,4 @@
-import type { UserList, ApiUserList, ListType } from '$lib/types';
+import type { UserList, ApiUserList } from '$lib/types';
 import { listsStore } from '$lib/stores/lists.svelte';
 import { browser } from '$app/environment';
 import { auth } from '$lib/firebase/client';
@@ -21,7 +21,6 @@ export function transformApiList(data: ApiUserList | Record<string, unknown>): U
 		id: String(apiData.id),
 		name: apiData.name as string,
 		description: (apiData.description as string) || null,
-		listType: (apiData.list_type as ListType) || 'standard',
 		selectedStoreId: apiData.selected_store_id ?? null,
 		eventDate: apiData.event_date ?? null,
 		showQuantity: apiData.show_quantity ?? false,
