@@ -536,8 +536,8 @@
 	<div class="container mx-auto px-4 py-8 max-w-6xl" class:opacity-60={list.isPast}>
 		<!-- Header -->
 		<div class="mb-6">
-			<div class="flex items-start justify-between gap-4 mb-2">
-				<div class="flex items-center gap-3">
+			<div class="flex flex-wrap items-start justify-between gap-2 mb-2">
+				<div class="flex flex-wrap items-center gap-2">
 					<h1 class="text-3xl font-bold">{list.name}</h1>
 					<ListTypeBadge list={list} size="md" />
 					{#if list.isPast}

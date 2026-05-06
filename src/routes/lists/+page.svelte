@@ -204,12 +204,13 @@
 	</div>
 {:else}
 	<div class="container mx-auto px-4 py-8 max-w-4xl">
-		<div class="flex items-center justify-between mb-6">
+		<div class="flex flex-wrap items-center justify-between gap-2 mb-6">
 			<h1 class="text-3xl font-bold">Mine lister</h1>
-			<div class="flex items-center gap-2">
+			<div class="flex flex-wrap items-center gap-2">
 				<a href="/lists/import" class="btn btn-ghost btn-sm">
 					<ExternalLink size={18} />
-					Importer fra Untappd
+					<span class="hidden sm:inline">Importer fra Untappd</span>
+					<span class="sm:hidden">Importer</span>
 				</a>
 				{#if listsStore.sortedLists.length > 0}
 					<button class="btn btn-primary btn-sm" onclick={openCreateModal}>
