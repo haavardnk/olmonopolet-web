@@ -15,7 +15,7 @@
 
 	let { list, isDragging = false, onEdit, onDelete, onShare }: Props = $props();
 
-	const isUntappd = $derived(!!list.untappdListId);
+	const isUntappd = $derived(list.untappdListId != null);
 	const isFollowed = $derived(!!list.isFollowed);
 	const productCount = $derived(list.productIds.length || list.itemCount);
 </script>

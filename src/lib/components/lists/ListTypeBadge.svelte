@@ -10,7 +10,7 @@
 
 	let { list, size = 'sm' }: Props = $props();
 
-	const isUntappd = $derived(!!list.untappdListId);
+	const isUntappd = $derived(list.untappdListId != null);
 	const isFollowed = $derived(!!list.isFollowed);
 	const preset = $derived(
 		matchPreset({

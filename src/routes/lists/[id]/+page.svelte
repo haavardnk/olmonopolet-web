@@ -59,7 +59,7 @@
 	let items = $state<ListItemWithProduct[]>([]);
 	const flipDurationMs = 200;
 
-	const isUntappd = $derived(!!list?.untappdListId);
+	const isUntappd = $derived(list?.untappdListId != null);
 
 	let isSyncing = $state(false);
 	let syncPollTimer: ReturnType<typeof setInterval> | null = null;

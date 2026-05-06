@@ -169,7 +169,7 @@
 			{:else}
 				{#each lists as list (list.id)}
 					{@const inList = isProductInList(list, productId)}
-					{@const isUntappd = !!list.untappdListId}
+					{@const isUntappd = list.untappdListId != null}
 					{#if !isUntappd || inList}
 						<li>
 							<button
