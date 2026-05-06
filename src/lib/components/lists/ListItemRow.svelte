@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ListItemWithProduct, ListType } from '$lib/types';
+	import type { ListItemWithProduct } from '$lib/types';
 	import {
 		GripVertical,
 		Trash2,
@@ -19,7 +19,10 @@
 
 	type Props = {
 		item: ListItemWithProduct;
-		listType: ListType;
+		showQuantity?: boolean;
+		showStore?: boolean;
+		showVintage?: boolean;
+		showPrices?: boolean;
 		isReadOnly?: boolean;
 		selectedStoreId?: number | null;
 		index?: number;
@@ -39,7 +42,10 @@
 
 	let {
 		item,
-		listType,
+		showQuantity = false,
+		showStore = false,
+		showVintage = false,
+		showPrices = true,
 		isReadOnly = false,
 		selectedStoreId = null,
 		index = 0,
@@ -58,11 +64,8 @@
 	}: Props = $props();
 
 	const product = $derived(item.product);
-	const isShopping = $derived(listType === 'shopping');
-	const isCellar = $derived(listType === 'cellar');
-	const isEvent = $derived(listType === 'event');
-	const showQuantity = $derived(isShopping || isCellar);
-	const showPrice = $derived(!isEvent && product?.price);
+	const canEditQuantity = $derived(showQuantity && !isReadOnly);
+	const showPrice = $derived(showPrices && product?.price);
 </script>
 
 {#if product}
@@ -140,7 +143,7 @@
 							<span class="fi fi-{product.countryCode.toLowerCase()}" title={product.country}
 							></span>
 						{/if}
-						{#if isShopping && selectedStoreId && product.stock !== undefined}
+						{#if showStore && selectedStoreId && product.stock !== undefined}
 							<span
 								class="badge badge-sm {product.stock && product.stock > 0
 									? 'badge-success'
@@ -150,11 +153,11 @@
 								{product.stock && product.stock > 0 ? `${product.stock} stk` : 'Utsolgt'}
 							</span>
 						{/if}
-						{#if isShopping && product.assortment}
+						{#if showStore && product.assortment}
 							<span class="badge badge-sm badge-ghost">{product.assortment}</span>
 						{/if}
 					</div>
-					{#if isCellar && !isReadOnly}
+					{#if showVintage && !isReadOnly}
 						<div class="flex items-center gap-3 text-xs text-base-content/50 mt-1 flex-wrap">
 							<div class="flex items-center gap-1">
 								<Wine size={10} />
@@ -207,7 +210,7 @@
 					</div>
 				{/if}
 
-				{#if showQuantity && !isReadOnly}
+				{#if canEditQuantity}
 					<div class="hidden sm:flex items-center gap-1">
 						<button
 							class="btn btn-xs btn-ghost btn-square"
@@ -241,7 +244,7 @@
 				{/if}
 			</div>
 
-			{#if (showPrice || showQuantity) && !isReadOnly}
+			{#if (showPrice || canEditQuantity) && !isReadOnly}
 				<div
 					class="flex sm:hidden flex-row items-center justify-between gap-2 pt-3 border-t border-base-300"
 				>
@@ -259,7 +262,7 @@
 					{/if}
 
 					<div class="flex items-center gap-2">
-						{#if showQuantity}
+						{#if canEditQuantity}
 							<div class="flex items-center gap-1 bg-base-300 rounded-lg px-1">
 								<button
 									class="btn btn-xs btn-ghost btn-square"

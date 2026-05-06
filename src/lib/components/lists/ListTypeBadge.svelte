@@ -1,25 +1,52 @@
 <script lang="ts">
-	import type { ListType } from '$lib/types';
-	import { getListTypeConfig, isTypedList } from '$lib/utils/list-types';
+	import type { UserList } from '$lib/types';
+	import { ShoppingCart, Wine, Calendar, EyeOff, CloudDownload } from '@lucide/svelte';
+	import { matchPreset } from '$lib/utils/list-types';
 
 	type Props = {
-		listType: ListType | null | undefined;
+		list: UserList;
 		size?: 'sm' | 'md';
-		showIcon?: boolean;
 	};
 
-	let { listType, size = 'sm', showIcon = true }: Props = $props();
+	let { list, size = 'sm' }: Props = $props();
 
-	const config = $derived(getListTypeConfig(listType));
-	const Icon = $derived(config.icon);
-	const shouldShow = $derived(isTypedList(listType));
+	const isUntappd = $derived(!!list.untappdListId);
+	const preset = $derived(
+		matchPreset({
+			showQuantity: list.showQuantity,
+			showStore: list.showStore,
+			showVintage: list.showVintage,
+			showPrices: list.showPrices
+		})
+	);
+	const iconSize = $derived(size === 'sm' ? 12 : 14);
 </script>
 
-{#if shouldShow}
+{#if isUntappd}
 	<span class="badge {size === 'sm' ? 'badge-sm' : ''} badge-ghost text-base-content/70 gap-1">
-		{#if showIcon}
-			<Icon size={size === 'sm' ? 12 : 14} />
+		<CloudDownload size={iconSize} />
+		Untappd
+	</span>
+{:else if preset && preset.id !== 'simple'}
+	{@const Icon = preset.icon}
+	<span class="badge {size === 'sm' ? 'badge-sm' : ''} badge-ghost text-base-content/70 gap-1">
+		<Icon size={iconSize} />
+		{preset.label}
+	</span>
+{:else if !preset}
+	<span class="badge {size === 'sm' ? 'badge-sm' : ''} badge-ghost text-base-content/70 gap-1">
+		{#if list.showStore}
+			<ShoppingCart size={iconSize} />
 		{/if}
-		{config.label}
+		{#if list.showVintage}
+			<Wine size={iconSize} />
+		{/if}
+		{#if !list.showPrices}
+			<EyeOff size={iconSize} />
+		{/if}
+		{#if list.eventDate}
+			<Calendar size={iconSize} />
+		{/if}
+		Tilpasset
 	</span>
 {/if}

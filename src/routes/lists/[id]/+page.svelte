@@ -3,14 +3,13 @@
 	import { page } from '$app/stores';
 	import { authStore } from '$lib/stores/auth.svelte';
 	import { listsStore } from '$lib/stores/lists.svelte';
-	import type { UserList, Product, ListItemWithProduct, ListType } from '$lib/types';
+	import type { UserList, Product, ListItemWithProduct } from '$lib/types';
 	import Header from '$lib/components/common/Header.svelte';
 	import ListFormModal from '$lib/components/lists/ListFormModal.svelte';
 	import ShareModal from '$lib/components/lists/ShareModal.svelte';
 	import StoreSelector from '$lib/components/lists/StoreSelector.svelte';
 	import ListItemRow from '$lib/components/lists/ListItemRow.svelte';
 	import ListTypeBadge from '$lib/components/lists/ListTypeBadge.svelte';
-	import CellarStats from '$lib/components/lists/CellarStats.svelte';
 	import ShoppingTotalBar from '$lib/components/lists/ShoppingTotalBar.svelte';
 	import ConfirmModal from '$lib/components/common/ConfirmModal.svelte';
 	import {
@@ -28,7 +27,7 @@
 	import { flip } from 'svelte/animate';
 	import { dragHandleZone, type DndEvent } from 'svelte-dnd-action';
 	import { transformApiList } from '$lib/utils/lists';
-	import { formatLongDate } from '$lib/utils/formatters';
+	import { formatLongDate, formatCurrency } from '$lib/utils/formatters';
 	import { getProductCountLabel } from '$lib/utils/formatters';
 
 	let { data } = $props();
@@ -59,10 +58,7 @@
 	let items = $state<ListItemWithProduct[]>([]);
 	const flipDurationMs = 200;
 
-	const isShopping = $derived(list?.listType === 'shopping');
-	const isCellar = $derived(list?.listType === 'cellar');
-	const isEvent = $derived(list?.listType === 'event');
-	const isUntappd = $derived(list?.listType === 'untappd');
+	const isUntappd = $derived(!!list?.untappdListId);
 
 	let isSyncing = $state(false);
 	let syncPollTimer: ReturnType<typeof setInterval> | null = null;
@@ -73,7 +69,7 @@
 	);
 
 	const calculatedTotalPrice = $derived.by(() => {
-		if (!isShopping) return 0;
+		if (!list?.showStore) return 0;
 		return listItems.reduce((sum, item) => {
 			const price = item.product?.price ?? 0;
 			return sum + price * (item.quantity ?? 1);
@@ -81,6 +77,20 @@
 	});
 
 	const totalQuantity = $derived(listItems.reduce((sum, item) => sum + (item.quantity ?? 1), 0));
+
+	const liveStats = $derived.by(() => {
+		if (!list?.showVintage) return null;
+		const years = listItems.map((i) => i.year).filter((y): y is number => y !== null);
+		const totalValue = listItems.reduce((sum, item) => {
+			return sum + (item.product?.price ?? 0) * (item.quantity ?? 1);
+		}, 0);
+		return {
+			totalBottles: totalQuantity,
+			totalValue,
+			oldestYear: years.length > 0 ? Math.min(...years) : null,
+			newestYear: years.length > 0 ? Math.max(...years) : null
+		};
+	});
 
 	$effect(() => {
 		if (isAuthenticated && listId) {
@@ -92,10 +102,10 @@
 	});
 
 	const needsSync = $derived(
-		list?.listType === 'untappd' &&
-			(list.syncStatus === 'queued' ||
-				list.syncStatus === 'running' ||
-				(!list.lastSynced && list.syncStatus !== 'failed'))
+		isUntappd &&
+			(list?.syncStatus === 'queued' ||
+				list?.syncStatus === 'running' ||
+				(!list?.lastSynced && list?.syncStatus !== 'failed'))
 	);
 
 	$effect(() => {
@@ -121,9 +131,9 @@
 
 		listsStore.updateList(list.id, {
 			productIds: listItems.map((i) => i.productId),
-			itemCount: totalQty,
-			totalPrice: isShopping ? totalPrice : undefined,
-			stats: isCellar
+			itemCount: listItems.length,
+			totalPrice: list.showStore ? totalPrice : undefined,
+			stats: list.showVintage
 				? {
 						totalBottles: totalQty,
 						totalValue: totalPrice,
@@ -152,7 +162,7 @@
 				selectedStoreId = apiData.selected_store_id;
 			}
 
-			if (list.listType === 'untappd' && apiData.product_ids?.length > 0) {
+			if (list.isReadOnly && apiData.product_ids?.length > 0) {
 				const productIds = apiData.product_ids.map((id: number | string) => String(id));
 				const storeParam = selectedStoreId ? `&check_store=${selectedStoreId}` : '';
 				const prodRes = await fetch(`/api/products?ids=${productIds.join(',')}${storeParam}`);
@@ -236,7 +246,10 @@
 	async function handleSave(data: {
 		name: string;
 		description: string;
-		listType: ListType;
+		showQuantity: boolean;
+		showStore: boolean;
+		showVintage: boolean;
+		showPrices: boolean;
 		eventDate: string | null;
 	}) {
 		if (!list) return;
@@ -249,7 +262,10 @@
 				body: JSON.stringify({
 					name: data.name,
 					description: data.description,
-					list_type: data.listType,
+					show_quantity: data.showQuantity,
+					show_store: data.showStore,
+					show_vintage: data.showVintage,
+					show_prices: data.showPrices,
 					event_date: data.eventDate
 				})
 			});
@@ -262,6 +278,10 @@
 				name: updated.name,
 				description: updated.description,
 				listType: updated.list_type,
+				showQuantity: updated.show_quantity ?? list.showQuantity,
+				showStore: updated.show_store ?? list.showStore,
+				showVintage: updated.show_vintage ?? list.showVintage,
+				showPrices: updated.show_prices ?? list.showPrices,
 				eventDate: updated.event_date,
 				updatedAt: updated.updated_at
 			};
@@ -503,7 +523,7 @@
 			<div class="flex items-start justify-between gap-4 mb-2">
 				<div class="flex items-center gap-3">
 					<h1 class="text-3xl font-bold">{list.name}</h1>
-					<ListTypeBadge listType={list.listType} size="md" />
+					<ListTypeBadge list={list} size="md" />
 					{#if list.isPast}
 						<span class="badge badge-ghost">Passert</span>
 					{/if}
@@ -539,15 +559,11 @@
 				<p class="text-base-content/70 mb-2">{list.description}</p>
 			{/if}
 
-			{#if isEvent && list.eventDate}
+			{#if list.eventDate}
 				<div class="flex items-center gap-2 text-base-content/70 mb-2">
 					<Calendar size={16} />
 					<span>{formatLongDate(list.eventDate)}</span>
 				</div>
-			{/if}
-
-			{#if isCellar && list.stats}
-				<CellarStats stats={list.stats} />
 			{/if}
 
 			{#if isUntappd}
@@ -602,9 +618,9 @@
 			<div class="flex items-center justify-between gap-4">
 				<div class="flex items-center gap-1 text-sm text-base-content/60">
 					<Beer size={16} />
-					<span>{getProductCountLabel(listItems.length)}</span>
+					<span>{getProductCountLabel(listItems.length)}{#if liveStats}&nbsp;·&nbsp;{liveStats.totalBottles}&nbsp;{liveStats.totalBottles === 1 ? 'flaske' : 'flasker'}{#if liveStats.totalValue > 0 && !list.showStore}&nbsp;·&nbsp;{formatCurrency(liveStats.totalValue)}{/if}{/if}</span>
 				</div>
-				{#if isShopping}
+				{#if list.showStore}
 					<StoreSelector {selectedStoreId} onSelect={handleStoreChange} />
 				{/if}
 			</div>
@@ -648,7 +664,10 @@
 					<div animate:flip={{ duration: flipDurationMs }} class="group">
 						<ListItemRow
 							{item}
-							listType={list.listType}
+							showQuantity={list.showQuantity}
+							showStore={list.showStore}
+							showVintage={list.showVintage}
+							showPrices={list.showPrices}
 							isReadOnly={isUntappd}
 							{selectedStoreId}
 							{index}
@@ -669,7 +688,7 @@
 				{/each}
 			</div>
 
-			{#if isShopping && listItems.length > 0}
+			{#if list.showStore && listItems.length > 0}
 				<ShoppingTotalBar totalPrice={calculatedTotalPrice} {totalQuantity} />
 			{/if}
 		{/if}

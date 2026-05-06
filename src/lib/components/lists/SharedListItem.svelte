@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ListItemWithProduct, ListType } from '$lib/types';
+	import type { ListItemWithProduct } from '$lib/types';
 	import StarRating from '$lib/components/common/StarRating.svelte';
 	import { CalendarDays, StickyNote, Package, Wine } from '@lucide/svelte';
 	import defaultLabel from '$lib/assets/default-label.png';
@@ -7,18 +7,25 @@
 
 	type Props = {
 		item: ListItemWithProduct;
-		listType: ListType;
+		showQuantity?: boolean;
+		showStore?: boolean;
+		showVintage?: boolean;
+		showPrices?: boolean;
 		selectedStoreId?: number | null;
 	};
 
-	let { item, listType, selectedStoreId = null }: Props = $props();
+	let {
+		item,
+		showQuantity = false,
+		showStore = false,
+		showVintage = false,
+		showPrices = true,
+		selectedStoreId = null
+	}: Props = $props();
 
 	const product = $derived(item.product);
-	const isShopping = $derived(listType === 'shopping');
-	const isCellar = $derived(listType === 'cellar');
-	const isEvent = $derived(listType === 'event');
-	const showQuantity = $derived((isShopping || isCellar) && (item.quantity ?? 1) > 0);
-	const showPrice = $derived(!isEvent && product?.price);
+	const hasQuantity = $derived(showQuantity && (item.quantity ?? 1) > 0);
+	const showPrice = $derived(showPrices && product?.price);
 </script>
 
 {#if product}
@@ -64,7 +71,7 @@
 							<span class="fi fi-{product.countryCode.toLowerCase()}" title={product.country}
 							></span>
 						{/if}
-						{#if isShopping && selectedStoreId && product.stock !== undefined}
+						{#if showStore && selectedStoreId && product.stock !== undefined}
 							<span
 								class="badge badge-sm {product.stock && product.stock > 0
 									? 'badge-success'
@@ -74,11 +81,11 @@
 								{product.stock && product.stock > 0 ? `${product.stock} stk` : 'Utsolgt'}
 							</span>
 						{/if}
-						{#if isShopping && product.assortment}
+						{#if showStore && product.assortment}
 							<span class="badge badge-sm badge-ghost">{product.assortment}</span>
 						{/if}
 					</div>
-					{#if isCellar}
+					{#if showVintage}
 						<div class="flex items-center gap-3 text-xs text-base-content/50 mt-1 flex-wrap">
 							{#if item.year}
 								<div class="flex items-center gap-1">
@@ -110,7 +117,7 @@
 						</div>
 					{/if}
 
-					{#if showQuantity}
+					{#if hasQuantity}
 						<div class="text-sm font-medium text-base-content/70 bg-base-300 rounded-lg px-3 py-1">
 							{item.quantity ?? 1}x
 						</div>
@@ -118,7 +125,7 @@
 				</div>
 			</div>
 
-			{#if showPrice || showQuantity}
+			{#if showPrice || hasQuantity}
 				<div
 					class="flex sm:hidden flex-row items-center justify-between gap-2 pt-3 border-t border-base-300"
 				>
@@ -135,7 +142,7 @@
 						</div>
 					{/if}
 
-					{#if showQuantity}
+					{#if hasQuantity}
 						<div class="text-sm font-medium bg-base-300 rounded-lg px-3 py-1">
 							{item.quantity ?? 1}x
 						</div>

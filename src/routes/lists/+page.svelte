@@ -4,7 +4,7 @@
 	import { page } from '$app/stores';
 	import { authStore } from '$lib/stores/auth.svelte';
 	import { listsStore } from '$lib/stores/lists.svelte';
-	import type { UserList, ListType } from '$lib/types';
+	import type { UserList } from '$lib/types';
 	import Header from '$lib/components/common/Header.svelte';
 	import ListCard from '$lib/components/lists/ListCard.svelte';
 	import ListFormModal from '$lib/components/lists/ListFormModal.svelte';
@@ -69,7 +69,10 @@
 	async function handleSave(data: {
 		name: string;
 		description: string;
-		listType: ListType;
+		showQuantity: boolean;
+		showStore: boolean;
+		showVintage: boolean;
+		showPrices: boolean;
 		eventDate: string | null;
 	}) {
 		isSaving = true;
@@ -81,7 +84,10 @@
 					body: JSON.stringify({
 						name: data.name,
 						description: data.description,
-						list_type: data.listType,
+						show_quantity: data.showQuantity,
+						show_store: data.showStore,
+						show_vintage: data.showVintage,
+						show_prices: data.showPrices,
 						event_date: data.eventDate
 					})
 				});
@@ -91,6 +97,10 @@
 					name: updated.name,
 					description: updated.description,
 					listType: updated.list_type,
+					showQuantity: updated.show_quantity,
+					showStore: updated.show_store,
+					showVintage: updated.show_vintage,
+					showPrices: updated.show_prices,
 					eventDate: updated.event_date,
 					updatedAt: updated.updated_at
 				});
@@ -101,7 +111,10 @@
 					body: JSON.stringify({
 						name: data.name,
 						description: data.description,
-						list_type: data.listType,
+						show_quantity: data.showQuantity,
+						show_store: data.showStore,
+						show_vintage: data.showVintage,
+						show_prices: data.showPrices,
 						event_date: data.eventDate
 					})
 				});

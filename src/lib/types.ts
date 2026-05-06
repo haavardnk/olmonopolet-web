@@ -253,6 +253,10 @@ export type UserList = {
 	listType: ListType;
 	selectedStoreId: number | null;
 	eventDate: string | null;
+	showQuantity: boolean;
+	showStore: boolean;
+	showVintage: boolean;
+	showPrices: boolean;
 	itemCount: number;
 	isPast?: boolean;
 	totalPrice?: number;
@@ -293,6 +297,10 @@ export interface ApiUserList {
 	list_type: string;
 	selected_store_id: number | null;
 	event_date: string | null;
+	show_quantity?: boolean;
+	show_store?: boolean;
+	show_vintage?: boolean;
+	show_prices?: boolean;
 	item_count: number;
 	is_past?: boolean;
 	total_price?: number;

@@ -15,8 +15,8 @@
 
 	let { list, isDragging = false, onEdit, onDelete, onShare }: Props = $props();
 
-	const isUntappd = $derived(list.listType === 'untappd');
-	const productCount = $derived(list.itemCount ?? list.productIds.length);
+	const isUntappd = $derived(!!list.untappdListId);
+	const productCount = $derived(list.productIds.length || list.itemCount);
 </script>
 
 <div
@@ -41,7 +41,7 @@
 			<div class="flex-1 min-w-0">
 				<div class="flex items-center gap-2 flex-wrap">
 					<h3 class="font-bold text-base line-clamp-1">{list.name}</h3>
-					<ListTypeBadge listType={list.listType} />
+					<ListTypeBadge {list} />
 					{#if list.isPast}
 						<span class="badge badge-sm badge-ghost">Passert</span>
 					{/if}
@@ -63,13 +63,13 @@
 						<Beer size={14} />
 						<span>{productCount} {productCount === 1 ? 'produkt' : 'produkter'}</span>
 					</div>
-					{#if list.listType === 'event' && list.eventDate}
+					{#if list.eventDate}
 						<div class="flex items-center gap-1">
 							<Calendar size={14} />
 							<span>{formatShortDate(list.eventDate)}</span>
 						</div>
 					{/if}
-					{#if list.listType === 'cellar' && list.stats}
+					{#if list.showVintage && list.stats}
 						<div class="flex items-center gap-1">
 							<Wine size={14} />
 							<span>{getBottleCountLabel(list.stats.totalBottles)}</span>
@@ -80,9 +80,14 @@
 							{/if}
 						</div>
 					{/if}
-					{#if list.listType === 'shopping' && list.totalPrice}
+					{#if list.showStore && list.totalPrice != null && list.totalPrice > 0}
 						<div class="flex items-center gap-1">
 							<span>{formatCurrency(list.totalPrice)}</span>
+						</div>
+					{/if}
+					{#if list.showVintage && list.stats?.totalValue != null && list.stats.totalValue > 0 && !list.showStore}
+						<div class="flex items-center gap-1">
+							<span>{formatCurrency(list.stats.totalValue)}</span>
 						</div>
 					{/if}
 				</div>

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { UserList, ListType } from '$lib/types';
+	import type { UserList } from '$lib/types';
 	import { X } from '@lucide/svelte';
-	import { getListTypesArray } from '$lib/utils/list-types';
+	import { LIST_PRESETS, matchPreset, type ListFlags } from '$lib/utils/list-types';
 
 	type Props = {
 		open: boolean;
@@ -10,7 +10,10 @@
 		onSave: (data: {
 			name: string;
 			description: string;
-			listType: ListType;
+			showQuantity: boolean;
+			showStore: boolean;
+			showVintage: boolean;
+			showPrices: boolean;
 			eventDate: string | null;
 		}) => void;
 		isSaving?: boolean;
@@ -20,23 +23,50 @@
 
 	let name = $state('');
 	let description = $state('');
-	let listType = $state<ListType>('standard');
+	let showQuantity = $state(false);
+	let showStore = $state(false);
+	let showVintage = $state(false);
+	let showPrices = $state(true);
 	let eventDate = $state('');
+	let customizeOpen = $state(false);
 
 	const isEditing = $derived(!!list);
 	const title = $derived(isEditing ? 'Rediger liste' : 'Ny liste');
 	const submitLabel = $derived(isEditing ? 'Lagre' : 'Opprett');
-	const showEventDate = $derived(listType === 'event');
-	const listTypes = getListTypesArray().filter((t) => t.value !== 'untappd');
+
+	const currentFlags: ListFlags = $derived({
+		showQuantity,
+		showStore,
+		showVintage,
+		showPrices
+	});
+	const activePreset = $derived(matchPreset(currentFlags));
+	const isCustom = $derived(!activePreset);
 
 	$effect(() => {
 		if (open) {
 			name = list?.name ?? '';
 			description = list?.description ?? '';
-			listType = list?.listType ?? 'standard';
+			showQuantity = list?.showQuantity ?? false;
+			showStore = list?.showStore ?? false;
+			showVintage = list?.showVintage ?? false;
+			showPrices = list?.showPrices ?? true;
 			eventDate = list?.eventDate ?? '';
+			customizeOpen = isEditing && !matchPreset({
+				showQuantity: list?.showQuantity ?? false,
+				showStore: list?.showStore ?? false,
+				showVintage: list?.showVintage ?? false,
+				showPrices: list?.showPrices ?? true
+			});
 		}
 	});
+
+	function selectPreset(flags: ListFlags) {
+		showQuantity = flags.showQuantity;
+		showStore = flags.showStore;
+		showVintage = flags.showVintage;
+		showPrices = flags.showPrices;
+	}
 
 	function handleSubmit(e: Event) {
 		e.preventDefault();
@@ -44,8 +74,11 @@
 		onSave({
 			name: name.trim(),
 			description: description.trim(),
-			listType,
-			eventDate: showEventDate && eventDate ? eventDate : null
+			showQuantity,
+			showStore,
+			showVintage,
+			showPrices,
+			eventDate: eventDate || null
 		});
 	}
 
@@ -101,43 +134,101 @@
 
 			<fieldset class="form-control">
 				<legend class="label">
-					<span class="label-text">Type liste</span>
+					<span class="label-text">Hurtigvalg</span>
 				</legend>
-				<div class="grid grid-cols-2 gap-2">
-					{#each listTypes as type}
-						{@const Icon = type.icon}
+				<div class="grid grid-cols-3 gap-2">
+					{#each LIST_PRESETS as preset}
+						{@const Icon = preset.icon}
 						<button
 							type="button"
-							class="btn btn-sm h-auto py-2 justify-start gap-2 {listType === type.value
+							class="btn btn-sm h-auto py-2 flex-col gap-1 {activePreset?.id === preset.id
 								? 'btn-primary'
 								: 'btn-ghost border border-base-300'}"
-							onclick={() => (listType = type.value)}
+							onclick={() => selectPreset(preset.flags)}
 							disabled={isSaving}
 						>
 							<Icon size={16} />
-							<div class="text-left">
-								<div class="font-medium">{type.label}</div>
-								<div class="text-xs opacity-70 font-normal">{type.description}</div>
-							</div>
+							<span class="text-xs font-medium">{preset.label}</span>
 						</button>
 					{/each}
 				</div>
 			</fieldset>
 
-			{#if showEventDate}
-				<div class="form-control">
-					<label class="label" for="event-date">
-						<span class="label-text">Dato for arrangement</span>
-					</label>
-					<input
-						id="event-date"
-						type="date"
-						class="input input-bordered w-full"
-						bind:value={eventDate}
-						disabled={isSaving}
-					/>
+			<div class="collapse collapse-arrow bg-base-200 rounded-lg" class:collapse-open={customizeOpen || isCustom}>
+				<button
+					type="button"
+					class="collapse-title text-sm font-medium min-h-0 py-2 px-4"
+					onclick={() => (customizeOpen = !customizeOpen)}
+				>
+					Tilpass
+				</button>
+				<div class="collapse-content px-4 pb-3">
+					<div class="space-y-2">
+						<label class="flex items-center justify-between cursor-pointer">
+							<div>
+								<span class="label-text font-medium">Antall</span>
+								<span class="label-text-alt block text-xs opacity-70">Mengdekontroller på hvert produkt</span>
+							</div>
+							<input
+								type="checkbox"
+								class="toggle toggle-sm toggle-primary"
+								bind:checked={showQuantity}
+								disabled={isSaving}
+							/>
+						</label>
+						<label class="flex items-center justify-between cursor-pointer">
+							<div>
+								<span class="label-text font-medium">Butikk</span>
+								<span class="label-text-alt block text-xs opacity-70">Lagerstatus og butikkvalg</span>
+							</div>
+							<input
+								type="checkbox"
+								class="toggle toggle-sm toggle-primary"
+								bind:checked={showStore}
+								disabled={isSaving}
+							/>
+						</label>
+						<label class="flex items-center justify-between cursor-pointer">
+							<div>
+								<span class="label-text font-medium">Årgang</span>
+								<span class="label-text-alt block text-xs opacity-70">Spor årgang og kjellerlager</span>
+							</div>
+							<input
+								type="checkbox"
+								class="toggle toggle-sm toggle-primary"
+								bind:checked={showVintage}
+								disabled={isSaving}
+							/>
+						</label>
+						<label class="flex items-center justify-between cursor-pointer">
+							<div>
+								<span class="label-text font-medium">Vis priser</span>
+								<span class="label-text-alt block text-xs opacity-70">Vis prisinformasjon på produkter</span>
+							</div>
+							<input
+								type="checkbox"
+								class="toggle toggle-sm toggle-primary"
+								bind:checked={showPrices}
+								disabled={isSaving}
+							/>
+						</label>
+					</div>
 				</div>
-			{/if}
+			</div>
+
+			<div class="form-control">
+				<label class="label" for="event-date">
+					<span class="label-text">Dato for arrangement</span>
+					<span class="label-text-alt text-xs opacity-50">Valgfritt</span>
+				</label>
+				<input
+					id="event-date"
+					type="date"
+					class="input input-bordered w-full"
+					bind:value={eventDate}
+					disabled={isSaving}
+				/>
+			</div>
 
 			<div class="modal-action">
 				<button type="button" class="btn btn-ghost" onclick={onClose} disabled={isSaving}>

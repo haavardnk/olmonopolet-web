@@ -193,7 +193,7 @@
 			{:else}
 				{#each lists as list (list.id)}
 					{@const inList = isProductInList(list, product.id)}
-					{@const isUntappd = list.listType === 'untappd'}
+					{@const isUntappd = !!list.untappdListId}
 					{#if !isUntappd || inList}
 						<li>
 							<button

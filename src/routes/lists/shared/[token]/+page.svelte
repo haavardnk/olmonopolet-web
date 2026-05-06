@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import type { Product, ListType, ListItemWithProduct, ListStats } from '$lib/types';
+	import type { Product, ListItemWithProduct, ListStats, UserList } from '$lib/types';
 	import Header from '$lib/components/common/Header.svelte';
 	import ListTypeBadge from '$lib/components/lists/ListTypeBadge.svelte';
 	import CellarStats from '$lib/components/lists/CellarStats.svelte';
@@ -8,22 +8,15 @@
 	import SharedListItem from '$lib/components/lists/SharedListItem.svelte';
 	import { CircleAlert, Beer, Share2, User, Calendar, MapPin } from '@lucide/svelte';
 	import { formatLongDate, getProductCountLabel } from '$lib/utils/formatters';
+	import { transformApiList } from '$lib/utils/lists';
 
 	let token = $derived($page.params.token);
-	let listName = $state('');
-	let listDescription = $state<string | null>(null);
+	let sharedList = $state<UserList | null>(null);
 	let ownerName = $state<string | null>(null);
-	let listType = $state<ListType>('standard');
-	let eventDate = $state<string | null>(null);
-	let selectedStoreId = $state<number | null>(null);
 	let storeName = $state<string | null>(null);
 	let listItems = $state<ListItemWithProduct[]>([]);
 	let isLoading = $state(true);
 	let error = $state<string | null>(null);
-
-	const isShopping = $derived(listType === 'shopping');
-	const isCellar = $derived(listType === 'cellar');
-	const isEvent = $derived(listType === 'event');
 
 	const totalItems = $derived(listItems.reduce((sum, item) => sum + (item.quantity ?? 1), 0));
 	const totalPrice = $derived(
@@ -35,7 +28,7 @@
 	);
 
 	const cellarStats = $derived.by((): ListStats | null => {
-		if (!isCellar) return null;
+		if (!sharedList?.showVintage) return null;
 		const years = listItems.map((i) => i.year).filter((y): y is number => y !== null);
 		return {
 			totalBottles: totalItems,
@@ -62,11 +55,7 @@
 				);
 
 			const data = await res.json();
-			listName = data.name;
-			listDescription = data.description;
-			listType = data.list_type || 'standard';
-			eventDate = data.event_date || null;
-			selectedStoreId = data.selected_store_id || null;
+			sharedList = transformApiList(data);
 			storeName = data.store_name || null;
 			ownerName =
 				data.user_name || data.owner_name || data.user?.name || data.user?.username || null;
@@ -75,7 +64,7 @@
 				const productIds = data.items.map((item: any) => String(item.product_id));
 				const uniqueProductIds = [...new Set(productIds)];
 
-				const storeParam = selectedStoreId ? `&check_store=${selectedStoreId}` : '';
+				const storeParam = sharedList.selectedStoreId ? `&check_store=${sharedList.selectedStoreId}` : '';
 				const prodRes = await fetch(`/api/products?ids=${uniqueProductIds.join(',')}${storeParam}`);
 				const productMap = new Map<string, Product>();
 				if (prodRes.ok) {
@@ -119,25 +108,25 @@
 		<div class="mt-4">
 			<a href="/products" class="btn btn-ghost">Utforsk produkter</a>
 		</div>
-	{:else}
+	{:else if sharedList}
 		<div class="mb-6">
 			<div class="flex items-center gap-2 text-sm text-base-content/60 mb-2">
 				<Share2 size={16} />
 				<span>Delt liste</span>
-				<ListTypeBadge {listType} />
+				<ListTypeBadge list={sharedList} />
 			</div>
-			<h1 class="text-3xl font-bold mb-2">{listName}</h1>
-			{#if listDescription}
-				<p class="text-base-content/70 mb-2">{listDescription}</p>
+			<h1 class="text-3xl font-bold mb-2">{sharedList.name}</h1>
+			{#if sharedList.description}
+				<p class="text-base-content/70 mb-2">{sharedList.description}</p>
 			{/if}
-			{#if isEvent && eventDate}
+			{#if sharedList.eventDate}
 				<div class="flex items-center gap-2 text-base-content/70 mb-2">
 					<Calendar size={16} />
-					<span>{formatLongDate(eventDate)}</span>
+					<span>{formatLongDate(sharedList.eventDate)}</span>
 				</div>
 			{/if}
 
-			{#if isCellar && cellarStats}
+			{#if sharedList.showVintage && cellarStats}
 				<CellarStats stats={cellarStats} />
 			{/if}
 
@@ -152,7 +141,7 @@
 					<Beer size={16} />
 					<span>{getProductCountLabel(totalItems)}</span>
 				</div>
-				{#if isShopping && storeName}
+				{#if sharedList.showStore && storeName}
 					<div class="flex items-center gap-1">
 						<MapPin size={16} />
 						<span>{storeName}</span>
@@ -170,11 +159,18 @@
 		{:else}
 			<div class="space-y-2">
 				{#each listItems as item (item.id)}
-					<SharedListItem {item} {listType} {selectedStoreId} />
+					<SharedListItem
+						{item}
+						showQuantity={sharedList.showQuantity}
+						showStore={sharedList.showStore}
+						showVintage={sharedList.showVintage}
+						showPrices={sharedList.showPrices}
+						selectedStoreId={sharedList.selectedStoreId}
+					/>
 				{/each}
 			</div>
 
-			{#if isShopping && listItems.length > 0}
+			{#if sharedList.showStore && listItems.length > 0}
 				<ShoppingTotalBar {totalPrice} totalQuantity={totalItems} {storeName} />
 			{/if}
 		{/if}
