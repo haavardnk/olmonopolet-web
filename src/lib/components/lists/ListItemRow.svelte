@@ -10,12 +10,15 @@
 		StickyNote,
 		ChevronDown,
 		ChevronUp,
-		Wine
+		Wine,
+		CircleCheck,
+		Circle
 	} from '@lucide/svelte';
 	import { dragHandle } from 'svelte-dnd-action';
 	import StarRating from '$lib/components/common/StarRating.svelte';
 	import defaultLabel from '$lib/assets/default-label.png';
 	import { formatISODate } from '$lib/utils/formatters';
+	import { authStore } from '$lib/stores/auth.svelte';
 
 	type Props = {
 		item: ListItemWithProduct;
@@ -29,10 +32,12 @@
 		expandedNotes: boolean;
 		editingNotes: boolean;
 		notesValue?: string;
+		isTogglingTasted?: boolean;
 		onQuantityChange: (itemId: string, delta: number) => void;
 		onYearChange: (itemId: string, year: number | null) => void;
 		onCreatedAtChange: (itemId: string, date: string) => void;
 		onRemove: (itemId: string, productId: string) => void;
+		onTastedToggle?: (productId: string, currentState: boolean) => void;
 		onToggleNotes: (itemId: string) => void;
 		onStartEditNotes: (itemId: string, currentNotes: string | null) => void;
 		onSaveNotes: (itemId: string, notes: string) => void;
@@ -52,10 +57,12 @@
 		expandedNotes,
 		editingNotes,
 		notesValue = '',
+		isTogglingTasted = false,
 		onQuantityChange,
 		onYearChange,
 		onCreatedAtChange,
 		onRemove,
+		onTastedToggle,
 		onToggleNotes,
 		onStartEditNotes,
 		onSaveNotes,
@@ -66,6 +73,7 @@
 	const product = $derived(item.product);
 	const canEditQuantity = $derived(showQuantity && !isReadOnly);
 	const showPrice = $derived(showPrices && product?.price);
+	let isTasted = $state(item.product?.userTasted ?? false);
 </script>
 
 {#if product}
@@ -92,6 +100,29 @@
 			</button>
 		{/if}
 
+		{#if authStore.isAuthenticated && onTastedToggle}
+			<button
+				type="button"
+				onclick={(e) => {
+					e.preventDefault();
+					e.stopPropagation();
+					onTastedToggle(product.id, isTasted);
+					isTasted = !isTasted;
+				}}
+				disabled={isTogglingTasted}
+				class="sm:hidden absolute top-2 z-10 btn btn-ghost btn-sm btn-square bg-base-300/80 {isTasted ? 'text-success right-12' : 'text-base-content/50 right-12'}"
+				aria-label={isTasted ? 'Marker som ikke smakt' : 'Marker som smakt'}
+			>
+				{#if isTogglingTasted}
+					<span class="loading loading-spinner loading-xs"></span>
+				{:else if isTasted}
+					<CircleCheck size={16} />
+				{:else}
+					<Circle size={16} />
+				{/if}
+			</button>
+		{/if}
+
 		<div class="card-body p-4 sm:p-3">
 			<div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-3">
 				{#if !isReadOnly}
@@ -103,6 +134,31 @@
 						>
 							<GripVertical size={20} />
 						</div>
+					</div>
+				{/if}
+
+				{#if authStore.isAuthenticated && onTastedToggle}
+					<div class="tooltip hidden sm:block" data-tip={isTasted ? 'Smakt' : 'Marker som smakt'}>
+						<button
+							type="button"
+							onclick={(e) => {
+								e.preventDefault();
+								e.stopPropagation();
+								onTastedToggle(product.id, isTasted);
+								isTasted = !isTasted;
+							}}
+							disabled={isTogglingTasted}
+							class="btn btn-ghost btn-sm btn-square {isTasted ? 'text-success' : 'text-base-content/40'}"
+							aria-label={isTasted ? 'Marker som ikke smakt' : 'Marker som smakt'}
+						>
+							{#if isTogglingTasted}
+								<span class="loading loading-spinner loading-xs"></span>
+							{:else if isTasted}
+								<CircleCheck size={18} />
+							{:else}
+								<Circle size={18} />
+							{/if}
+						</button>
 					</div>
 				{/if}
 

@@ -27,6 +27,7 @@
 	import { flip } from 'svelte/animate';
 	import { dragHandleZone, type DndEvent } from 'svelte-dnd-action';
 	import { transformApiList } from '$lib/utils/lists';
+	import { toggleTastedStatus } from '$lib/utils/tasted';
 	import { formatLongDate, formatCurrency } from '$lib/utils/formatters';
 	import { getProductCountLabel } from '$lib/utils/formatters';
 
@@ -438,6 +439,18 @@
 		updateItemField(itemId, 'created_at', date);
 	}
 
+	let tastedLoadingMap = $state<Map<string, boolean>>(new Map());
+
+	async function handleTastedToggle(productId: string, currentState: boolean) {
+		tastedLoadingMap.set(productId, true);
+		tastedLoadingMap = new Map(tastedLoadingMap);
+
+		await toggleTastedStatus(productId, currentState);
+
+		tastedLoadingMap.delete(productId);
+		tastedLoadingMap = new Map(tastedLoadingMap);
+	}
+
 	function toggleNotes(itemId: string) {
 		if (expandedNotes.has(itemId)) {
 			expandedNotes.delete(itemId);
@@ -674,10 +687,12 @@
 							expandedNotes={expandedNotes.has(item.id)}
 							editingNotes={editingNotesId === item.id}
 							{notesValue}
+							isTogglingTasted={tastedLoadingMap.get(item.productId) || false}
 							onQuantityChange={handleQuantityChange}
 							onYearChange={handleYearChange}
 							onCreatedAtChange={handleCreatedAtChange}
 							onRemove={removeItem}
+							onTastedToggle={handleTastedToggle}
 							onToggleNotes={toggleNotes}
 							onStartEditNotes={startEditNotes}
 							onSaveNotes={saveNotes}
