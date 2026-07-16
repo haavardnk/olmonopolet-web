@@ -4,6 +4,7 @@
 	import { authStore } from '$lib/stores/auth.svelte';
 	import { ArrowLeft, Mail, Upload, Rss, LogOut, Trash2, CircleAlert } from '@lucide/svelte';
 	import Header from '$lib/components/common/Header.svelte';
+	import ExtensionConnect from '$lib/components/common/ExtensionConnect.svelte';
 
 	let canGoBack = $state(false);
 	let showLogoutModal = $state(false);
@@ -195,6 +196,8 @@
 				<div class="divider text-xs uppercase tracking-wider text-base-content/50">Handlinger</div>
 
 				<div class="w-full space-y-2">
+					<ExtensionConnect />
+
 					<a href="/profile/import-tasted/" class="btn btn-ghost btn-block justify-start gap-3">
 						<Upload size={18} />
 						Importer Untappd-innsjekkinger

@@ -18,6 +18,7 @@ import { auth } from '$lib/firebase/client';
 import { listsStore } from '$lib/stores/lists.svelte';
 import { tastedStore } from '$lib/stores/tasted.svelte';
 import { fetchAndSetLists } from '$lib/utils/lists';
+import { connectExtension, logoutExtension } from '$lib/extension';
 
 export interface AuthUser {
 	uid: string;
@@ -81,6 +82,7 @@ function createAuthStore() {
 		});
 		syncedUid = firebaseUser.uid;
 		fetchAndSetLists(true).catch((e) => console.error('Failed to load lists:', e));
+		connectExtension().catch(() => {});
 	}
 
 	if (browser && auth) {
@@ -199,6 +201,7 @@ function createAuthStore() {
 		try {
 			await firebaseSignOut(auth);
 			await fetch('/api/auth/logout', { method: 'POST' });
+			logoutExtension().catch(() => {});
 			user = null;
 			listsStore.clear();
 			tastedStore.clear();
