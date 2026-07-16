@@ -1,6 +1,19 @@
 import { browser } from '$app/environment';
+import { PUBLIC_EXTENSION_IDS } from '$env/static/public';
 
-const EXTENSION_IDS = ['fcffhcjmjfpnpkfjcmijkailmhglnjph'];
+const DEV_EXTENSION_ID = 'fcffhcjmjfpnpkfjcmijkailmhglnjph';
+
+const EXTENSION_IDS = [
+	...new Set(
+		[
+			...(PUBLIC_EXTENSION_IDS ?? '')
+				.split(',')
+				.map((id) => id.trim())
+				.filter(Boolean),
+			DEV_EXTENSION_ID
+		].filter(Boolean)
+	)
+];
 
 interface ChromeRuntime {
 	sendMessage: (id: string, message: unknown, callback: (response: unknown) => void) => void;
