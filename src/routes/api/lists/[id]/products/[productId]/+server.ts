@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types';
-import { API_URL } from '$env/static/private';
+import { apiFetch } from '$lib/server/apiFetch';
 import { json, error } from '@sveltejs/kit';
 import { getSession } from '$lib/server/auth';
 import { NO_CACHE_HEADERS } from '$lib/server/cache';
@@ -7,7 +7,7 @@ import { NO_CACHE_HEADERS } from '$lib/server/cache';
 export const POST: RequestHandler = async ({ params, cookies }) => {
 	const session = getSession(cookies);
 	try {
-		const res = await fetch(`${API_URL}/lists/${params.id}/products/${params.productId}/`, {
+		const res = await apiFetch(`/lists/${params.id}/products/${params.productId}/`, {
 			method: 'POST',
 			headers: { Cookie: `session=${session}` }
 		});
@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ params, cookies }) => {
 export const DELETE: RequestHandler = async ({ params, cookies }) => {
 	const session = getSession(cookies);
 	try {
-		const res = await fetch(`${API_URL}/lists/${params.id}/products/${params.productId}/`, {
+		const res = await apiFetch(`/lists/${params.id}/products/${params.productId}/`, {
 			method: 'DELETE',
 			headers: { Cookie: `session=${session}` }
 		});

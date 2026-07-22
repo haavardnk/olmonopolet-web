@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types';
-import { API_URL } from '$env/static/private';
+import { apiFetch } from '$lib/server/apiFetch';
 import { json, error } from '@sveltejs/kit';
 import { getSession } from '$lib/server/auth';
 import { NO_CACHE_HEADERS } from '$lib/server/cache';
@@ -7,7 +7,7 @@ import { NO_CACHE_HEADERS } from '$lib/server/cache';
 export const GET: RequestHandler = async ({ cookies }) => {
 	const session = getSession(cookies);
 	try {
-		const res = await fetch(`${API_URL}/rss/me/`, {
+		const res = await apiFetch(`/rss/me/`, {
 			headers: { Cookie: `session=${session}` }
 		});
 		if (res.status === 404) return json(null, { status: 404, headers: NO_CACHE_HEADERS });
@@ -23,7 +23,7 @@ export const PUT: RequestHandler = async ({ request, cookies }) => {
 	const session = getSession(cookies);
 	try {
 		const body = await request.json();
-		const res = await fetch(`${API_URL}/rss/me/`, {
+		const res = await apiFetch(`/rss/me/`, {
 			method: 'PUT',
 			headers: { 'Content-Type': 'application/json', Cookie: `session=${session}` },
 			body: JSON.stringify(body)
@@ -45,7 +45,7 @@ export const PUT: RequestHandler = async ({ request, cookies }) => {
 export const DELETE: RequestHandler = async ({ cookies }) => {
 	const session = getSession(cookies);
 	try {
-		const res = await fetch(`${API_URL}/rss/me/`, {
+		const res = await apiFetch(`/rss/me/`, {
 			method: 'DELETE',
 			headers: { Cookie: `session=${session}` }
 		});

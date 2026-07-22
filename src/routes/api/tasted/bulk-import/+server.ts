@@ -1,14 +1,11 @@
 import type { RequestHandler } from './$types';
-import { API_URL } from '$env/static/private';
+import { apiFetch } from '$lib/server/apiFetch';
 import { json, error } from '@sveltejs/kit';
 import { getSession } from '$lib/server/auth';
 import { NO_CACHE_HEADERS } from '$lib/server/cache';
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
 	const session = getSession(cookies);
-	if (!API_URL) {
-		throw error(500, 'Missing API_URL configuration');
-	}
 
 	try {
 		const formData = await request.formData();
@@ -25,8 +22,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		});
 		apiFormData.append('file', blob, file.name || 'untappd-export');
 
-		const apiUrl = `${API_URL}/beers/bulk_mark_tasted/`;
-		const response = await fetch(apiUrl, {
+		const apiUrl = `/beers/bulk_mark_tasted/`;
+		const response = await apiFetch(apiUrl, {
 			method: 'POST',
 			headers: {
 				Cookie: `session=${session}`

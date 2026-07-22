@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types';
-import { API_URL } from '$env/static/private';
+import { apiFetch } from '$lib/server/apiFetch';
 import { json, error } from '@sveltejs/kit';
 import { getSession } from '$lib/server/auth';
 import { NO_CACHE_HEADERS } from '$lib/server/cache';
@@ -7,7 +7,7 @@ import { NO_CACHE_HEADERS } from '$lib/server/cache';
 export const GET: RequestHandler = async ({ cookies }) => {
 	const session = getSession(cookies);
 	try {
-		const res = await fetch(`${API_URL}/auth/extension-token/`, {
+		const res = await apiFetch(`/auth/extension-token/`, {
 			headers: { Cookie: `session=${session}` }
 		});
 		if (!res.ok) throw error(res.status, await res.text());
@@ -21,7 +21,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
 export const DELETE: RequestHandler = async ({ cookies }) => {
 	const session = getSession(cookies);
 	try {
-		const res = await fetch(`${API_URL}/auth/extension-token/`, {
+		const res = await apiFetch(`/auth/extension-token/`, {
 			method: 'DELETE',
 			headers: { Cookie: `session=${session}` }
 		});

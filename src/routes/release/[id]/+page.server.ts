@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
-import { API_URL } from '$env/static/private';
+import { apiFetch } from '$lib/server/apiFetch';
 import type {
 	Product,
 	Release,
@@ -19,8 +19,8 @@ export const load: PageServerLoad = async ({ params, fetch, setHeaders, cookies 
 
 	const name = unslugify(params.id);
 	try {
-		const releaseInfoUrl = `${API_URL}/release/${encodeURIComponent(name)}/?fields=name,release_date,product_selections,product_stats,is_christmas_release`;
-		const releaseInfoRes = await fetch(releaseInfoUrl);
+		const releaseInfoUrl = `/release/${encodeURIComponent(name)}/?fields=name,release_date,product_selections,product_stats,is_christmas_release`;
+		const releaseInfoRes = await apiFetch(releaseInfoUrl, {}, fetch);
 		if (!releaseInfoRes.ok) {
 			if (releaseInfoRes.status === 404) {
 				throw error(404, { message: 'Lansering ikke funnet' });
@@ -52,14 +52,14 @@ export const load: PageServerLoad = async ({ params, fetch, setHeaders, cookies 
 		const productsPromise = (async () => {
 			const fields =
 				'vmp_id,vmp_name,price,rating,checkins,label_sm_url,main_category,sub_category,style,is_christmas_beer,stock,abv,user_checked_in,user_wishlisted,user_tasted,volume,price_per_volume,vmp_url,untpd_url,untpd_id,country,country_code,product_selection';
-			const productsUrl = `${API_URL}/beers/?fields=${fields}&release=${encodeURIComponent(name)}&ordering=-rating&page_size=1000`;
+			const productsUrl = `/beers/?fields=${fields}&release=${encodeURIComponent(name)}&ordering=-rating&page_size=1000`;
 
 			const headers: Record<string, string> = {};
 			if (sessionCookie) {
 				headers.Cookie = `session=${sessionCookie}`;
 			}
 
-			const productsRes = await fetch(productsUrl, { headers });
+			const productsRes = await apiFetch(productsUrl, { headers }, fetch);
 			if (!productsRes.ok) {
 				if (productsRes.status === 404) {
 					throw error(404, { message: 'Øl ikke funnet' });

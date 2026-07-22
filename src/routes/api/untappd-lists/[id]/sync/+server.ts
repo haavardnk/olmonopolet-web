@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types';
-import { API_URL } from '$env/static/private';
+import { apiFetch } from '$lib/server/apiFetch';
 import { json, error } from '@sveltejs/kit';
 import { getSession } from '$lib/server/auth';
 import { NO_CACHE_HEADERS } from '$lib/server/cache';
@@ -7,7 +7,7 @@ import { NO_CACHE_HEADERS } from '$lib/server/cache';
 export const POST: RequestHandler = async ({ params, cookies }) => {
 	const session = getSession(cookies);
 	try {
-		const res = await fetch(`${API_URL}/untappd-lists/${params.id}/sync/`, {
+		const res = await apiFetch(`/untappd-lists/${params.id}/sync/`, {
 			method: 'POST',
 			headers: { Cookie: `session=${session}` }
 		});

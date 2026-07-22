@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types';
-import { API_URL } from '$env/static/private';
+import { apiFetch } from '$lib/server/apiFetch';
 import { json, error } from '@sveltejs/kit';
 import { getSession } from '$lib/server/auth';
 import { NO_CACHE_HEADERS } from '$lib/server/cache';
@@ -7,7 +7,7 @@ import { NO_CACHE_HEADERS } from '$lib/server/cache';
 export const GET: RequestHandler = async ({ params, cookies }) => {
 	const session = getSession(cookies);
 	try {
-		const res = await fetch(`${API_URL}/lists/${params.id}/`, {
+		const res = await apiFetch(`/lists/${params.id}/`, {
 			headers: { Cookie: `session=${session}` }
 		});
 		if (!res.ok) throw error(res.status, await res.text());
@@ -22,7 +22,7 @@ export const PUT: RequestHandler = async ({ params, request, cookies }) => {
 	const session = getSession(cookies);
 	try {
 		const body = await request.json();
-		const res = await fetch(`${API_URL}/lists/${params.id}/`, {
+		const res = await apiFetch(`/lists/${params.id}/`, {
 			method: 'PUT',
 			headers: { 'Content-Type': 'application/json', Cookie: `session=${session}` },
 			body: JSON.stringify(body)
@@ -38,7 +38,7 @@ export const PUT: RequestHandler = async ({ params, request, cookies }) => {
 export const DELETE: RequestHandler = async ({ params, cookies }) => {
 	const session = getSession(cookies);
 	try {
-		const res = await fetch(`${API_URL}/lists/${params.id}/`, {
+		const res = await apiFetch(`/lists/${params.id}/`, {
 			method: 'DELETE',
 			headers: { Cookie: `session=${session}` }
 		});
@@ -54,7 +54,7 @@ export const PATCH: RequestHandler = async ({ params, request, cookies }) => {
 	const session = getSession(cookies);
 	try {
 		const body = await request.json();
-		const res = await fetch(`${API_URL}/lists/${params.id}/`, {
+		const res = await apiFetch(`/lists/${params.id}/`, {
 			method: 'PATCH',
 			headers: { 'Content-Type': 'application/json', Cookie: `session=${session}` },
 			body: JSON.stringify(body)

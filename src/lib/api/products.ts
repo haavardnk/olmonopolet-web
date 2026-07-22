@@ -1,4 +1,4 @@
-import { API_URL } from '$env/static/private';
+import { apiFetch } from '$lib/server/apiFetch';
 import type {
 	ProductFilters,
 	ProductListResponse,
@@ -89,14 +89,14 @@ export async function fetchProducts(
 		}
 	}
 
-	const url = `${API_URL}/beers/?${params.toString()}`;
+	const url = `/beers/?${params.toString()}`;
 
 	const headers: HeadersInit = {};
 	if (cookies) {
 		headers['Cookie'] = cookies;
 	}
 
-	const response = await fetch(url, { headers });
+	const response = await apiFetch(url, { headers });
 
 	if (!response.ok) {
 		throw new Error(`Failed to fetch products: ${response.status} ${response.statusText}`);
@@ -112,9 +112,9 @@ export async function fetchStores(): Promise<StoreListResponse> {
 		page_size: '500'
 	});
 
-	const url = `${API_URL}/stores/?${params.toString()}`;
+	const url = `/stores/?${params.toString()}`;
 
-	const response = await fetch(url);
+	const response = await apiFetch(url);
 
 	if (!response.ok) {
 		throw new Error(`Failed to fetch stores: ${response.status} ${response.statusText}`);
@@ -130,9 +130,9 @@ export async function fetchReleases(): Promise<ReleaseListResponse> {
 		fields
 	});
 
-	const url = `${API_URL}/release/?${params.toString()}`;
+	const url = `/release/?${params.toString()}`;
 
-	const response = await fetch(url);
+	const response = await apiFetch(url);
 
 	if (!response.ok) {
 		throw new Error(`Failed to fetch releases: ${response.status} ${response.statusText}`);
@@ -142,9 +142,9 @@ export async function fetchReleases(): Promise<ReleaseListResponse> {
 }
 
 export async function fetchStyles(): Promise<string[]> {
-	const url = `${API_URL}/beers/styles/`;
+	const url = `/beers/styles/`;
 
-	const response = await fetch(url);
+	const response = await apiFetch(url);
 
 	if (!response.ok) {
 		throw new Error(`Failed to fetch styles: ${response.status} ${response.statusText}`);
@@ -154,9 +154,9 @@ export async function fetchStyles(): Promise<string[]> {
 }
 
 export async function fetchCountries(): Promise<Country[]> {
-	const url = `${API_URL}/countries/active/`;
+	const url = `/countries/active/`;
 
-	const response = await fetch(url);
+	const response = await apiFetch(url);
 
 	if (!response.ok) {
 		throw new Error(`Failed to fetch countries: ${response.status} ${response.statusText}`);

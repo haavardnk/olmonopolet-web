@@ -1,12 +1,12 @@
 import type { RequestHandler } from './$types';
-import { API_URL } from '$env/static/private';
+import { apiFetch } from '$lib/server/apiFetch';
 import { error } from '@sveltejs/kit';
 import { getSession } from '$lib/server/auth';
 
 export const POST: RequestHandler = async ({ params, cookies }) => {
 	const session = getSession(cookies);
 	try {
-		const res = await fetch(`${API_URL}/lists/shared/${params.token}/follow/`, {
+		const res = await apiFetch(`/lists/shared/${params.token}/follow/`, {
 			method: 'POST',
 			headers: { Cookie: `session=${session}` }
 		});

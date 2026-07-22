@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types';
-import { API_URL } from '$env/static/private';
+import { apiFetch } from '$lib/server/apiFetch';
 import type { Release, ReleaseListResponse, ApiRelease } from '$lib/types';
 import { formatDate, getAssortmentDisplayName } from '$lib/utils/helpers';
 import { LONG_CACHE_HEADERS } from '$lib/server/cache';
@@ -10,8 +10,8 @@ export const load: PageServerLoad = async ({ fetch, url, setHeaders }) => {
 	try {
 		const page = Number(url.searchParams.get('page')) || 1;
 		const page_size = 5;
-		const apiUrl = `${API_URL}/release/?fields=name,release_date,product_selections,product_stats,is_christmas_release&page_size=${page_size}&page=${page}`;
-		const response = await fetch(apiUrl);
+		const apiUrl = `/release/?fields=name,release_date,product_selections,product_stats,is_christmas_release&page_size=${page_size}&page=${page}`;
+		const response = await apiFetch(apiUrl, {}, fetch);
 
 		if (!response.ok) {
 			throw new Error(`API returnerte ${response.status}: ${response.statusText}`);

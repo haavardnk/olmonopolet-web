@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
-import { API_URL } from '$env/static/private';
+import { apiFetch } from '$lib/server/apiFetch';
 import type { Product, Store, ProductListResponse, ApiProduct } from '$lib/types';
 import { normalizeCharacteristic, getAssortmentDisplayName } from '$lib/utils/helpers';
 import logo from '$lib/assets/logo.png';
@@ -13,14 +13,14 @@ export const load: PageServerLoad = async ({ params, fetch, setHeaders, cookies 
 	setHeaders(sessionCookie ? NO_CACHE_HEADERS : LONG_CACHE_HEADERS);
 
 	try {
-		const apiUrl = `${API_URL}/beers/?beers=${id}&all_stock=true`;
+		const apiUrl = `/beers/?beers=${id}&all_stock=true`;
 
 		const headers: HeadersInit = {};
 		if (sessionCookie) {
 			headers['Cookie'] = `session=${sessionCookie}`;
 		}
 
-		const response = await fetch(apiUrl, { headers });
+		const response = await apiFetch(apiUrl, { headers }, fetch);
 
 		if (!response.ok) {
 			if (response.status === 404) {

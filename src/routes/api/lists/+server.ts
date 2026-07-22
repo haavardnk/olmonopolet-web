@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types';
-import { API_URL } from '$env/static/private';
+import { apiFetch } from '$lib/server/apiFetch';
 import { json, error } from '@sveltejs/kit';
 import { getSession } from '$lib/server/auth';
 import { NO_CACHE_HEADERS } from '$lib/server/cache';
@@ -7,7 +7,7 @@ import { NO_CACHE_HEADERS } from '$lib/server/cache';
 export const GET: RequestHandler = async ({ cookies }) => {
 	const session = getSession(cookies);
 	try {
-		const res = await fetch(`${API_URL}/lists/`, {
+		const res = await apiFetch(`/lists/`, {
 			headers: { Cookie: `session=${session}` }
 		});
 		if (!res.ok) throw error(res.status, await res.text());
@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 	const session = getSession(cookies);
 	try {
 		const body = await request.json();
-		const res = await fetch(`${API_URL}/lists/`, {
+		const res = await apiFetch(`/lists/`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json', Cookie: `session=${session}` },
 			body: JSON.stringify(body)
