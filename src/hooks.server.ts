@@ -1,8 +1,25 @@
-import type { Handle } from '@sveltejs/kit';
+import type { Handle, RequestEvent } from '@sveltejs/kit';
 import { verifySessionCookie } from '$lib/firebase/admin.server';
 import { adminAuth } from '$lib/firebase/admin.server';
 
+function isSameOriginRequest(event: RequestEvent): boolean {
+	const site = event.request.headers.get('sec-fetch-site');
+	if (site) return site === 'same-origin';
+
+	const origin = event.request.headers.get('origin');
+	if (origin) return origin === event.url.origin;
+
+	const referer = event.request.headers.get('referer');
+	if (referer) return referer.startsWith(`${event.url.origin}/`);
+
+	return false;
+}
+
 export const handle: Handle = async ({ event, resolve }) => {
+	if (event.url.pathname.startsWith('/api/') && !isSameOriginRequest(event)) {
+		return new Response('Forbidden', { status: 403 });
+	}
+
 	const sessionCookie = event.cookies.get('session');
 
 	if (sessionCookie) {
