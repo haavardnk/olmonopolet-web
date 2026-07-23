@@ -55,7 +55,7 @@
 								class="group flex items-baseline gap-2 text-sm hover:text-primary transition-colors"
 							>
 								<span class="text-xs text-base-content/30 tabular-nums shrink-0">
-									{formatShortDate(post.publishedAt)}
+									{formatShortDate(post.published_at)}
 								</span>
 								<span class="line-clamp-1 group-hover:underline underline-offset-2">
 									{post.title}
