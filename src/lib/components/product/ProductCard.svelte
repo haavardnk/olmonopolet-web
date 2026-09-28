@@ -136,7 +136,10 @@
 				<div class="flex items-center gap-3">
 					<StarRating rating={product.rating} size={20} showValue={true} />
 					{#if product.valueScore && valueProgressClass}
-						<div class="tooltip tooltip-top pointer-events-auto z-50" data-tip="Verdi for pengene — basert på vurdering og literpris">
+						<div
+							class="tooltip tooltip-top pointer-events-auto z-50"
+							data-tip="Verdi for pengene — basert på vurdering og literpris"
+						>
 							<progress
 								class="progress {valueProgressClass} w-16 h-1.5"
 								value={Math.min(product.valueScore, 20)}

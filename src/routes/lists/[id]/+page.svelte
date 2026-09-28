@@ -512,7 +512,9 @@
 			<span>Du må være innlogget for å se denne listen.</span>
 		</div>
 		<div class="mt-4">
-			<a href="/login?redirect={encodeURIComponent($page.url.pathname)}" class="btn btn-primary">Logg inn</a>
+			<a href="/login?redirect={encodeURIComponent($page.url.pathname)}" class="btn btn-primary"
+				>Logg inn</a
+			>
 		</div>
 	</div>
 {:else if isLoading}
@@ -538,7 +540,7 @@
 			<div class="flex flex-wrap items-start justify-between gap-2 mb-2">
 				<div class="flex flex-wrap items-center gap-2">
 					<h1 class="text-3xl font-bold">{list.name}</h1>
-					<ListTypeBadge list={list} size="md" />
+					<ListTypeBadge {list} size="md" />
 					{#if list.isPast}
 						<span class="badge badge-ghost">Passert</span>
 					{/if}
@@ -633,7 +635,16 @@
 			<div class="flex items-center justify-between gap-4">
 				<div class="flex items-center gap-1 text-sm text-base-content/60">
 					<Beer size={16} />
-					<span>{getProductCountLabel(listItems.length)}{#if liveStats}&nbsp;·&nbsp;{liveStats.totalBottles}&nbsp;{liveStats.totalBottles === 1 ? 'flaske' : 'flasker'}{#if liveStats.totalValue > 0 && !list.showStore}&nbsp;·&nbsp;{formatCurrency(liveStats.totalValue)}{/if}{/if}</span>
+					<span
+						>{getProductCountLabel(
+							listItems.length
+						)}{#if liveStats}&nbsp;·&nbsp;{liveStats.totalBottles}&nbsp;{liveStats.totalBottles ===
+							1
+								? 'flaske'
+								: 'flasker'}{#if liveStats.totalValue > 0 && !list.showStore}&nbsp;·&nbsp;{formatCurrency(
+									liveStats.totalValue
+								)}{/if}{/if}</span
+					>
 				</div>
 				{#if list.showStore}
 					<StoreSelector {selectedStoreId} onSelect={handleStoreChange} />

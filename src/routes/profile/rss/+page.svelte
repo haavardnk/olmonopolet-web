@@ -277,7 +277,11 @@
 				</div>
 
 				<div class="flex gap-3 mt-4">
-					<button class="btn btn-primary" disabled={saving || !feedUrl?.trim()} onclick={handleSave}>
+					<button
+						class="btn btn-primary"
+						disabled={saving || !feedUrl?.trim()}
+						onclick={handleSave}
+					>
 						{#if saving}
 							<span class="loading loading-spinner loading-sm"></span>
 						{/if}

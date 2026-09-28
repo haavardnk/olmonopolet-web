@@ -6,7 +6,16 @@
 	import CellarStats from '$lib/components/lists/CellarStats.svelte';
 	import ShoppingTotalBar from '$lib/components/lists/ShoppingTotalBar.svelte';
 	import SharedListItem from '$lib/components/lists/SharedListItem.svelte';
-	import { CircleAlert, Beer, Share2, User, Calendar, MapPin, Bookmark, ArrowLeft } from '@lucide/svelte';
+	import {
+		CircleAlert,
+		Beer,
+		Share2,
+		User,
+		Calendar,
+		MapPin,
+		Bookmark,
+		ArrowLeft
+	} from '@lucide/svelte';
 	import { formatLongDate, getProductCountLabel } from '$lib/utils/formatters';
 	import { transformApiList } from '$lib/utils/lists';
 	import { authStore } from '$lib/stores/auth.svelte';
@@ -24,15 +33,11 @@
 	const isAuthenticated = $derived(authStore.isAuthenticated);
 	const isOwnList = $derived(
 		!!token &&
-			Array.from(listsStore.lists.values()).some(
-				(l) => !l.isFollowed && l.shareToken === token
-			)
+			Array.from(listsStore.lists.values()).some((l) => !l.isFollowed && l.shareToken === token)
 	);
 	const isFollowing = $derived(
 		!!token &&
-			Array.from(listsStore.lists.values()).some(
-				(l) => l.isFollowed && l.shareToken === token
-			)
+			Array.from(listsStore.lists.values()).some((l) => l.isFollowed && l.shareToken === token)
 	);
 
 	const totalItems = $derived(listItems.reduce((sum, item) => sum + (item.quantity ?? 1), 0));
@@ -81,7 +86,9 @@
 				const productIds = data.items.map((item: any) => String(item.product_id));
 				const uniqueProductIds = [...new Set(productIds)];
 
-				const storeParam = sharedList.selectedStoreId ? `&check_store=${sharedList.selectedStoreId}` : '';
+				const storeParam = sharedList.selectedStoreId
+					? `&check_store=${sharedList.selectedStoreId}`
+					: '';
 				const prodRes = await fetch(`/api/products?ids=${uniqueProductIds.join(',')}${storeParam}`);
 				const productMap = new Map<string, Product>();
 				if (prodRes.ok) {

@@ -112,7 +112,9 @@
 					isTasted = !isTasted;
 				}}
 				disabled={isTogglingTasted}
-				class="sm:hidden absolute top-2 z-10 btn btn-ghost btn-sm btn-square bg-base-300/80 {isTasted ? 'text-success right-12' : 'text-base-content/50 right-12'}"
+				class="sm:hidden absolute top-2 z-10 btn btn-ghost btn-sm btn-square bg-base-300/80 {isTasted
+					? 'text-success right-12'
+					: 'text-base-content/50 right-12'}"
 				aria-label={isTasted ? 'Marker som ikke smakt' : 'Marker som smakt'}
 			>
 				{#if isTogglingTasted}
@@ -150,7 +152,9 @@
 								isTasted = !isTasted;
 							}}
 							disabled={isTogglingTasted}
-							class="btn btn-ghost btn-sm btn-square {isTasted ? 'text-success' : 'text-base-content/40'}"
+							class="btn btn-ghost btn-sm btn-square {isTasted
+								? 'text-success'
+								: 'text-base-content/40'}"
 							aria-label={isTasted ? 'Marker som ikke smakt' : 'Marker som smakt'}
 						>
 							{#if isTogglingTasted}

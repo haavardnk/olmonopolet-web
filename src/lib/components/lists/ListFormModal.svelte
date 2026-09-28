@@ -155,7 +155,10 @@
 				</div>
 			</fieldset>
 
-			<div class="collapse collapse-arrow bg-base-200 rounded-lg" class:collapse-open={customizeOpen}>
+			<div
+				class="collapse collapse-arrow bg-base-200 rounded-lg"
+				class:collapse-open={customizeOpen}
+			>
 				<button
 					type="button"
 					class="collapse-title text-sm font-medium min-h-0 py-2 px-4"
@@ -168,7 +171,9 @@
 						<label class="flex items-center justify-between cursor-pointer">
 							<div>
 								<span class="label-text font-medium">Antall</span>
-								<span class="label-text-alt block text-xs opacity-70">Mengdekontroller på hvert produkt</span>
+								<span class="label-text-alt block text-xs opacity-70"
+									>Mengdekontroller på hvert produkt</span
+								>
 							</div>
 							<input
 								type="checkbox"
@@ -180,7 +185,9 @@
 						<label class="flex items-center justify-between cursor-pointer">
 							<div>
 								<span class="label-text font-medium">Butikk</span>
-								<span class="label-text-alt block text-xs opacity-70">Lagerstatus og butikkvalg</span>
+								<span class="label-text-alt block text-xs opacity-70"
+									>Lagerstatus og butikkvalg</span
+								>
 							</div>
 							<input
 								type="checkbox"
@@ -192,7 +199,9 @@
 						<label class="flex items-center justify-between cursor-pointer">
 							<div>
 								<span class="label-text font-medium">Årgang</span>
-								<span class="label-text-alt block text-xs opacity-70">Spor årgang og kjellerlager</span>
+								<span class="label-text-alt block text-xs opacity-70"
+									>Spor årgang og kjellerlager</span
+								>
 							</div>
 							<input
 								type="checkbox"
@@ -204,7 +213,9 @@
 						<label class="flex items-center justify-between cursor-pointer">
 							<div>
 								<span class="label-text font-medium">Vis priser</span>
-								<span class="label-text-alt block text-xs opacity-70">Vis prisinformasjon på produkter</span>
+								<span class="label-text-alt block text-xs opacity-70"
+									>Vis prisinformasjon på produkter</span
+								>
 							</div>
 							<input
 								type="checkbox"
@@ -216,7 +227,9 @@
 						<label class="flex items-center justify-between cursor-pointer">
 							<div>
 								<span class="label-text font-medium">Notater</span>
-								<span class="label-text-alt block text-xs opacity-70">Legg til notater på hvert produkt</span>
+								<span class="label-text-alt block text-xs opacity-70"
+									>Legg til notater på hvert produkt</span
+								>
 							</div>
 							<input
 								type="checkbox"

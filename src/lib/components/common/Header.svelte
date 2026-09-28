@@ -14,9 +14,7 @@
 
 	const appPrefixes = ['/products', '/lists', '/profile', '/import-tasted'];
 
-	const appMatch = $derived(
-		appPrefixes.find((p) => $page.url.pathname.startsWith(p))
-	);
+	const appMatch = $derived(appPrefixes.find((p) => $page.url.pathname.startsWith(p)));
 
 	const isAppRoute = $derived(!!appMatch);
 
