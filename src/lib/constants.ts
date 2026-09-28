@@ -20,6 +20,12 @@ export const PRODUCT_SELECTIONS = [
 	{ label: 'Tilleggsutvalget', value: 'tilleggsutvalget' }
 ] as const;
 
+export const PACKAGE_TYPES = [
+	{ label: 'Flaske', value: 'bottle' },
+	{ label: 'Boks', value: 'can' },
+	{ label: 'Annet', value: 'other' }
+] as const;
+
 export const ALLERGENS = [
 	{ label: 'Gluten', value: 'gluten, bygg, spelt, hvete, havre, rug' },
 	{ label: 'Laktose', value: 'laktose, melk' },

@@ -60,6 +60,7 @@ export async function fetchProducts(
 	if (filters.style) params.append('style', filters.style);
 	if (filters.country) params.append('country', filters.country);
 	if (filters.productSelection) params.append('product_selection', filters.productSelection);
+	if (filters.packageType) params.append('package_type', filters.packageType);
 	if (filters.search) params.append('search', filters.search);
 	if (filters.release) params.append('release', filters.release);
 	if (filters.isChristmasBeer) params.append('is_christmas_beer', filters.isChristmasBeer);

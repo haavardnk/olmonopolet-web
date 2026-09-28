@@ -6,6 +6,7 @@
 	import StyleFilter from '$lib/components/product-list/filters/StyleFilter.svelte';
 	import CountryFilter from '$lib/components/product-list/filters/CountryFilter.svelte';
 	import ProductSelectionFilter from '$lib/components/product-list/filters/ProductSelectionFilter.svelte';
+	import PackageTypeFilter from '$lib/components/product-list/filters/PackageTypeFilter.svelte';
 	import AllergenFilter from '$lib/components/product-list/filters/AllergenFilter.svelte';
 	import DeliveryFilter from '$lib/components/product-list/filters/DeliveryFilter.svelte';
 	import ReleaseFilter from '$lib/components/product-list/filters/ReleaseFilter.svelte';
@@ -23,6 +24,7 @@
 			country: string;
 			deliveryOptions: string;
 			is_christmas_beer: string;
+			packageType: string;
 			priceFrom: string;
 			pricePerLiterFrom: string;
 			pricePerLiterTo: string;
@@ -40,6 +42,7 @@
 	let selectedCategories = $state<string[]>([]);
 	let selectedCountries = $state<string[]>([]);
 	let selectedDeliveryOptions = $state<string[]>([]);
+	let selectedPackageTypes = $state<string[]>([]);
 	let selectedProductSelections = $state<string[]>([]);
 	let selectedReleases = $state<string[]>([]);
 	let selectedStores = $state<number[]>([]);
@@ -49,6 +52,7 @@
 		allergens: false,
 		country: false,
 		delivery: false,
+		packageType: false,
 		productSelection: false,
 		release: false,
 		store: false,
@@ -60,6 +64,7 @@
 		selectedCategories = filters.main_category ? filters.main_category.split(',') : [];
 		selectedCountries = filters.country ? filters.country.split(',') : [];
 		selectedDeliveryOptions = filters.deliveryOptions ? filters.deliveryOptions.split(',') : [];
+		selectedPackageTypes = filters.packageType ? filters.packageType.split(',') : [];
 		selectedProductSelections = filters.productSelection ? filters.productSelection.split(',') : [];
 		selectedReleases = filters.release ? filters.release.split(',') : [];
 		selectedStores = filters.store
@@ -87,6 +92,7 @@
 
 	$effect(() => syncArrayToFilter(selectedCountries, 'country'));
 	$effect(() => syncArrayToFilter(selectedDeliveryOptions, 'deliveryOptions'));
+	$effect(() => syncArrayToFilter(selectedPackageTypes, 'packageType'));
 	$effect(() => syncArrayToFilter(selectedProductSelections, 'productSelection'));
 	$effect(() => syncArrayToFilter(selectedReleases, 'release'));
 	$effect(() => syncArrayToFilter(selectedStores, 'store'));
@@ -204,6 +210,12 @@
 	<ProductSelectionFilter
 		bind:selectedProductSelections
 		bind:isOpen={openSections.productSelection}
+		{onFilterChange}
+	/>
+
+	<PackageTypeFilter
+		bind:selectedPackageTypes
+		bind:isOpen={openSections.packageType}
 		{onFilterChange}
 	/>
 

@@ -84,6 +84,7 @@ export interface ProductFilters {
 	abvTo?: string;
 	allergens?: string;
 	productSelection?: string;
+	packageType?: string;
 	deliveryOptions?: string;
 	release?: string;
 	search?: string;

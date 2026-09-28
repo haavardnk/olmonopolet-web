@@ -18,6 +18,7 @@ export const load = async ({ url, cookies }: { url: URL; cookies: any }) => {
 	const abvTo = searchParams.get('abvTo') || '';
 	const allergens = searchParams.get('allergens') || '';
 	const productSelection = searchParams.get('productSelection') || '';
+	const packageType = searchParams.get('packageType') || '';
 	const deliveryOptions = searchParams.get('deliveryOptions') || '';
 	const release = searchParams.get('release') || '';
 	const isChristmasBeer = searchParams.get('is_christmas_beer') || '';
@@ -40,6 +41,7 @@ export const load = async ({ url, cookies }: { url: URL; cookies: any }) => {
 		abvTo,
 		allergens,
 		productSelection,
+		packageType,
 		deliveryOptions,
 		release,
 		isChristmasBeer,

@@ -20,6 +20,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 	const abvTo = url.searchParams.get('abvTo') || '';
 	const allergens = url.searchParams.get('allergens') || '';
 	const productSelection = url.searchParams.get('productSelection') || '';
+	const packageType = url.searchParams.get('packageType') || '';
 	const deliveryOptions = url.searchParams.get('deliveryOptions') || '';
 	const release = url.searchParams.get('release') || '';
 	const isChristmasBeer = url.searchParams.get('is_christmas_beer') || '';
@@ -47,6 +48,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 		abvTo,
 		allergens,
 		productSelection,
+		packageType,
 		deliveryOptions,
 		release,
 		isChristmasBeer,
