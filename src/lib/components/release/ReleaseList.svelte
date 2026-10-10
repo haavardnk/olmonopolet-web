@@ -79,7 +79,7 @@
 				<button class="btn join-item" onclick={() => goToPage(page - 1)} disabled={page <= 1}
 					>&laquo; Forrige</button
 				>
-				<span class="join-item px-4 py-2">Side {page} av {totalPages}</span>
+				<span class="btn join-item pointer-events-none">Side {page} av {totalPages}</span>
 				<button
 					class="btn join-item"
 					onclick={() => goToPage(page + 1)}
