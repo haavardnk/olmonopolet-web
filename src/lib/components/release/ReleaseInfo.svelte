@@ -54,6 +54,12 @@
 						<div class="font-bold text-base">{release.stats.meadCount}</div>
 					</div>
 				{/if}
+				{#if release.stats.christmasBeerCount}
+					<div class="flex flex-col items-center bg-base-300 rounded-lg px-2 py-1 min-w-15 text-sm">
+						<div class="font-semibold opacity-70">🎄 Juleøl</div>
+						<div class="font-bold text-base">{release.stats.christmasBeerCount}</div>
+					</div>
+				{/if}
 			</div>
 			<div class="flex justify-end">
 				<a href="/products/?release={releaseFilter}" class="btn btn-outline btn-sm w-full">
@@ -90,6 +96,12 @@
 						<div class="flex flex-col items-center bg-base-300 rounded-lg px-4 py-2 min-w-20">
 							<div class="font-semibold opacity-70">Mjød</div>
 							<div class="font-bold text-2xl">{release.stats.meadCount}</div>
+						</div>
+					{/if}
+					{#if release.stats.christmasBeerCount}
+						<div class="flex flex-col items-center bg-base-300 rounded-lg px-4 py-2 min-w-20">
+							<div class="font-semibold opacity-70">🎄 Juleøl</div>
+							<div class="font-bold text-2xl">{release.stats.christmasBeerCount}</div>
 						</div>
 					{/if}
 				</div>

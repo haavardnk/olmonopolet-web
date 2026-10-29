@@ -1,5 +1,9 @@
+import { error } from '@sveltejs/kit';
 import { apiFetch } from '$lib/server/apiFetch';
+import { getAssortmentDisplayName } from '$lib/utils/helpers';
 import type {
+	ApiProduct,
+	Product,
 	ProductFilters,
 	ProductListResponse,
 	StoreListResponse,
@@ -8,6 +12,47 @@ import type {
 } from '$lib/types';
 
 export type { ProductFilters };
+
+const LIST_PRODUCT_FIELDS =
+	'vmp_id,vmp_name,price,rating,checkins,label_sm_url,main_category,sub_category,style,is_christmas_beer,stock,abv,user_checked_in,user_wishlisted,user_tasted,volume,price_per_volume,vmp_url,untpd_url,untpd_id,country,country_code,product_selection';
+
+export async function fetchProductList(
+	query: Record<string, string>,
+	fetchFn: typeof fetch,
+	sessionCookie?: string
+): Promise<Product[]> {
+	const params = new URLSearchParams({ ...query, fields: LIST_PRODUCT_FIELDS, page_size: '1000' });
+	const headers: Record<string, string> = sessionCookie
+		? { Cookie: `session=${sessionCookie}` }
+		: {};
+	const res = await apiFetch(`/beers/?${params}`, { headers }, fetchFn);
+	if (!res.ok) {
+		throw error(res.status, { message: `API returnerte ${res.status}: ${res.statusText}` });
+	}
+	const data: ProductListResponse = await res.json();
+	return (data.results || []).map((p: ApiProduct) => ({
+		id: p.vmp_id,
+		name: p.vmp_name,
+		image: p.label_sm_url,
+		price: p.price,
+		volume: p.volume,
+		pricePerLiter: p.price_per_volume,
+		style: p.style || p.sub_category || p.main_category,
+		isChristmasBeer: p.is_christmas_beer,
+		rating: p.rating,
+		checkins: p.checkins,
+		strength: p.abv,
+		ibu: p.ibu,
+		alcoholUnits: p.alcohol_units,
+		country: p.country,
+		countryCode: p.country_code,
+		assortment: getAssortmentDisplayName(p.product_selection),
+		vmpUrl: p.vmp_url,
+		untappdUrl: p.untpd_url,
+		userTasted: p.user_tasted,
+		stores: []
+	}));
+}
 
 export async function fetchProducts(
 	page: number = 1,

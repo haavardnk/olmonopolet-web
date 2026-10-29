@@ -10,7 +10,7 @@
 	import AllergenFilter from '$lib/components/product-list/filters/AllergenFilter.svelte';
 	import DeliveryFilter from '$lib/components/product-list/filters/DeliveryFilter.svelte';
 	import ReleaseFilter from '$lib/components/product-list/filters/ReleaseFilter.svelte';
-	import { isChristmasSeason } from '$lib/utils/helpers';
+	import { getSeason } from '$lib/utils/helpers';
 	import { authStore } from '$lib/stores/auth.svelte';
 
 	let {
@@ -117,7 +117,7 @@
 </script>
 
 <div class="space-y-1">
-	{#if isChristmasSeason()}
+	{#if getSeason() === 'christmas'}
 		<div class="p-2">
 			<button
 				onclick={toggleChristmasBeer}

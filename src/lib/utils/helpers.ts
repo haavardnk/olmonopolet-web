@@ -1,5 +1,8 @@
 import { format, parseISO } from 'date-fns';
 import { nb } from 'date-fns/locale';
+import { dev } from '$app/environment';
+import { env } from '$env/dynamic/public';
+import type { ProductStats } from '$lib/types';
 
 export function slugify(str: string): string {
 	return str.replace(/\s+/g, '-');
@@ -39,10 +42,24 @@ export function getAssortmentDisplayName(apiValue: string | null | undefined): s
 	return apiValue;
 }
 
-export function isChristmasSeason(): boolean {
-	const now = new Date();
-	const currentYear = now.getFullYear();
-	const christmasStart = new Date(currentYear, 9, 30);
-	const christmasEnd = new Date(currentYear, 11, 31, 23, 59, 59);
-	return now >= christmasStart && now <= christmasEnd;
+export type Season = 'christmas' | 'winter' | 'default';
+
+export function getSeason(date: Date = new Date()): Season {
+	if (dev && env.PUBLIC_SEASON) return env.PUBLIC_SEASON as Season;
+	const [month, day] = new Intl.DateTimeFormat('en-US', {
+		timeZone: 'Europe/Oslo',
+		month: 'numeric',
+		day: 'numeric'
+	})
+		.format(date)
+		.split('/')
+		.map(Number);
+	if (month >= 11 || (month === 10 && day >= 30)) return 'christmas';
+	if (month <= 2) return 'winter';
+	return 'default';
+}
+
+export function formatReleaseDescription(stats: ProductStats): string {
+	const base = `Produkter i lansering: ${stats.productCount} (${stats.beerCount} øl, ${stats.ciderCount} sider, ${stats.meadCount} mjød)`;
+	return stats.christmasBeerCount ? `${base}, hvorav ${stats.christmasBeerCount} juleøl` : base;
 }

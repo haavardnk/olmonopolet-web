@@ -24,7 +24,7 @@
 					{#if release.isChristmasRelease}
 						<div class="badge badge-error gap-1 shadow-sm">
 							<span>🎄</span>
-							<span class="font-semibold">Juleøl</span>
+							<span class="font-semibold">{release.stats.christmasBeerCount || ''} Juleøl</span>
 						</div>
 					{/if}
 				</div>

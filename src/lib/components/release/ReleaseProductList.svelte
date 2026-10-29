@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Product, Release } from '$lib/types';
+	import type { Product } from '$lib/types';
 	import {
 		Beer,
 		RefreshCw,
@@ -17,10 +17,18 @@
 	import { toggleTastedStatus, updateProductTasted } from '$lib/utils/tasted';
 
 	let {
-		release,
 		productsPromise,
-		retryFetch
-	}: { release: Release; productsPromise: Promise<Product[]>; retryFetch: () => void } = $props();
+		retryFetch,
+		title = 'Produkter i lansering',
+		emptyMessage = 'Det er ingen produkter tilgjengelig for denne lanseringen.',
+		showChristmasToggle = false
+	}: {
+		productsPromise: Promise<Product[]>;
+		retryFetch: () => void;
+		title?: string;
+		emptyMessage?: string;
+		showChristmasToggle?: boolean;
+	} = $props();
 
 	let products = $state<Product[]>([]);
 	let isLoading = $state(true);
@@ -134,8 +142,8 @@
 	}
 </script>
 
-<section class="mb-6" aria-label="Produkter i lansering">
-	<h2 class="text-2xl font-bold mb-6">Produkter i lansering</h2>
+<section class="mb-6" aria-label={title}>
+	<h2 class="text-2xl font-bold mb-6">{title}</h2>
 
 	<div class="mb-4 flex flex-col gap-3">
 		<div class="flex flex-row gap-3 items-center justify-between">
@@ -171,7 +179,7 @@
 					</button>
 				</div>
 
-				{#if release.isChristmasRelease}
+				{#if showChristmasToggle}
 					<button
 						class="hidden lg:flex btn btn-sm gap-1.5 {showOnlyChristmasBeer
 							? 'btn-error'
@@ -257,7 +265,7 @@
 			</div>
 		</div>
 
-		{#if release.isChristmasRelease}
+		{#if showChristmasToggle}
 			<button
 				class="lg:hidden btn btn-sm gap-1.5 w-fit {showOnlyChristmasBeer
 					? 'btn-error'
@@ -302,7 +310,7 @@
 			<div class="flex flex-col items-center gap-4">
 				<Beer size={48} class="text-primary opacity-50" />
 				<h3 class="font-bold text-lg">Ingen produkter funnet</h3>
-				<p class="text-sm opacity-70">Det er ingen produkter tilgjengelig for denne lanseringen.</p>
+				<p class="text-sm opacity-70">{emptyMessage}</p>
 			</div>
 		</div>
 	{:else}

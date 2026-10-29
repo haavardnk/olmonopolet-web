@@ -5,7 +5,7 @@
 	import ReleaseList from '$lib/components/release/ReleaseList.svelte';
 
 	import { PUBLIC_SITE_URL, PUBLIC_SITE_TITLE, PUBLIC_SITE_DESCRIPTION } from '$env/static/public';
-	import { slugify } from '$lib/utils/helpers';
+	import { formatReleaseDescription, slugify } from '$lib/utils/helpers';
 
 	let { data } = $props();
 
@@ -20,21 +20,16 @@
 		return {
 			'@context': 'https://schema.org',
 			'@type': 'ItemList',
-			itemListElement: releases.map((release, i) => {
-				const stats = release.stats;
-				const description = `Produkter i lansering: ${stats.productCount} (${stats.beerCount} øl, ${stats.ciderCount} sider, ${stats.meadCount} mjød)`;
-
-				return {
-					'@type': 'ListItem',
-					position: i + 1,
-					item: {
-						'@type': 'Thing',
-						name: `Nyhetslansering ${release.formattedDate}`,
-						url: `${PUBLIC_SITE_URL}/release/${slugify(release.name)}`,
-						description
-					}
-				};
-			})
+			itemListElement: releases.map((release, i) => ({
+				'@type': 'ListItem',
+				position: i + 1,
+				item: {
+					'@type': 'Thing',
+					name: `Nyhetslansering ${release.formattedDate}`,
+					url: `${PUBLIC_SITE_URL}/release/${slugify(release.name)}`,
+					description: formatReleaseDescription(release.stats)
+				}
+			}))
 		};
 	});
 </script>

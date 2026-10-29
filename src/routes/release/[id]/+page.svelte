@@ -5,16 +5,14 @@
 	import Footer from '$lib/components/common/Footer.svelte';
 	import ReleaseInfo from '$lib/components/release/ReleaseInfo.svelte';
 	import ReleaseProductList from '$lib/components/release/ReleaseProductList.svelte';
+	import { formatReleaseDescription } from '$lib/utils/helpers';
 
 	let { data } = $props();
 	let release = $derived(data.release);
 	let slug = $derived(data.slug);
 
 	let title = $derived(`Nyhetslansering ${release.formattedDate} - ${PUBLIC_SITE_TITLE}`);
-	let description = $derived.by(() => {
-		const stats = release.stats;
-		return `Produkter i lansering: ${stats.productCount} (${stats.beerCount} øl, ${stats.ciderCount} sider, ${stats.meadCount} mjød)`;
-	});
+	let description = $derived(formatReleaseDescription(release.stats));
 
 	const articleJson = $derived.by(() => {
 		return {
@@ -72,7 +70,11 @@
 		<div class="container mx-auto px-4 py-8">
 			<div class="max-w-6xl mx-auto">
 				<ReleaseInfo {release} />
-				<ReleaseProductList {release} productsPromise={data.products} {retryFetch} />
+				<ReleaseProductList
+					showChristmasToggle={release.isChristmasRelease}
+					productsPromise={data.products}
+					{retryFetch}
+				/>
 			</div>
 		</div>
 	</main>

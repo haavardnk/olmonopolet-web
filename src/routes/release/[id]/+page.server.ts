@@ -1,14 +1,8 @@
 import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
 import { apiFetch } from '$lib/server/apiFetch';
-import type {
-	Product,
-	Release,
-	ProductStats,
-	ApiProduct,
-	ApiRelease,
-	ProductListResponse
-} from '$lib/types';
+import { fetchProductList } from '$lib/api/products';
+import type { ProductStats, ApiRelease } from '$lib/types';
 import { formatDate, slugify, unslugify, getAssortmentDisplayName } from '$lib/utils/helpers';
 import { LONG_CACHE_HEADERS, NO_CACHE_HEADERS } from '$lib/server/cache';
 
@@ -35,7 +29,8 @@ export const load: PageServerLoad = async ({ params, fetch, setHeaders, cookies 
 			productCount: releaseInfo.product_stats.product_count,
 			beerCount: releaseInfo.product_stats.beer_count,
 			ciderCount: releaseInfo.product_stats.cider_count,
-			meadCount: releaseInfo.product_stats.mead_count
+			meadCount: releaseInfo.product_stats.mead_count,
+			christmasBeerCount: releaseInfo.product_stats.christmas_beer_count ?? 0
 		};
 
 		const release = {
@@ -49,50 +44,11 @@ export const load: PageServerLoad = async ({ params, fetch, setHeaders, cookies 
 			stats
 		};
 
-		const productsPromise = (async () => {
-			const fields =
-				'vmp_id,vmp_name,price,rating,checkins,label_sm_url,main_category,sub_category,style,is_christmas_beer,stock,abv,user_checked_in,user_wishlisted,user_tasted,volume,price_per_volume,vmp_url,untpd_url,untpd_id,country,country_code,product_selection';
-			const productsUrl = `/beers/?fields=${fields}&release=${encodeURIComponent(name)}&ordering=-rating&page_size=1000`;
-
-			const headers: Record<string, string> = {};
-			if (sessionCookie) {
-				headers.Cookie = `session=${sessionCookie}`;
-			}
-
-			const productsRes = await apiFetch(productsUrl, { headers }, fetch);
-			if (!productsRes.ok) {
-				if (productsRes.status === 404) {
-					throw error(404, { message: 'Øl ikke funnet' });
-				}
-				throw error(productsRes.status, {
-					message: `API returnerte ${productsRes.status}: ${productsRes.statusText}`
-				});
-			}
-			const productsData: ProductListResponse = await productsRes.json();
-
-			return (productsData.results || []).map((p: ApiProduct) => ({
-				id: p.vmp_id,
-				name: p.vmp_name,
-				image: p.label_sm_url,
-				price: p.price,
-				volume: p.volume,
-				pricePerLiter: p.price_per_volume,
-				style: p.style || p.sub_category || p.main_category,
-				isChristmasBeer: p.is_christmas_beer,
-				rating: p.rating,
-				checkins: p.checkins,
-				strength: p.abv,
-				ibu: p.ibu,
-				alcoholUnits: p.alcohol_units,
-				country: p.country,
-				countryCode: p.country_code,
-				assortment: getAssortmentDisplayName(p.product_selection),
-				vmpUrl: p.vmp_url,
-				untappdUrl: p.untpd_url,
-				userTasted: p.user_tasted,
-				stores: []
-			}));
-		})();
+		const productsPromise = fetchProductList(
+			{ release: name, ordering: '-rating' },
+			fetch,
+			sessionCookie
+		);
 
 		return {
 			release,

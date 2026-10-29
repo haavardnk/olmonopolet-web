@@ -58,6 +58,7 @@ export type ProductStats = {
 	beerCount: number;
 	ciderCount: number;
 	meadCount: number;
+	christmasBeerCount: number;
 };
 
 export type Release = {
@@ -125,6 +126,7 @@ export interface ApiRelease {
 		beer_count: number;
 		cider_count: number;
 		mead_count: number;
+		christmas_beer_count?: number;
 	};
 }
 

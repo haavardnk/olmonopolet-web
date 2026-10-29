@@ -32,7 +32,8 @@ export const load: PageServerLoad = async ({ fetch, url, setHeaders }) => {
 					productCount: release.product_stats.product_count,
 					beerCount: release.product_stats.beer_count,
 					ciderCount: release.product_stats.cider_count,
-					meadCount: release.product_stats.mead_count
+					meadCount: release.product_stats.mead_count,
+					christmasBeerCount: release.product_stats.christmas_beer_count ?? 0
 				},
 				products: []
 			};

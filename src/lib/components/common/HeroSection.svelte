@@ -7,18 +7,15 @@
 		PUBLIC_SITE_DESCRIPTION
 	} from '$env/static/public';
 	import { fly } from 'svelte/transition';
-	import { Play, Apple, Chromium, Beer } from '@lucide/svelte';
+	import { Play, Apple, Chromium, Beer, TreePine } from '@lucide/svelte';
 	import hero from '$lib/assets/hero.svg?raw';
 	import heroWinter from '$lib/assets/hero-winter.svg?raw';
 	import heroChristmas from '$lib/assets/hero-christmas.svg?raw';
+	import { getSeason } from '$lib/utils/helpers';
 
-	const currentMonth = new Date().getMonth() + 1;
+	const season = getSeason();
 	const heroImage =
-		currentMonth === 12
-			? heroChristmas
-			: currentMonth >= 11 || currentMonth <= 2
-				? heroWinter
-				: hero;
+		season === 'christmas' ? heroChristmas : season === 'winter' ? heroWinter : hero;
 </script>
 
 <div class="hero py-12 bg-base-200">
@@ -83,12 +80,8 @@
 
 				<a
 					href="/products"
-					class="btn btn-outline border-2 hover:bg-primary hover:text-primary-content hover:border-primary transition-all duration-300 group relative sm:flex-1"
+					class="btn btn-outline border-2 hover:bg-primary hover:text-primary-content hover:border-primary transition-all duration-300 group sm:flex-1"
 				>
-					<span
-						class="badge badge-accent badge-sm absolute -top-2 -right-2 font-bold shadow-lg z-10"
-						>NYHET</span
-					>
 					<div class="flex items-center gap-2">
 						<Beer size={24} class="text-primary group-hover:text-primary-content" />
 						<div class="flex flex-col items-start">
@@ -97,6 +90,21 @@
 						</div>
 					</div>
 				</a>
+
+				{#if season === 'christmas'}
+					<a
+						href="/juleol"
+						class="btn btn-outline border-2 hover:bg-primary hover:text-primary-content hover:border-primary transition-all duration-300 group sm:flex-1"
+					>
+						<div class="flex items-center gap-2">
+							<TreePine size={24} class="text-primary group-hover:text-primary-content" />
+							<div class="flex flex-col items-start">
+								<span class="text-xs opacity-80">SE ALLE</span>
+								<span class="font-bold text-sm">Juleøl</span>
+							</div>
+						</div>
+					</a>
+				{/if}
 			</div>
 		</div>
 	</div>

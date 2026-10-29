@@ -8,7 +8,7 @@
 	} from '$env/static/public';
 	import { page } from '$app/stores';
 	import { HeartHandshake, Facebook, Menu, Github } from '@lucide/svelte';
-	import { isChristmasSeason } from '$lib/utils/helpers';
+	import { getSeason } from '$lib/utils/helpers';
 	import ThemeSelector from './ThemeSelector.svelte';
 	import UserMenu from './UserMenu.svelte';
 
@@ -64,7 +64,7 @@
 					{@render left()}
 				{:else}
 					<a href={logoHref} class="flex items-center gap-2 text-xl font-medium">
-						<span>{PUBLIC_SITE_TITLE}{isChristmasSeason() ? '🎄' : ''}</span>
+						<span>{PUBLIC_SITE_TITLE}{getSeason() === 'christmas' ? '🎄' : ''}</span>
 						{#if isAppRoute}
 							<span class="badge badge-sm badge-primary">WEB</span>
 						{/if}
