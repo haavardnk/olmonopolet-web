@@ -23,6 +23,7 @@
 		<div class="max-w-xl">
 			<div
 				class="relative flex items-center justify-center hero-image"
+				data-season={season}
 				in:fly={{ y: 20, duration: 300 }}
 			>
 				{@html heroImage}
@@ -120,7 +121,8 @@
 		fill: #e0a870;
 	}
 
-	:global([data-theme='ølmonopolet-dark']) .hero-image :global(.st10) {
+	:global([data-theme='ølmonopolet-dark']) .hero-image:not([data-season='christmas']) :global(.st10),
+	:global([data-theme='ølmonopolet-dark']) .hero-image[data-season='christmas'] :global(.st11) {
 		fill: #d9a86e;
 	}
 
@@ -128,7 +130,7 @@
 		fill: #ebe0d9;
 	}
 
-	:global([data-theme='ølmonopolet-dark']) .hero-image :global(.beer) {
+	:global([data-theme='ølmonopolet-dark']) .hero-image[data-season='default'] :global(.beer) {
 		fill: #c4841e;
 	}
 
