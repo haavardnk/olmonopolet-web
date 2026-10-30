@@ -54,7 +54,7 @@
 }
 
 :root {
-	--header-offset: 64px;
+	--header-offset: calc(64px + env(safe-area-inset-top, 0px));
 }
 
 body,

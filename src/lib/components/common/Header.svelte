@@ -16,8 +16,6 @@
 
 	const appMatch = $derived(appPrefixes.find((p) => $page.url.pathname.startsWith(p)));
 
-	const isAppRoute = $derived(!!appMatch);
-
 	const logoHref = $derived.by(() => {
 		if (!appMatch) return '/';
 		const path = $page.url.pathname.replace(/\/$/, '');
@@ -63,11 +61,8 @@
 				{#if left}
 					{@render left()}
 				{:else}
-					<a href={logoHref} class="flex items-center gap-2 text-xl font-medium">
-						<span>{PUBLIC_SITE_TITLE}{getSeason() === 'christmas' ? '🎄' : ''}</span>
-						{#if isAppRoute}
-							<span class="badge badge-sm badge-primary">WEB</span>
-						{/if}
+					<a href={logoHref} class="flex items-center text-xl font-medium whitespace-nowrap">
+						{PUBLIC_SITE_TITLE}{getSeason() === 'christmas' ? '🎄' : ''}
 					</a>
 				{/if}
 			</div>
